@@ -1,0 +1,48 @@
+{
+  "name": "lexhub-legal-workflow",
+  "version": "1.0.0",
+  "framework": "Co-Sight",
+  "description": "律枢 LexHub 法律任务动态编排工作流配置",
+  "agents": [
+    { "id": "planner", "name": "任务理解智能体", "modelEnv": "PLAN_MODEL_NAME", "trigger": "任务提交" },
+    { "id": "evidence", "name": "证据质检智能体", "modelEnv": "VISION_MODEL_NAME", "trigger": "材料完整度不足" },
+    { "id": "research", "name": "法规研究智能体", "modelEnv": "TOOL_MODEL_NAME", "trigger": "法规引用缺失" },
+    { "id": "drafting", "name": "文书生成智能体", "modelEnv": "ACT_MODEL_NAME", "trigger": "目标产出明确" },
+    { "id": "review", "name": "交叉审查智能体", "modelEnv": "REVIEW_MODEL_NAME", "trigger": "高风险或导出前" },
+    { "id": "compliance", "name": "合规监测智能体", "modelEnv": "COMPLIANCE_MODEL_NAME", "trigger": "导出前或合规关键词" }
+  ],
+  "dag": {
+    "nodes": [
+      { "id": "intake", "label": "任务理解", "agent": "planner" },
+      { "id": "evidence", "label": "证据质检", "agent": "evidence", "condition": "materialCompleteness < 70" },
+      { "id": "research", "label": "法规研究", "agent": "research", "condition": "citationCoverage < 55" },
+      { "id": "drafting", "label": "文书生成", "agent": "drafting", "condition": "wantsOutput == true" },
+      { "id": "review", "label": "交叉审查", "agent": "review", "condition": "riskLevel == high || exportReady" },
+      { "id": "compliance", "label": "合规监测", "agent": "compliance", "condition": "exportReady == true" }
+    ],
+    "edges": [
+      { "from": "intake", "to": "evidence", "type": "conditional" },
+      { "from": "intake", "to": "research", "type": "conditional" },
+      { "from": "evidence", "to": "research", "type": "sequential" },
+      { "from": "research", "to": "drafting", "type": "conditional" },
+      { "from": "drafting", "to": "review", "type": "mandatory" },
+      { "from": "review", "to": "compliance", "type": "mandatory" },
+      { "from": "compliance", "to": "archive", "type": "sequential" }
+    ]
+  },
+  "tools": [
+    { "id": "web_search", "category": "search", "envKeys": ["TAVILY_API_KEY", "GOOGLE_API_KEY"] },
+    { "id": "code_exec", "category": "code", "builtin": true },
+    { "id": "file_upload", "category": "document", "endpoint": "/api/nae-deep-research/v1/upload/files" },
+    { "id": "legal_rag", "category": "legal", "envKeys": ["LEGAL_SEARCH_API_KEY", "VECTOR_DB_URL"] },
+    { "id": "export", "category": "export", "envKeys": ["DOCX_EXPORT_ENABLED", "PDF_EXPORT_ENABLED"] }
+  ],
+  "agentRegistry": "config/agent-registry.json",
+  "routingRules": [
+    "材料完整度低于 70%，优先调度证据质检智能体",
+    "法规引用缺失，调度法规研究智能体",
+    "目标产出为报告/律师函，调度文书生成智能体",
+    "高风险或导出前，强制调度交叉审查智能体",
+    "导出前强制调度合规监测智能体，生成审计链"
+  ]
+}

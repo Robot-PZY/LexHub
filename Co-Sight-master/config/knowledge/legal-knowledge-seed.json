@@ -1,0 +1,37 @@
+{
+  "name": "lexhub-legal-knowledge-seed",
+  "version": "1.0.0",
+  "description": "律枢 LexHub 法规/案例/模板知识库样例（比赛交付物）",
+  "knowledgeBases": [
+    {
+      "id": "regulation-core",
+      "name": "核心法规库",
+      "sourceType": "structured",
+      "status": "seed",
+      "samples": [
+        { "title": "民法典·合同编", "tags": ["合同", "违约责任"], "usage": "合同审查引用" },
+        { "title": "民事诉讼法·证据规则", "tags": ["证据", "举证责任"], "usage": "证据质检对照" }
+      ]
+    },
+    {
+      "id": "case-templates",
+      "name": "案例与模板库",
+      "sourceType": "template",
+      "status": "seed",
+      "samples": [
+        { "title": "合同审查报告模板", "tags": ["合同审查", "报告"], "usage": "文书生成" },
+        { "title": "律师函初稿模板", "tags": ["争议解决", "律师函"], "usage": "文书生成" }
+      ]
+    },
+    {
+      "id": "review-rules",
+      "name": "审查规则库",
+      "sourceType": "rules",
+      "status": "seed",
+      "samples": [
+        { "title": "高风险表述替换规则", "tags": ["审查", "风险"], "usage": "交叉审查智能体" },
+        { "title": "缺失材料标注规则", "tags": ["证据", "完整度"], "usage": "证据质检智能体" }
+      ]
+    }
+  ]
+}

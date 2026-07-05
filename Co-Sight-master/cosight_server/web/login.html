@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>法枢 - 登录</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="libs/fontawesome-6.7.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="js/auth.js"></script>
+    <script>
+        window.redirectIfAuthenticated();
+    </script>
+</head>
+
+<body>
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-layout">
+            <div class="login-showcase">
+                <div class="login-showcase-card">
+                    <div class="login-brand">
+                        <span class="login-logo"><i class="fas fa-scale-balanced"></i></span>
+                        <div>
+                            <p class="login-brand-kicker">法律分析与决策平台</p>
+                            <h2>法枢</h2>
+                        </div>
+                    </div>
+                    <div class="login-copy">
+                        <h3>法律事项，从统一入口进入</h3>
+                        <p>覆盖案件分析、合同审查、证据梳理、法律依据检索与文书辅助，形成更接近正式业务系统的法律工作界面。</p>
+                    </div>
+                    <div class="login-feature-list">
+                        <div class="login-feature-item">
+                            <span class="login-feature-icon"><i class="fas fa-upload"></i></span>
+                            <div>
+                                <strong>多模态输入</strong>
+                                <p>支持文本、合同、判决书、截图、PDF 与 Word 材料。</p>
+                            </div>
+                        </div>
+                        <div class="login-feature-item">
+                            <span class="login-feature-icon"><i class="fas fa-diagram-project"></i></span>
+                            <div>
+                                <strong>执行过程可见</strong>
+                                <p>任务规划、步骤节点、工具调用与回放记录全部留痕。</p>
+                            </div>
+                        </div>
+                        <div class="login-feature-item">
+                            <span class="login-feature-icon"><i class="fas fa-file-signature"></i></span>
+                            <div>
+                                <strong>结果结构化输出</strong>
+                                <p>摘要、证据、依据与文书草稿分区查看，便于复核。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="login-showcase-footer">
+                        <span>适合演示、竞赛答辩与方案展示</span>
+                        <span>Law Workspace UI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="login-card">
+                <div class="login-card-header">
+                    <span class="login-card-kicker">账号登录</span>
+                    <h3>进入法枢工作台</h3>
+                    <p>当前为演示环境，使用测试账号即可进入首页。</p>
+                </div>
+
+                <form id="login-form" class="login-form" onsubmit="return false;">
+                    <label class="login-field">
+                        <span>账号</span>
+                        <input type="text" id="login-username" placeholder="请输入账号 test" autocomplete="username">
+                    </label>
+                    <label class="login-field">
+                        <span>密码</span>
+                        <input type="password" id="login-password" placeholder="请输入密码 123456" autocomplete="current-password">
+                    </label>
+                    <div class="login-feedback" id="login-feedback">请输入测试账号后登录。</div>
+                    <button type="button" id="login-submit-button" class="login-submit-button">
+                        <i class="fas fa-arrow-right-to-bracket"></i>
+                        <span>进入法枢</span>
+                    </button>
+                </form>
+
+                <div class="login-demo-panel">
+                    <div class="login-demo-row">
+                        <span>演示账号</span>
+                        <strong>test</strong>
+                    </div>
+                    <div class="login-demo-row">
+                        <span>演示密码</span>
+                        <strong>123456</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>window.initStandaloneLoginPage();</script>
+</body>
+
+</html>

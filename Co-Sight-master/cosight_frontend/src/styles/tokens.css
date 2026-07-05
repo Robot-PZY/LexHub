@@ -1,0 +1,90 @@
+:root {
+  /* Typography */
+  --font-sans: "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", sans-serif;
+  --font-brand: "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  /* LaborAid-inspired warm neutrals + Co-Sight brand */
+  --color-primary: #2e4a6b;
+  --color-primary-hover: #243c58;
+  --color-primary-soft: #eef3f8;
+  --color-primary-muted: rgba(46, 74, 107, 0.14);
+  --color-secondary: #1c524c;
+  --color-accent: #b98a2c;
+  --color-accent-hover: #9d7423;
+  --color-accent-soft: #f3e7c6;
+  --color-accent-soft-text: #7a5710;
+
+  /* Semantic */
+  --color-success: #2f6b57;
+  --color-success-soft: #eaf4ef;
+  --color-warning: #a56a1e;
+  --color-warning-soft: #fbf1e2;
+  --color-danger: #a6473c;
+  --color-danger-soft: #f9e9e7;
+  --color-info: #326fa8;
+  --color-info-soft: #eef3f8;
+
+  /* Surfaces — warm paper, not cold gray */
+  --color-bg: #f6f4ef;
+  --color-bg-elevated: #f1eee8;
+  --color-surface: #ffffff;
+  --color-surface-alt: #fbfaf7;
+  --color-surface-muted: #f1eee8;
+  --color-surface-strong: #20324d;
+  --color-text: #2e425c;
+  --color-text-strong: #20324d;
+  --color-muted: #7f8a97;
+  --color-line: #ded8cd;
+  --color-line-soft: #ece7dd;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 30px;
+  --radius-full: 999px;
+
+  /* Shadows — restrained, procedural */
+  --shadow-xs: 0 1px 2px rgba(32, 50, 77, 0.04);
+  --shadow-sm: 0 1px 3px rgba(32, 50, 77, 0.06), 0 8px 20px rgba(32, 50, 77, 0.04);
+  --shadow-md: 0 16px 40px rgba(32, 50, 77, 0.08), 0 4px 14px rgba(46, 74, 107, 0.05);
+  --shadow-lg: 0 22px 56px rgba(32, 50, 77, 0.1), 0 8px 22px rgba(46, 74, 107, 0.08);
+  --shadow-glow: 0 0 0 1px rgba(255, 255, 255, 0.85) inset;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 140ms;
+  --duration-normal: 220ms;
+
+  /* Layout */
+  --sidebar-width: 248px;
+  --topbar-height: 64px;
+  --content-max: 1240px;
+  --app-content-max: 1180px;
+  --section-gap: 56px;
+
+  /* Legacy aliases */
+  --bg: var(--color-bg);
+  --bg-elevated: var(--color-bg-elevated);
+  --surface: var(--color-surface);
+  --surface-alt: var(--color-surface-alt);
+  --surface-muted: var(--color-surface-muted);
+  --text: var(--color-text);
+  --text-strong: var(--color-text-strong);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --line-soft: var(--color-line-soft);
+  --primary: var(--color-primary);
+  --primary-strong: var(--color-primary-hover);
+  --primary-soft: var(--color-primary-soft);
+  --accent: var(--color-accent);
+  --accent-soft: var(--color-accent-soft);
+  --success: var(--color-success);
+  --success-soft: var(--color-success-soft);
+  --warning: var(--color-warning);
+  --warning-soft: var(--color-warning-soft);
+  --danger: var(--color-danger);
+  --danger-soft: var(--color-danger-soft);
+}

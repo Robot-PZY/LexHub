@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "description": "律枢 LexHub 官方法规爬取种子 — 国家法律法规数据库 (flk.npc.gov.cn)",
+  "sources": [
+    {
+      "id": "npc_flk",
+      "name": "国家法律法规数据库",
+      "provider": "npc_flk",
+      "website": "https://flk.npc.gov.cn",
+      "description": "全国人大法律法规库：法律、行政法规、司法解释"
+    }
+  ],
+  "seeds": [
+    {
+      "id": "civil-code",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国民法典",
+      "keywords": ["中华人民共和国民法典"],
+      "tags": ["官方法规", "民法", "核心法规"],
+      "category": "法律"
+    },
+    {
+      "id": "company-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国公司法",
+      "keywords": ["中华人民共和国公司法"],
+      "tags": ["官方法规", "公司法"],
+      "category": "法律"
+    },
+    {
+      "id": "civil-procedure",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国民事诉讼法",
+      "keywords": ["中华人民共和国民事诉讼法"],
+      "tags": ["官方法规", "诉讼"],
+      "category": "法律"
+    },
+    {
+      "id": "contract-interpretation",
+      "source_id": "npc_flk",
+      "name": "最高人民法院关于适用《中华人民共和国民法典》合同编通则若干问题的解释",
+      "keywords": ["最高人民法院关于适用《中华人民共和国民法典》合同编通则若干问题的解释"],
+      "tags": ["司法解释", "合同"],
+      "category": "司法解释"
+    },
+    {
+      "id": "labor-contract-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国劳动合同法",
+      "keywords": ["中华人民共和国劳动合同法"],
+      "tags": ["官方法规", "劳动法", "合同"],
+      "category": "法律"
+    }
+  ]
+}

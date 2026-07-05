@@ -1,0 +1,82 @@
+{
+  "name": "lexhub-agent-registry",
+  "version": "1.0.0",
+  "framework": "Co-Sight",
+  "description": "律枢 LexHub 智能体调度注册表：角色智能体注册能力与工具，由 Co-Sight Plan 动态编排执行",
+  "agents": [
+    {
+      "id": "planner",
+      "name": "任务理解智能体",
+      "role": "orchestrator",
+      "modelEnv": "PLAN_MODEL_NAME",
+      "modelLabel": "DeepSeek / Plan 模型",
+      "capabilities": ["场景识别", "任务拆解", "DAG Plan 生成", "调度建议"],
+      "registeredTools": [],
+      "triggers": ["任务提交", "材料补充"]
+    },
+    {
+      "id": "evidence",
+      "name": "证据质检智能体",
+      "role": "worker",
+      "modelEnv": "VISION_MODEL_NAME",
+      "modelLabel": "Vision / 材料理解模型",
+      "capabilities": ["材料清单", "缺口识别", "事实矛盾检测"],
+      "registeredTools": ["file_read", "file_upload", "parse_document"],
+      "triggers": ["材料完整度不足"]
+    },
+    {
+      "id": "research",
+      "name": "法规研究智能体",
+      "role": "worker",
+      "modelEnv": "TOOL_MODEL_NAME",
+      "modelLabel": "DeepSeek / Tool 模型",
+      "capabilities": ["法规检索", "类案研究", "公开资料补充", "引用溯源"],
+      "registeredTools": ["legal_rag", "tavily_search", "search_google", "search"],
+      "triggers": ["法规引用缺失", "场景=法规研究"]
+    },
+    {
+      "id": "drafting",
+      "name": "文书生成智能体",
+      "role": "worker",
+      "modelEnv": "ACT_MODEL_NAME",
+      "modelLabel": "DeepSeek / Act 模型",
+      "capabilities": ["报告生成", "律师函草稿", "结构化结论"],
+      "registeredTools": ["file_write", "execute_code", "export"],
+      "triggers": ["目标产出明确"]
+    },
+    {
+      "id": "review",
+      "name": "交叉审查智能体",
+      "role": "reviewer",
+      "modelEnv": "REVIEW_MODEL_NAME",
+      "modelLabel": "DeepSeek / Review 模型",
+      "capabilities": ["事实一致性", "引用匹配", "幻觉风险标记", "可信分级"],
+      "registeredTools": ["credibility_analysis"],
+      "triggers": ["高风险", "导出前"]
+    },
+    {
+      "id": "compliance",
+      "name": "合规监测智能体",
+      "role": "reviewer",
+      "modelEnv": "COMPLIANCE_MODEL_NAME",
+      "modelLabel": "DeepSeek / Compliance 模型",
+      "capabilities": ["审计链封存", "合规表述提示", "导出门禁"],
+      "registeredTools": ["audit_log", "export"],
+      "triggers": ["导出前", "合规关键词"]
+    }
+  ],
+  "toolCatalog": [
+    { "id": "tavily_search", "label": "Tavily 联网搜索", "category": "search", "apiLabel": "Tavily API" },
+    { "id": "search_google", "label": "Google 搜索", "category": "search", "apiLabel": "Google Custom Search API" },
+    { "id": "search", "label": "联网搜索", "category": "search", "apiLabel": "Search API" },
+    { "id": "legal_rag", "label": "法规 RAG 检索", "category": "legal", "apiLabel": "本地向量库 / LEGAL_SEARCH_API" },
+    { "id": "execute_code", "label": "代码执行", "category": "code", "apiLabel": "Co-Sight 内置沙箱" },
+    { "id": "file_read", "label": "文档读取", "category": "document", "apiLabel": "工作区文件系统" },
+    { "id": "file_write", "label": "文档写入", "category": "document", "apiLabel": "工作区文件系统" },
+    { "id": "file_upload", "label": "材料上传", "category": "document", "apiLabel": "POST /upload/files" },
+    { "id": "parse_document", "label": "文档解析", "category": "document", "apiLabel": "文档/OCR 集成位" },
+    { "id": "export", "label": "文书导出", "category": "export", "apiLabel": "DOCX/PDF Export API" },
+    { "id": "credibility_analysis", "label": "可信分级分析", "category": "trust", "apiLabel": "Co-Sight Credibility Analyzer" },
+    { "id": "audit_log", "label": "审计链写入", "category": "trust", "apiLabel": "replay.json + Audit Chain" }
+  ]
+}
