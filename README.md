@@ -1,5 +1,7 @@
 # 律枢 LexHub
 
+> 开源仓库：[github.com/Robot-PZY/LexHub](https://github.com/Robot-PZY/LexHub)
+
 基于 [Co-Sight](https://github.com/ZTE-AICloud/Co-Sight) 二次开发的法律行业超级智能体工作台。将多智能体协同、DAG 任务编排、法规检索、材料分析与文书生成整合为一套可本地部署的 Web 应用。
 
 **核心能力**
@@ -27,6 +29,17 @@ Co-Sight/
 ├── test/                     # 演示测试材料
 └── docs/                     # 补充文档（赛题等参考资料）
 ```
+
+---
+
+## 克隆与更新
+
+```bash
+git clone https://github.com/Robot-PZY/LexHub.git
+cd LexHub
+```
+
+后续拉取更新：`git pull origin main`
 
 ---
 
