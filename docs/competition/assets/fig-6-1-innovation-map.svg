@@ -1,0 +1,23 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+  <defs><style>
+    .bg{fill:#ffffff}.left{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.right{fill:#f3f6fa;stroke:#c7d2e5;stroke-width:1.5}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 19px "Microsoft YaHei",Arial;fill:#1f3a5f}.s{font:500 14px "Microsoft YaHei",Arial;fill:#64748b}.arrow{stroke:#2f5597;stroke-width:3;fill:none;marker-end:url(#arrow)}
+  </style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/></marker></defs>
+  <rect class="bg" width="1200" height="680"/>
+  <text class="title" x="60" y="65">创新点与系统实现映射</text>
+  <text class="h" x="120" y="120">创新点</text><text class="h" x="725" y="120">系统实现</text>
+  <rect class="left" x="80" y="150" width="390" height="70" rx="14"/><text class="h" x="110" y="183">状态驱动调度</text><text class="s" x="110" y="205">按材料、引用、风险、目标动态路由</text>
+  <rect class="left" x="80" y="245" width="390" height="70" rx="14"/><text class="h" x="110" y="278">DAG 法律行业化</text><text class="s" x="110" y="300">法律业务条件分支与导出门禁</text>
+  <rect class="left" x="80" y="340" width="390" height="70" rx="14"/><text class="h" x="110" y="373">法规 RAG 知识融合</text><text class="s" x="110" y="395">法规、模板、类案、外部检索融合</text>
+  <rect class="left" x="80" y="435" width="390" height="70" rx="14"/><text class="h" x="110" y="468">Replay 可信交付</text><text class="s" x="110" y="490">过程可回放、结果可复核</text>
+  <rect class="left" x="80" y="530" width="390" height="70" rx="14"/><text class="h" x="110" y="563">一体化工作台</text><text class="s" x="110" y="585">用户端、管理端、导出、材料库</text>
+
+  <rect class="right" x="690" y="150" width="390" height="70" rx="14"/><text class="h" x="720" y="183">legal-workflow.json</text><text class="s" x="720" y="205">智能体触发条件与路由规则</text>
+  <rect class="right" x="690" y="245" width="390" height="70" rx="14"/><text class="h" x="720" y="278">DAG 执行视图</text><text class="s" x="720" y="300">节点、边、条件、强制审查</text>
+  <rect class="right" x="690" y="340" width="390" height="70" rx="14"/><text class="h" x="720" y="373">legal_search_toolkit.py</text><text class="s" x="720" y="395">混合法规检索与来源返回</text>
+  <rect class="right" x="690" y="435" width="390" height="70" rx="14"/><text class="h" x="720" y="468">replay / snapshot / audit_log</text><text class="s" x="720" y="490">执行过程与导出依据</text>
+  <rect class="right" x="690" y="530" width="390" height="70" rx="14"/><text class="h" x="720" y="563">workspace / result / admin</text><text class="s" x="720" y="585">端到端演示和配置管理</text>
+
+  <path class="arrow" d="M475 185 L685 185"/><path class="arrow" d="M475 280 L685 280"/><path class="arrow" d="M475 375 L685 375"/><path class="arrow" d="M475 470 L685 470"/><path class="arrow" d="M475 565 L685 565"/>
+</svg>
+
+

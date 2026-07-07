@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}.line{stroke:#111;stroke-width:3;fill:none}.box{fill:#fff;stroke:#111;stroke-width:3;rx:18}.soft{fill:#f5f5f5;stroke:#111;stroke-width:2;rx:14}
+      .title{font:700 52px "Microsoft YaHei",Arial,sans-serif;fill:#111}.h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#111}.t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#111}.s{font:400 20px "Microsoft YaHei",Arial,sans-serif;fill:#333}
+      .arrow{stroke:#111;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#111"/></marker>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="95">4 双端架构</text>
+  <line class="line" x1="70" y1="135" x2="1530" y2="135"/>
+  <rect class="box" x="110" y="225" width="500" height="430"/>
+  <text class="h" x="170" y="290">用户端</text>
+  <text class="t" x="170" y="370">场景选择</text>
+  <text class="t" x="170" y="430">任务描述</text>
+  <text class="t" x="170" y="490">材料上传</text>
+  <text class="t" x="170" y="550">执行查看 / 结果导出</text>
+  <rect class="soft" x="670" y="325" width="260" height="230"/>
+  <text class="h" x="735" y="410">后端服务</text>
+  <text class="s" x="725" y="465">任务 / 知识 / 审计</text>
+  <path class="arrow" d="M610 440 H665"/>
+  <path class="arrow" d="M930 440 H985"/>
+  <rect class="box" x="990" y="225" width="500" height="430"/>
+  <text class="h" x="1050" y="290">管理端</text>
+  <text class="t" x="1050" y="370">模型配置</text>
+  <text class="t" x="1050" y="430">API Key 管理</text>
+  <text class="t" x="1050" y="490">知识库维护</text>
+  <text class="t" x="1050" y="550">策略规则配置</text>
+  <rect class="soft" x="250" y="725" width="1100" height="70"/>
+  <text class="h" x="370" y="770">业务办理与系统配置分离，形成清晰产品边界</text>
+</svg>

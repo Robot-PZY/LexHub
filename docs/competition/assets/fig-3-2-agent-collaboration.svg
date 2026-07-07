@@ -1,0 +1,24 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+  <defs><style>
+    .bg{fill:#ffffff}.node{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.start{fill:#f3f6fa;stroke:#c7d2e5}.review{fill:#f8fafc;stroke:#cbd5e1}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 19px "Microsoft YaHei",Arial;fill:#1f3a5f}.s{font:500 14px "Microsoft YaHei",Arial;fill:#64748b}.arrow{stroke:#2f5597;stroke-width:3;fill:none;marker-end:url(#arrow)}
+  </style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/></marker></defs>
+  <rect class="bg" width="1200" height="620"/>
+  <text class="title" x="60" y="65">多智能体协作流程</text>
+  <rect class="start" x="60" y="260" width="130" height="78" rx="16"/><text class="h" x="92" y="292">用户任务</text><text class="s" x="85" y="318">描述 + 材料</text>
+  <path class="arrow" d="M195 299 L255 299"/>
+  <rect class="node" x="260" y="250" width="135" height="98" rx="16"/><text class="h" x="290" y="285">任务理解</text><text class="s" x="285" y="313">场景识别</text><text class="s" x="285" y="333">计划生成</text>
+  <path class="arrow" d="M398 299 L458 299"/>
+  <rect class="node" x="465" y="250" width="135" height="98" rx="16"/><text class="h" x="495" y="285">证据质检</text><text class="s" x="490" y="313">事实抽取</text><text class="s" x="490" y="333">缺口识别</text>
+  <path class="arrow" d="M603 299 L663 299"/>
+  <rect class="node" x="670" y="250" width="135" height="98" rx="16"/><text class="h" x="700" y="285">法规研究</text><text class="s" x="695" y="313">法规检索</text><text class="s" x="695" y="333">引用溯源</text>
+  <path class="arrow" d="M808 299 L868 299"/>
+  <rect class="node" x="875" y="250" width="135" height="98" rx="16"/><text class="h" x="905" y="285">文书生成</text><text class="s" x="900" y="313">报告草稿</text><text class="s" x="900" y="333">结构化结论</text>
+  <path class="arrow" d="M942 352 C942 430, 720 430, 720 365"/>
+  <rect class="review" x="565" y="430" width="145" height="92" rx="16"/><text class="h" x="595" y="465">交叉审查</text><text class="s" x="590" y="493">事实/引用复核</text>
+  <path class="arrow" d="M715 476 L790 476"/>
+  <rect class="review" x="800" y="430" width="145" height="92" rx="16"/><text class="h" x="830" y="465">合规监测</text><text class="s" x="825" y="493">审计链归档</text>
+  <path class="arrow" d="M950 476 L1025 476"/>
+  <rect class="start" x="1035" y="438" width="110" height="76" rx="16"/><text class="h" x="1068" y="470">交付</text><text class="s" x="1058" y="496">导出/回放</text>
+</svg>
+
+

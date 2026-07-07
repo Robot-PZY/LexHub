@@ -53,11 +53,10 @@ const scenes = [
 const heroPillars = ['动态调度', '证据质检', '法规研究', '交叉审查'];
 
 const logicNodes = [
-  { label: '材料', tone: 'paper' },
-  { label: '判断', tone: 'gold' },
-  { label: '调度', tone: 'blue' },
-  { label: '审查', tone: 'green' },
-  { label: '交付', tone: 'dark' },
+  { label: '输入', meta: '事实 / 材料', tone: 'paper' },
+  { label: '判断', meta: '识别缺口', tone: 'gold' },
+  { label: '调度', meta: '选择能力', tone: 'blue' },
+  { label: '交付', meta: '归档复核', tone: 'dark' },
 ];
 
 function ProductPreview() {
@@ -277,16 +276,18 @@ function LandingPage() {
             <h2>状态进入系统，路径自动成形。</h2>
           </div>
           <div className="landing-logic-canvas">
+            <div className="landing-logic-track" aria-hidden="true" />
             {logicNodes.map((node, index) => (
-              <div key={node.label} className={`landing-logic-node ${node.tone}`}>
+              <article key={node.label} className={`landing-logic-node ${node.tone}`}>
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <strong>{node.label}</strong>
-              </div>
+                <em>{node.meta}</em>
+              </article>
             ))}
-            <div className="landing-logic-line main" />
-            <div className="landing-logic-line branch-a" />
-            <div className="landing-logic-line branch-b" />
-            <div className="landing-logic-pulse" aria-hidden="true" />
+            <div className="landing-logic-branch-card">
+              <span>分支</span>
+              <strong>补证 / 研究 / 审查</strong>
+            </div>
           </div>
         </section>
 

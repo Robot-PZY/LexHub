@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}
+      .line{stroke:#111;stroke-width:3;fill:none}
+      .thin{stroke:#444;stroke-width:2;fill:none}
+      .box{fill:#fff;stroke:#111;stroke-width:3;rx:18}
+      .soft{fill:#f5f5f5;stroke:#111;stroke-width:2;rx:14}
+      .dark{fill:#111}
+      .title{font:700 52px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .s{font:400 20px "Microsoft YaHei",Arial,sans-serif;fill:#333}
+      .w{font:700 24px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .arrow{stroke:#111;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="95">P11 可信安全与可复核</text>
+  <line class="line" x1="70" y1="135" x2="1530" y2="135"/>
+  
+  <rect class="box" x="90" y="270" width="180" height="80"/><text class="h" x="118" y="318">任务输入</text><path class="arrow" d="M275 310 H355"/>
+  <rect class="box" x="375" y="270" width="180" height="80"/><text class="h" x="403" y="318">DAG 阶段</text><path class="arrow" d="M560 310 H640"/>
+  <rect class="box" x="660" y="270" width="180" height="80"/><text class="h" x="688" y="318">工具调用</text><path class="arrow" d="M845 310 H925"/>
+  <rect class="box" x="945" y="270" width="180" height="80"/><text class="h" x="973" y="318">Replay</text><path class="arrow" d="M1130 310 H1210"/>
+  <rect class="box" x="1230" y="270" width="230" height="80"/><text class="h" x="1258" y="318">导出溯源</text>
+  <rect class="soft" x="140" y="500" width="300" height="140"/><text class="h" x="168" y="548">Replay</text><text class="s" x="168" y="582">复盘阶段进展与工具输出</text>
+  <rect class="soft" x="485" y="500" width="300" height="140"/><text class="h" x="513" y="548">Snapshot</text><text class="s" x="513" y="582">保存执行状态与结果摘要</text>
+  <rect class="soft" x="830" y="500" width="300" height="140"/><text class="h" x="858" y="548">Audit Log</text><text class="s" x="858" y="582">留痕、哈希与导出门禁</text>
+  <rect class="soft" x="1175" y="500" width="300" height="140"/><text class="h" x="1203" y="548">权限边界</text><text class="s" x="1203" y="582">用户端与管理端分离</text>
+
+</svg>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+  <defs>
+    <style>
+      .bg{fill:#ffffff}.box{fill:#f3f6fa;stroke:#c7d2e5;stroke-width:1.6}.panel{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 19px "Microsoft YaHei",Arial;fill:#1f3a5f}.s{font:500 14px "Microsoft YaHei",Arial;fill:#64748b}.arrow{stroke:#2f5597;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1200" height="620"/>
+  <text class="title" x="60" y="65">可信审计链路</text>
+  <rect class="panel" x="70" y="120" width="1060" height="400" rx="12"/>
+  <rect class="box" x="105" y="250" width="145" height="86" rx="10"/>
+  <text class="h" x="140" y="283">任务输入</text>
+  <text class="s" x="124" y="309">描述 / 场景</text>
+  <text class="s" x="128" y="329">上传材料</text>
+  <path class="arrow" d="M255 293 L325 293"/>
+  <rect class="box" x="335" y="250" width="145" height="86" rx="10"/>
+  <text class="h" x="370" y="283">执行事件</text>
+  <text class="s" x="360" y="309">阶段推进</text>
+  <text class="s" x="360" y="329">工具调用</text>
+  <path class="arrow" d="M485 293 L555 293"/>
+  <rect class="box" x="565" y="250" width="160" height="86" rx="10"/>
+  <text class="h" x="612" y="283">Replay</text>
+  <text class="s" x="595" y="309">逐步记录</text>
+  <text class="s" x="595" y="329">可回放过程</text>
+  <path class="arrow" d="M730 293 L800 293"/>
+  <rect class="box" x="810" y="250" width="165" height="86" rx="10"/>
+  <text class="h" x="832" y="283">执行快照</text>
+  <text class="s" x="835" y="309">阶段结果</text>
+  <text class="s" x="835" y="329">导出依据</text>
+  <path class="arrow" d="M980 293 L1045 293"/>
+  <rect class="box" x="1055" y="250" width="115" height="86" rx="10"/>
+  <text class="h" x="1075" y="283">审计日志</text>
+  <text class="s" x="1075" y="309">节点摘要</text>
+  <text class="s" x="1075" y="329">来源记录</text>
+  <path class="arrow" d="M645 340 C645 410, 355 420, 355 348"/>
+  <text class="s" x="400" y="440">复核入口：从最终结论回看材料、阶段输出、工具调用和依据来源</text>
+</svg>

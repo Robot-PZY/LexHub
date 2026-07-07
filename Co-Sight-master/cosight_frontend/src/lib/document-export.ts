@@ -3,6 +3,7 @@ import type { DocumentExportFormat, DocumentSection, DocumentTemplateId, ExportD
 import type { ExecutionSnapshot } from '../types/execution';
 import type { ResultInsight } from '../types/chat';
 import { buildCaseFactsFromSnapshot, buildExportPayloadFromSnapshot, buildExecutionSnapshotFromChat } from './execution-export';
+import { parseMarkdownSections } from './report-parser';
 
 const EXPORT_DOCUMENT_API_PATH = '/api/nae-deep-research/v1/demo/export-document';
 
@@ -51,6 +52,29 @@ function downloadBase64File(contentBase64: string, fileName: string, mediaType: 
   downloadBlob(new Blob([bytes], { type: mediaType }), fileName);
 }
 
+async function requestDocumentExport(payload: ExportDocumentPayload): Promise<string> {
+  const response = await fetch(buildApiUrl(EXPORT_DOCUMENT_API_PATH), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    throw new Error(await parseExportError(response));
+  }
+
+  const contentType = response.headers.get('Content-Type') ?? '';
+  if (contentType.includes('application/json')) {
+    throw new Error(await parseExportError(response));
+  }
+
+  const blob = await response.blob();
+  const fileName = parseFileName(response.headers.get('Content-Disposition'))
+    ?? `lexhub-${payload.templateId}.${payload.format}`;
+  downloadBlob(blob, fileName);
+  return fileName;
+}
+
 function resolveCaseFacts(payload: ExportDocumentPayload): string {
   if (payload.caseFacts?.trim()) return payload.caseFacts.trim();
   if (payload.sections?.length) {
@@ -80,10 +104,14 @@ async function generateAndExportDocument(payload: ExportDocumentPayload): Promis
 
   const title = String(result.title || payload.title || `lexhub-${payload.templateId}`);
   const sections = (result.sections as Array<{ title: string; body: string }> | undefined) ?? [];
-  const markdown = sections.map((section) => `## ${section.title}\n\n${section.body}`).join('\n\n');
-  const fileName = `${title}.${payload.format === 'pdf' ? 'pdf' : 'docx'}`;
-  downloadBlob(new Blob([markdown], { type: 'text/markdown;charset=utf-8' }), fileName);
-  return fileName;
+  return requestDocumentExport({
+    templateId: payload.templateId,
+    format: payload.format,
+    title,
+    sections,
+    preferExecution: false,
+    generationMode: 'template',
+  });
 }
 
 export async function exportDocument(payload: ExportDocumentPayload): Promise<string> {
@@ -92,26 +120,34 @@ export async function exportDocument(payload: ExportDocumentPayload): Promise<st
     return generateAndExportDocument(payload);
   }
 
-  const response = await fetch(buildApiUrl(EXPORT_DOCUMENT_API_PATH), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  return requestDocumentExport(payload);
+}
 
+export async function exportMarkdownUrlAsDocument(input: {
+  url: string;
+  name: string;
+  kind: 'generated' | 'report';
+  format: DocumentExportFormat;
+}): Promise<string> {
+  const response = await fetch(input.url);
   if (!response.ok) {
-    throw new Error(await parseExportError(response));
+    throw new Error(`读取原文失败（HTTP ${response.status}）`);
   }
+  const markdown = await response.text();
+  const title = input.name.replace(/\.[^.]+$/, '').trim() || 'LexHub 交付物';
+  const sections = parseMarkdownSections(markdown).map((section) => ({
+    title: section.title,
+    body: section.body,
+  }));
 
-  const contentType = response.headers.get('Content-Type') ?? '';
-  if (contentType.includes('application/json')) {
-    throw new Error(await parseExportError(response));
-  }
-
-  const blob = await response.blob();
-  const fileName = parseFileName(response.headers.get('Content-Disposition'))
-    ?? `lexhub-${payload.templateId}.${payload.format}`;
-  downloadBlob(blob, fileName);
-  return fileName;
+  return exportDocument({
+    templateId: input.kind === 'report' ? 'task_summary_report' : resolveTemplateId(title),
+    format: input.format,
+    title,
+    sections,
+    preferExecution: false,
+    generationMode: 'template',
+  });
 }
 
 export function buildReportExportPayload(

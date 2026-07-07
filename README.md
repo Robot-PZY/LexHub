@@ -2,24 +2,25 @@
 
 > 开源仓库：[github.com/Robot-PZY/LexHub](https://github.com/Robot-PZY/LexHub)
 
-基于 [Co-Sight](https://github.com/ZTE-AICloud/Co-Sight) 二次开发的法律行业超级智能体工作台。将多智能体协同、DAG 任务编排、法规检索、材料分析与文书生成整合为一套可本地部署的 Web 应用。
+律枢 LexHub 是基于 [Co-Sight](https://github.com/ZTE-AICloud/Co-Sight) 二次开发的法律业务智能工作台。项目把多智能体协同、DAG 任务编排、法规检索、材料分析和文书生成放到同一套 Web 应用中，重点服务合同审查、争议解决、合规分析和法规研究等法律辅助场景。
 
 **核心能力**
 
-- **智能工作台** — 场景化任务接入（合同审查、争议解决、合规分析等），支持任务前表单 + 材料上传
+- **智能工作台** — 场景化任务接入（合同审查、争议解决、合规分析等），支持任务表单和材料上传
 - **DAG 执行视图** — 可视化任务拆解、工具调用与阶段推进
 - **法规研究** — 本地 Chroma 知识库 + 可选外部法律检索 API
 - **文书引擎** — LLM + 模板/法规 RAG，生成审查报告、合同草稿等，支持 DOCX/PDF 导出
-- **管理控制台** — 模型与 API 配置、知识库维护、策略规则、用户运营
+- **管理控制台** — 模型与 API 配置、知识库维护、策略规则和用户管理
 
 ---
 
 ## 目录结构
 
 ```
-Co-Sight/
+LexHub/
 ├── README.md                 # 本文件
 ├── start-lexhub.bat          # Windows 一键启动脚本
+├── start-lexhub.sh           # macOS / Linux 启动脚本
 ├── Co-Sight-master/          # 主工程
 │   ├── cosight_frontend/     # 前端（React + Vite）
 │   ├── cosight_server/       # 后端（FastAPI + Co-Sight 引擎）
@@ -27,7 +28,7 @@ Co-Sight/
 │   ├── .env_template         # 环境变量模板
 │   └── requirements.txt      # Python 依赖
 ├── test/                     # 演示测试材料
-└── docs/                     # 补充文档（赛题等参考资料）
+└── docs/                     # 国赛文档、PPT 策划和参考资料
 ```
 
 ---
@@ -49,7 +50,7 @@ cd LexHub
 |------|------|
 | Python | 3.11 及以上 |
 | Node.js | 18 及以上（含 npm） |
-| 操作系统 | Windows 10/11（提供 `.bat` 启动脚本；macOS/Linux 见下方手动启动） |
+| 操作系统 | Windows 10/11、macOS、Linux |
 
 ---
 
@@ -58,10 +59,10 @@ cd LexHub
 ### 方式一：启动脚本（推荐）
 
 1. 克隆或解压项目到本地
-2. 双击根目录 **`start-lexhub.bat`**
+2. Windows 双击根目录 **`start-lexhub.bat`**；macOS/Linux 执行 `bash start-lexhub.sh`
 3. 首次运行会自动：
    - 从 `Co-Sight-master/.env_template` 复制生成 `.env`
-   - 检测并安装 Python / 前端依赖（如尚未安装）
+   - 检测并安装 Python / 前端依赖（已有环境不会重复安装）
    - 分别启动后端与前端，并打开浏览器
 
 | 入口 | 地址 |
@@ -70,7 +71,18 @@ cd LexHub
 | 管理端 | http://127.0.0.1:5174/admin |
 | 后端 API | http://127.0.0.1:7788 |
 
-关闭弹出的 **LexHub Backend** / **LexHub Frontend** 命令行窗口即可停止服务。
+Windows 下关闭弹出的 **LexHub Backend** / **LexHub Frontend** 命令行窗口即可停止服务；macOS/Linux 下在启动终端按 `Ctrl+C` 停止服务。
+
+脚本支持常用环境变量，方便在不同电脑上复用：
+
+```bash
+BACKEND_PORT=7788
+FRONTEND_PORT=5174
+LEXHUB_PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+LEXHUB_NPM_REGISTRY=https://registry.npmmirror.com
+LEXHUB_SKIP_INSTALL=1
+LEXHUB_OPEN_BROWSER=0
+```
 
 ### 方式二：手动启动
 

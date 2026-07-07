@@ -1,0 +1,32 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+  <defs>
+    <style>
+      .bg{fill:#ffffff}.panel{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.bad{fill:#f8fafc;stroke:#cbd5e1}.good{fill:#f3f6fa;stroke:#c7d2e5}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 25px "Microsoft YaHei",Arial;fill:#1f3a5f}.t{font:500 18px "Microsoft YaHei",Arial;fill:#334155}.s{font:500 15px "Microsoft YaHei",Arial;fill:#64748b}.arrow{stroke:#2f5597;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/></marker>
+  </defs>
+  <rect class="bg" width="1200" height="680"/>
+  <text class="title" x="60" y="70">法律任务处理前后对比</text>
+
+  <rect class="panel" x="70" y="130" width="470" height="470" rx="18"/>
+  <text class="h" x="115" y="185">传统处理方式</text>
+  <rect class="bad" x="115" y="230" width="160" height="58" rx="12"/><text class="t" x="145" y="267">材料分散</text>
+  <rect class="bad" x="330" y="230" width="160" height="58" rx="12"/><text class="t" x="360" y="267">人工阅读</text>
+  <rect class="bad" x="115" y="330" width="160" height="58" rx="12"/><text class="t" x="145" y="367">手动检索</text>
+  <rect class="bad" x="330" y="330" width="160" height="58" rx="12"/><text class="t" x="360" y="367">初稿整理</text>
+  <rect class="bad" x="222" y="430" width="160" height="58" rx="12"/><text class="t" x="252" y="467">难以复盘</text>
+  <text class="s" x="125" y="545">特点：流程依赖人工经验，证据、法规、文书、复核记录分散。</text>
+
+  <path class="arrow" d="M555 365 C590 365, 615 365, 650 365"/>
+
+  <rect class="panel" x="665" y="130" width="470" height="470" rx="18"/>
+  <text class="h" x="710" y="185">LexHub 处理方式</text>
+  <rect class="good" x="710" y="225" width="170" height="58" rx="12"/><text class="t" x="740" y="262">材料接入</text>
+  <rect class="good" x="925" y="225" width="170" height="58" rx="12"/><text class="t" x="955" y="262">证据质检</text>
+  <rect class="good" x="710" y="325" width="170" height="58" rx="12"/><text class="t" x="740" y="362">法规研究</text>
+  <rect class="good" x="925" y="325" width="170" height="58" rx="12"/><text class="t" x="955" y="362">文书生成</text>
+  <rect class="good" x="817" y="425" width="170" height="58" rx="12"/><text class="t" x="847" y="462">审计归档</text>
+  <text class="s" x="720" y="545">特点：多智能体协作，过程可视、结果可导出、执行可回放。</text>
+</svg>
+
+

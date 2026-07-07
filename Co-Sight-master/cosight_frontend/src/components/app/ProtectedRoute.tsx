@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { getAuthedRole, isAuthed, isDemoUserAccount, loadDemoUser, type AuthRole } from '../../lib/storage';
+import { getAuthedRole, isAuthed, loadDemoUser, type AuthRole } from '../../lib/storage';
 
 type ProtectedRouteProps = {
   children: ReactNode;
@@ -21,7 +21,7 @@ function ProtectedRoute({ children, role }: ProtectedRouteProps) {
 
   if (role === 'user') {
     const profile = loadDemoUser();
-    if (!profile?.account || !isDemoUserAccount(profile.account)) {
+    if (!profile?.account) {
       return <Navigate to="/login" replace />;
     }
   }

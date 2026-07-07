@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}
+      .line{stroke:#111;stroke-width:3;fill:none}
+      .thin{stroke:#444;stroke-width:2;fill:none}
+      .box{fill:#fff;stroke:#111;stroke-width:3;rx:18}
+      .soft{fill:#f5f5f5;stroke:#111;stroke-width:2;rx:14}
+      .dark{fill:#111}
+      .title{font:700 52px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .s{font:400 20px "Microsoft YaHei",Arial,sans-serif;fill:#333}
+      .w{font:700 24px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .arrow{stroke:#111;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="95">P7 法律任务 DAG</text>
+  <line class="line" x1="70" y1="135" x2="1530" y2="135"/>
+  
+  <rect class="box" x="90" y="305" width="170" height="82"/><text class="h" x="118" y="353">材料接入</text><path class="arrow" d="M265 346 H340"/>
+  <rect class="box" x="360" y="305" width="170" height="82"/><text class="h" x="388" y="353">任务理解</text><path class="arrow" d="M535 346 H610"/>
+  <polygon points="710,265 820,346 710,427 600,346" fill="#fff" stroke="#111" stroke-width="3"/>
+  <text class="h" x="650" y="340">材料完整</text><text class="h" x="675" y="375">判断</text>
+  <path class="arrow" d="M820 346 H925"/><rect class="box" x="945" y="305" width="170" height="82"/><text class="h" x="973" y="353">法规研究</text><path class="arrow" d="M1120 346 H1195"/>
+  <rect class="box" x="1215" y="305" width="170" height="82"/><text class="h" x="1243" y="353">文书生成</text>
+  <path class="arrow" d="M710 427 V455 H345 V490"/>
+  <rect class="box" x="260" y="500" width="170" height="82"/><text class="h" x="288" y="548">证据质检</text><path class="arrow" d="M435 541 H510"/>
+  <rect class="box" x="530" y="500" width="170" height="82"/><text class="h" x="558" y="548">缺口清单</text><path class="arrow" d="M705 541 H780"/>
+  <rect class="box" x="800" y="500" width="170" height="82"/><text class="h" x="828" y="548">材料补充</text>
+  <path class="arrow" d="M1300 387 V500"/>
+  <rect class="soft" x="1215" y="500" width="170" height="82"/><text class="h" x="1243" y="548">交叉审查</text>
+  <path class="arrow" d="M1300 582 V665"/>
+  <rect class="soft" x="1215" y="680" width="170" height="82"/><text class="h" x="1243" y="728">合规监测</text>
+  <rect class="soft" x="80" y="665" width="560" height="115"/><text class="h" x="108" y="713">条件触发</text><text class="s" x="108" y="747">材料完整度 / 引用覆盖 / 风险等级</text>
+
+</svg>

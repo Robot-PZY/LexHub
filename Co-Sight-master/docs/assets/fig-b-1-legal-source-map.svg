@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780">
+<defs>
+<style>
+.bg{fill:#ffffff}.title{font:700 30px 'Microsoft YaHei',Arial;fill:#1f2937}
+.h{font:700 16px 'Microsoft YaHei',Arial;fill:#1f3a5f}
+.s{font:500 13px 'Microsoft YaHei',Arial;fill:#64748b}
+.axis{stroke:#9ca3af;stroke-width:1.5}.grid{stroke:#e5e7eb;stroke-width:1}
+.base{fill:#cbd5e1}.lex{fill:#2f5597}.cell{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1}
+</style>
+</defs>
+<rect class="bg" width="100%" height="100%"/>
+<text class="title" x="56" y="58">法律知识来源与入库用途</text>
+<text class="s" x="56" y="88">权威公开来源、本地知识库与任务执行链路的对应关系</text>
+<rect class="cell" x="64" y="126" width="150" height="48"/>
+<text class="h" x="78" y="156">来源层级</text>
+<rect class="cell" x="214" y="126" width="230" height="48"/>
+<text class="h" x="228" y="156">权威来源</text>
+<rect class="cell" x="444" y="126" width="390" height="48"/>
+<text class="h" x="458" y="156">主要内容</text>
+<rect class="cell" x="834" y="126" width="300" height="48"/>
+<text class="h" x="848" y="156">进入 LexHub 后的用途</text>
+<rect x="64" y="174" width="150" height="76" fill="#eef4ff" stroke="#cbd5e1" stroke-width="1"/>
+<text class="h" x="78" y="216">法律法规</text>
+<rect x="214" y="174" width="230" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="228" y="216">国家法律法规数据库</text>
+<rect x="444" y="174" width="390" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="458" y="204">法律、行政法规、监察法规、司法解释、地方性法</text>
+<text class="s" x="458" y="226">规等</text>
+<rect x="834" y="174" width="300" height="76" fill="#f9fafb" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="848" y="216">法规条文与效力状态</text>
+<rect x="64" y="250" width="150" height="76" fill="#eef4ff" stroke="#cbd5e1" stroke-width="1"/>
+<text class="h" x="78" y="292">行政法规</text>
+<rect x="214" y="250" width="230" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="228" y="292">国家行政法规库</text>
+<rect x="444" y="250" width="390" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="458" y="292">现行有效行政法规及历史文本</text>
+<rect x="834" y="250" width="300" height="76" fill="#f9fafb" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="848" y="292">行政监管与合规依据</text>
+<rect x="64" y="326" width="150" height="76" fill="#eef4ff" stroke="#cbd5e1" stroke-width="1"/>
+<text class="h" x="78" y="368">指导案例</text>
+<rect x="214" y="326" width="230" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="228" y="368">最高人民法院指导性案例</text>
+<rect x="444" y="326" width="390" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="458" y="368">裁判规则、争议焦点、裁判要旨</text>
+<rect x="834" y="326" width="300" height="76" fill="#f9fafb" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="848" y="368">类案参考与裁判尺度</text>
+<rect x="64" y="402" width="150" height="76" fill="#eef4ff" stroke="#cbd5e1" stroke-width="1"/>
+<text class="h" x="78" y="444">裁判文书</text>
+<rect x="214" y="402" width="230" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="228" y="444">中国裁判文书网</text>
+<rect x="444" y="402" width="390" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="458" y="444">公开裁判文书、案由、法院、裁判理由</text>
+<rect x="834" y="402" width="300" height="76" fill="#f9fafb" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="848" y="444">案例检索与事实比对</text>
+<rect x="64" y="478" width="150" height="76" fill="#eef4ff" stroke="#cbd5e1" stroke-width="1"/>
+<text class="h" x="78" y="520">检察案例</text>
+<rect x="214" y="478" width="230" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="228" y="520">最高人民检察院指导性案例</text>
+<rect x="444" y="478" width="390" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="458" y="520">检察履职、监督规则、典型案例</text>
+<rect x="834" y="478" width="300" height="76" fill="#f9fafb" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="848" y="520">刑事、公益诉讼和合规参考</text>
+<rect x="64" y="554" width="150" height="76" fill="#eef4ff" stroke="#cbd5e1" stroke-width="1"/>
+<text class="h" x="78" y="596">项目知识</text>
+<rect x="214" y="554" width="230" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="228" y="596">LexHub 本地知识库</text>
+<rect x="444" y="554" width="390" height="76" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="458" y="596">法规种子、模板、测试材料、团队规则</text>
+<rect x="834" y="554" width="300" height="76" fill="#f9fafb" stroke="#cbd5e1" stroke-width="1"/>
+<text class="s" x="848" y="596">向量检索、模板匹配和导出依据</text>
+<line x1="1068" y1="210" x2="1168" y2="210" stroke="#2f5597" stroke-width="2"/>
+<path d="M1168 210 l-10 -6 v12 z" fill="#2f5597"/>
+<rect x="1176" y="174" width="70" height="72" rx="6" fill="#eef4ff" stroke="#2f5597"/>
+<text class="h" x="1192" y="204">检索</text>
+<text class="h" x="1192" y="228">增强</text>
+<line x1="1068" y1="438" x2="1168" y2="438" stroke="#2f5597" stroke-width="2"/>
+<path d="M1168 438 l-10 -6 v12 z" fill="#2f5597"/>
+<rect x="1176" y="402" width="70" height="72" rx="6" fill="#eef4ff" stroke="#2f5597"/>
+<text class="h" x="1192" y="432">文书</text>
+<text class="h" x="1192" y="456">依据</text>
+</svg>

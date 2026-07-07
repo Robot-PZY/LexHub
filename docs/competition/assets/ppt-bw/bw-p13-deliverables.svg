@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}
+      .line{stroke:#111;stroke-width:3;fill:none}
+      .thin{stroke:#444;stroke-width:2;fill:none}
+      .box{fill:#fff;stroke:#111;stroke-width:3;rx:18}
+      .soft{fill:#f5f5f5;stroke:#111;stroke-width:2;rx:14}
+      .dark{fill:#111}
+      .title{font:700 52px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .s{font:400 20px "Microsoft YaHei",Arial,sans-serif;fill:#333}
+      .w{font:700 24px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .arrow{stroke:#111;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="95">P13 总结与交付成果</text>
+  <line class="line" x1="70" y1="135" x2="1530" y2="135"/>
+  
+  <rect class="box" x="130" y="230" width="300" height="105"/><text class="h" x="158" y="278">前端工程</text><text class="s" x="158" y="312">用户端 / 管理端</text>
+  <rect class="box" x="470" y="230" width="300" height="105"/><text class="h" x="498" y="278">后端工程</text><text class="s" x="498" y="312">接口 / 服务 / 审计</text>
+  <rect class="box" x="810" y="230" width="300" height="105"/><text class="h" x="838" y="278">工作流配置</text><text class="s" x="838" y="312">法律任务 DAG</text>
+  <rect class="box" x="1150" y="230" width="300" height="105"/><text class="h" x="1178" y="278">智能体配置</text><text class="s" x="1178" y="312">六类法律智能体</text>
+  <rect class="box" x="130" y="410" width="300" height="105"/><text class="h" x="158" y="458">自定义工具</text><text class="s" x="158" y="492">法律检索 / 导出</text>
+  <rect class="box" x="470" y="410" width="300" height="105"/><text class="h" x="498" y="458">测试材料</text><text class="s" x="498" y="492">三类演示场景</text>
+  <rect class="box" x="810" y="410" width="300" height="105"/><text class="h" x="838" y="458">技术文档</text><text class="s" x="838" y="492">方案 / 创新总结</text>
+  <rect class="box" x="1150" y="410" width="300" height="105"/><text class="h" x="1178" y="458">答辩材料</text><text class="s" x="1178" y="492">PPT / 演示脚本</text>
+  <rect class="soft" x="300" y="700" width="1000" height="70"/>
+  <text class="h" x="410" y="745">可运行工程 / 可复盘过程 / 可扩展场景 / 完整竞赛交付</text>
+
+</svg>

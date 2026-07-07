@@ -18,6 +18,7 @@ import os
 import re
 import shutil
 import uuid
+import importlib.util
 from datetime import datetime
 from typing import Dict, List, Literal
 from urllib.parse import quote
@@ -47,6 +48,13 @@ from app.common.logger_util import logger
 commonRouter = APIRouter()
 
 server_start_timestamp = int(datetime.now().timestamp() * 1000)
+MAX_UPLOAD_FILES = 12
+MAX_UPLOAD_FILE_BYTES = 25 * 1024 * 1024
+ALLOWED_UPLOAD_EXTENSIONS = {
+    ".pdf", ".doc", ".docx", ".txt", ".md",
+    ".png", ".jpg", ".jpeg", ".webp",
+    ".csv", ".xls", ".xlsx", ".zip",
+}
 
 
 class TaskBlueprintRequest(BaseModel):
@@ -182,6 +190,11 @@ async def upload_files(
     task_title: str = Form(""),
 ):
     """上传材料到 upload_files/admin/{upload_id}/"""
+    if not files:
+        return json_result(1, "no files uploaded", None)
+    if len(files) > MAX_UPLOAD_FILES:
+        return json_result(1, f"too many files, max {MAX_UPLOAD_FILES}", None)
+
     upload_root = _resolve_upload_root()
     upload_id = str(uuid.uuid4())
     target_dir = os.path.join(upload_root, upload_id)
@@ -190,8 +203,15 @@ async def upload_files(
     saved = []
     for item in files:
         filename = os.path.basename(item.filename or "unnamed")
+        ext = os.path.splitext(filename)[1].lower()
+        if ext and ext not in ALLOWED_UPLOAD_EXTENSIONS:
+            shutil.rmtree(target_dir, ignore_errors=True)
+            return json_result(1, f"unsupported file type: {ext}", None)
         dest = os.path.join(target_dir, filename)
         content = await item.read()
+        if len(content) > MAX_UPLOAD_FILE_BYTES:
+            shutil.rmtree(target_dir, ignore_errors=True)
+            return json_result(1, f"file too large: {filename}", None)
         with open(dest, "wb") as f:
             f.write(content)
         saved.append({
@@ -251,6 +271,13 @@ def _env_status(env_keys: List[str], *, require_all: bool = False) -> str:
     if require_all:
         return "ready" if all(os.environ.get(key) for key in env_keys) else "missing_key"
     return "ready" if any(os.environ.get(key) for key in env_keys) else "missing_key"
+
+
+def _document_export_status() -> str:
+    # 文书导出是本地能力，不应要求用户额外配置 API Key。
+    if importlib.util.find_spec("docx") is None:
+        return "missing_key"
+    return "ready"
 
 
 def _legal_scenarios() -> List[Dict]:
@@ -612,8 +639,9 @@ def _api_integrations() -> List[Dict]:
             "id": "document_export",
             "name": "文书导出",
             "category": "结果交付",
-            "envKeys": ["DOCX_EXPORT_ENABLED", "PDF_EXPORT_ENABLED"],
+            "envKeys": [],
             "purpose": "导出审查报告、律师函、研究结论和材料归档包。",
+            "status": _document_export_status(),
         },
         {
             "id": "vector_rag",
@@ -624,7 +652,7 @@ def _api_integrations() -> List[Dict]:
         },
     ]
     for item in integrations:
-        item["status"] = _env_status(item["envKeys"], require_all=bool(item.get("envRequireAll")))
+        item["status"] = item.get("status") or _env_status(item["envKeys"], require_all=bool(item.get("envRequireAll")))
         item.pop("envRequireAll", None)
     return integrations
 
@@ -1479,7 +1507,7 @@ async def create_task_blueprint(body: TaskBlueprintRequest):
 async def get_admin_runtime_settings():
     from cosight_server.deep_research.services.admin_runtime_config import build_admin_settings_response
 
-    return json_result(0, "success", build_admin_settings_response(include_secrets=True))
+    return json_result(0, "success", build_admin_settings_response(include_secrets=False))
 
 
 @commonRouter.post("/demo/admin/settings")
@@ -1491,7 +1519,7 @@ async def save_admin_runtime_settings(body: Dict = Body(...)):
 
     try:
         save_admin_settings(body if isinstance(body, dict) else {})
-        return json_result(0, "success", build_admin_settings_response(include_secrets=True))
+        return json_result(0, "success", build_admin_settings_response(include_secrets=False))
     except Exception as exc:
         logger.error("save admin settings failed: %s", exc)
         return json_result(1, "failed to save admin settings", None)

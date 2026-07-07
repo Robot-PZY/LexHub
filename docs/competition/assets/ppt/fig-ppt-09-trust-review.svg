@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#f6f8fa}.navy{fill:#123a63}.teal{fill:#1c8ca8}.gold{fill:#d99a2b}.white{fill:#fff}
+      .title{font:700 54px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.sub{font:400 25px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}
+      .h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.t{font:400 23px "Microsoft YaHei",Arial,sans-serif;fill:#26384d}.wh{font:700 26px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .box{fill:#fff;stroke:#123a63;stroke-width:3;rx:16}.card{fill:#fff;stroke:#1c8ca8;stroke-width:3;rx:18}.cardG{fill:#fff;stroke:#d99a2b;stroke-width:3;rx:18}
+      .arrow{stroke:#123a63;stroke-width:5;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#123a63"/></marker>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="navy" x="54" y="40" width="86" height="86" rx="10"/><text class="white" x="83" y="99" font-size="52" font-weight="700">9</text>
+  <text class="title" x="165" y="86">可信复核</text><text class="sub" x="168" y="122">法律结果不只要生成，还要能回看、能解释、能审计</text>
+  <line x1="55" y1="150" x2="1540" y2="150" stroke="#123a63" stroke-width="4"/>
+  <g transform="translate(135,245)">
+    <rect class="box" x="0" y="0" width="190" height="88"/><text class="h" x="40" y="55">任务输入</text><path class="arrow" d="M200 44 H280"/>
+    <rect class="box" x="295" y="0" width="190" height="88"/><text class="h" x="335" y="55">阶段事件</text><path class="arrow" d="M495 44 H575"/>
+    <rect class="box" x="590" y="0" width="190" height="88"/><text class="h" x="630" y="55">工具调用</text><path class="arrow" d="M790 44 H870"/>
+    <rect class="box" x="885" y="0" width="190" height="88"/><text class="h" x="925" y="55">结果快照</text><path class="arrow" d="M1085 44 H1165"/>
+    <rect class="box" x="1180" y="0" width="190" height="88"/><text class="h" x="1220" y="55">导出记录</text>
+  </g>
+  <g transform="translate(135,455)">
+    <rect class="card" x="0" y="0" width="310" height="175"/><text class="h" x="80" y="68">Replay 回放</text><text class="t" x="90" y="118">看过程</text><text class="t" x="55" y="150">阶段与工具轨迹</text>
+    <rect class="card" x="355" y="0" width="310" height="175"/><text class="h" x="430" y="68">Snapshot 快照</text><text class="t" x="455" y="118">存状态</text><text class="t" x="410" y="150">关键结果归档</text>
+    <rect class="cardG" x="710" y="0" width="310" height="175"/><text class="h" x="790" y="68">Audit Log</text><text class="t" x="820" y="118">留痕迹</text><text class="t" x="765" y="150">操作与审计记录</text>
+    <rect class="cardG" x="1065" y="0" width="310" height="175"/><text class="h" x="1150" y="68">权限分离</text><text class="t" x="1175" y="118">分角色</text><text class="t" x="1125" y="150">用户端 / 管理端</text>
+  </g>
+  <rect class="navy" x="290" y="760" width="1020" height="62" rx="31"/>
+  <text class="wh" x="450" y="801">可信链路：过程可回放、状态可保存、操作可审计、权限有边界</text>
+</svg>

@@ -1,0 +1,33 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+  <defs><style>
+    .bg{fill:#ffffff}.layer{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.box{fill:#f3f6fa;stroke:#c7d2e5;stroke-width:1.5}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 22px "Microsoft YaHei",Arial;fill:#1f3a5f}.t{font:500 17px "Microsoft YaHei",Arial;fill:#334155}.s{font:500 14px "Microsoft YaHei",Arial;fill:#64748b}.arrow{stroke:#2f5597;stroke-width:3;fill:none;marker-end:url(#arrow)}
+  </style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/></marker></defs>
+  <rect class="bg" width="1200" height="760"/>
+  <text class="title" x="60" y="60">LexHub 系统总体架构</text>
+  <rect class="layer" x="70" y="105" width="1060" height="115" rx="16"/>
+  <text class="h" x="100" y="145">用户交互层</text>
+  <rect class="box" x="280" y="130" width="250" height="58" rx="12"/><text class="t" x="315" y="166">React 用户端</text>
+  <rect class="box" x="585" y="130" width="250" height="58" rx="12"/><text class="t" x="620" y="166">React 管理端</text>
+  <text class="s" x="865" y="160">工作台 / 回放 / 配置</text>
+
+  <path class="arrow" d="M600 225 L600 265"/>
+  <rect class="layer" x="70" y="270" width="1060" height="120" rx="16"/>
+  <text class="h" x="100" y="315">后端服务层</text>
+  <rect class="box" x="260" y="300" width="190" height="58" rx="12"/><text class="t" x="292" y="336">FastAPI</text>
+  <rect class="box" x="490" y="300" width="190" height="58" rx="12"/><text class="t" x="515" y="336">材料/文书 API</text>
+  <rect class="box" x="720" y="300" width="190" height="58" rx="12"/><text class="t" x="745" y="336">审计/快照 API</text>
+
+  <path class="arrow" d="M600 395 L600 435"/>
+  <rect class="layer" x="70" y="440" width="1060" height="125" rx="16"/>
+  <text class="h" x="100" y="485">智能体编排层</text>
+  <rect class="box" x="250" y="470" width="190" height="58" rx="12"/><text class="t" x="285" y="506">Co-Sight</text>
+  <rect class="box" x="475" y="470" width="230" height="58" rx="12"/><text class="t" x="500" y="506">agent-registry.json</text>
+  <rect class="box" x="740" y="470" width="230" height="58" rx="12"/><text class="t" x="765" y="506">legal-workflow.json</text>
+
+  <path class="arrow" d="M600 570 L600 610"/>
+  <rect class="layer" x="70" y="615" width="1060" height="95" rx="16"/>
+  <text class="h" x="100" y="668">工具/知识/可信层</text>
+  <text class="t" x="320" y="653">搜索 · 法规 RAG · 文档处理 · 代码执行 · 文书导出 · Replay · Audit Log · Chroma</text>
+</svg>
+
+

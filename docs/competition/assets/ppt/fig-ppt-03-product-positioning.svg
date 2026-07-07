@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#f6f8fa}.navy{fill:#123a63}.teal{fill:#1c8ca8}.gold{fill:#d99a2b}.white{fill:#fff}
+      .title{font:700 54px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.sub{font:400 25px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}
+      .center{font:700 48px "Microsoft YaHei",Arial,sans-serif;fill:#fff}.csub{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .h{font:700 28px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.t{font:400 22px "Microsoft YaHei",Arial,sans-serif;fill:#26384d}
+      .cap{font:700 25px "Microsoft YaHei",Arial,sans-serif;fill:#fff}.line{stroke:#1c8ca8;stroke-width:4;fill:none}
+      .module{fill:#fff;stroke:#123a63;stroke-width:3;rx:18}.bubble{fill:#eaf6f8;stroke:#1c8ca8;stroke-width:3;rx:22}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="navy" x="54" y="40" width="86" height="86" rx="10"/>
+  <text class="white" x="83" y="99" font-size="52" font-weight="700">3</text>
+  <text class="title" x="165" y="86">产品定位</text>
+  <text class="sub" x="168" y="122">LexHub 是法律行业超级智能体工作台</text>
+  <line x1="55" y1="150" x2="1540" y2="150" stroke="#123a63" stroke-width="4"/>
+
+  <circle cx="800" cy="455" r="150" fill="#123a63"/>
+  <text class="center" x="675" y="435">律枢 LexHub</text>
+  <text class="csub" x="662" y="485">任务工作台 + 执行引擎 + 可信交付链</text>
+  <g class="line">
+    <path d="M690 350 L505 240"/><path d="M910 350 L1095 240"/><path d="M650 460 L430 460"/>
+    <path d="M950 460 L1170 460"/><path d="M700 570 L505 690"/><path d="M900 570 L1095 690"/>
+  </g>
+  <g>
+    <rect class="module" x="330" y="185" width="280" height="110"/><text class="h" x="382" y="248">场景化任务入口</text><text class="t" x="390" y="278">合同 / 争议 / 合规</text>
+    <rect class="module" x="990" y="185" width="280" height="110"/><text class="h" x="1048" y="248">材料上传归档</text><text class="t" x="1050" y="278">合同 / 证据 / 通知</text>
+    <rect class="module" x="210" y="405" width="280" height="110"/><text class="h" x="272" y="468">法规 RAG 检索</text><text class="t" x="278" y="498">法规 / 案例 / 模板</text>
+    <rect class="module" x="1110" y="405" width="280" height="110"/><text class="h" x="1172" y="468">DAG 执行视图</text><text class="t" x="1175" y="498">节点 / 状态 / 工具</text>
+    <rect class="module" x="330" y="635" width="280" height="110"/><text class="h" x="390" y="698">文书生成导出</text><text class="t" x="410" y="728">DOCX / PDF</text>
+    <rect class="module" x="990" y="635" width="280" height="110"/><text class="h" x="1058" y="698">Replay 回放</text><text class="t" x="1055" y="728">过程可复核</text>
+  </g>
+  <rect class="gold" x="565" y="790" width="470" height="58" rx="29"/>
+  <text class="cap" x="610" y="828">面向法律业务流程的智能任务工作台</text>
+</svg>

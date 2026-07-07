@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs><style>
+    .bg{fill:#f6f8fa}.navy{fill:#123a63}.teal{fill:#1c8ca8}.gold{fill:#d99a2b}.white{fill:#fff}.light{fill:#fff}
+    .title{font:700 56px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#26384d}.wh{font:700 25px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+    .tbl{fill:#fff;stroke:#d7e0ea;stroke-width:2}.head{fill:#123a63}.step{fill:#fff;stroke:#1c8ca8;stroke-width:3;rx:16}
+  </style></defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="navy" x="54" y="40" width="86" height="86" rx="10"/><text class="white" x="83" y="99" font-size="52" font-weight="700">5</text>
+  <text class="title" x="165" y="98">Co-Sight 改进对比</text><line x1="55" y1="155" x2="1540" y2="155" stroke="#123a63" stroke-width="4"/>
+  <g transform="translate(90,230)">
+    <rect class="head" x="0" y="0" width="260" height="70"/><rect class="head" x="260" y="0" width="500" height="70"/><rect class="head" x="760" y="0" width="650" height="70"/>
+    <text class="wh" x="95" y="45">维度</text><text class="wh" x="405" y="45">原生 Co-Sight</text><text class="wh" x="1000" y="45">律枢 LexHub</text>
+    <g>
+      <rect class="tbl" x="0" y="70" width="260" height="78"/><text class="h" x="70" y="120">产品定位</text><rect class="tbl" x="260" y="70" width="500" height="78"/><text class="t" x="320" y="120">通用任务执行框架</text><rect class="tbl" x="760" y="70" width="650" height="78"/><text class="t" x="820" y="120">法律业务智能服务平台</text>
+      <rect class="tbl" x="0" y="148" width="260" height="78"/><text class="h" x="70" y="198">任务流程</text><rect class="tbl" x="260" y="148" width="500" height="78"/><text class="t" x="320" y="198">通用 Agent / Tool / Replay</text><rect class="tbl" x="760" y="148" width="650" height="78"/><text class="t" x="820" y="198">法律智能体 / 法规 RAG / 文书导出</text>
+      <rect class="tbl" x="0" y="226" width="260" height="78"/><text class="h" x="70" y="276">过程呈现</text><rect class="tbl" x="260" y="226" width="500" height="78"/><text class="t" x="320" y="276">通用执行日志</text><rect class="tbl" x="760" y="226" width="650" height="78"/><text class="t" x="820" y="276">DAG 执行视图 + 审计链 + 复核入口</text>
+      <rect class="tbl" x="0" y="304" width="260" height="78"/><text class="h" x="70" y="354">交付结果</text><rect class="tbl" x="260" y="304" width="500" height="78"/><text class="t" x="320" y="354">报告与过程记录</text><rect class="tbl" x="760" y="304" width="650" height="78"/><text class="t" x="820" y="354">结果页 / DOCX/PDF / Replay / Audit</text>
+    </g>
+  </g>
+  <g transform="translate(160,700)">
+    <rect class="step" x="0" y="0" width="280" height="70"/><text class="h" x="82" y="45">底座能力</text>
+    <rect class="step" x="330" y="0" width="280" height="70"/><text class="h" x="390" y="45">法律工作流</text>
+    <rect class="step" x="660" y="0" width="280" height="70"/><text class="h" x="715" y="45">知识库与工具</text>
+    <rect class="step" x="990" y="0" width="280" height="70"/><text class="h" x="1055" y="45">可信交付</text>
+  </g>
+</svg>

@@ -1,4 +1,4 @@
-import { FileText, FolderOpen, ScrollText, Upload } from 'lucide-react';
+import { FileDown, FileText, FolderOpen, Loader2, ScrollText, Upload } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
@@ -7,8 +7,10 @@ import LoadingState from '../components/ui/LoadingState';
 import PageHeader from '../components/ui/PageHeader';
 import StatCard from '../components/ui/StatCard';
 import { fetchMaterialLibrary, resetDemoMaterials } from '../lib/api';
+import { exportMarkdownUrlAsDocument } from '../lib/document-export';
 import { clearAuthed, loadDemoUser } from '../lib/storage';
 import type { MaterialItem, MaterialKind } from '../types/material';
+import type { DocumentExportFormat } from '../types/export';
 
 const kindLabels: Record<MaterialKind, string> = {
   upload: '上传材料',
@@ -56,6 +58,7 @@ function MaterialsPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<MaterialKind | 'all'>('all');
   const [resetHint, setResetHint] = useState('');
+  const [exportingKey, setExportingKey] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -122,6 +125,35 @@ function MaterialsPage() {
     setResetHint('材料库已清空，仅保留后续任务产生的上传与正式交付物。');
     window.setTimeout(() => setResetHint(''), 3500);
     await load();
+  };
+
+  const canExportAsOffice = (item: MaterialItem) => (
+    item.source === 'workspace'
+    && Boolean(item.downloadUrl)
+    && (item.kind === 'generated' || item.kind === 'report')
+    && /\.(md|txt)$/i.test(item.name)
+  );
+
+  const handleExportMaterial = async (item: MaterialItem, format: DocumentExportFormat) => {
+    if (!item.downloadUrl) return;
+    const key = `${item.id}-${format}`;
+    setExportingKey(key);
+    try {
+      const fileName = await exportMarkdownUrlAsDocument({
+        url: item.downloadUrl,
+        name: item.name,
+        kind: item.kind === 'report' ? 'report' : 'generated',
+        format,
+      });
+      setResetHint(`已下载：${fileName}`);
+      window.setTimeout(() => setResetHint(''), 3500);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '导出失败';
+      setResetHint(message);
+      window.setTimeout(() => setResetHint(''), 3500);
+    } finally {
+      setExportingKey(null);
+    }
   };
 
   return (
@@ -204,11 +236,28 @@ function MaterialsPage() {
                         </div>
                         <div className="materials-item-side">
                           <em>{formatTime(item.createdAt)}</em>
-                          {item.downloadUrl ? (
-                            <a className="btn btn-secondary btn-compact" href={item.downloadUrl} target="_blank" rel="noreferrer">
-                              下载
-                            </a>
-                          ) : null}
+                          <div className="materials-item-actions">
+                            {item.downloadUrl ? (
+                              <a className="btn btn-secondary btn-compact" href={item.downloadUrl} target="_blank" rel="noreferrer">
+                                原文
+                              </a>
+                            ) : null}
+                            {canExportAsOffice(item) && (['docx', 'pdf'] as const).map((format) => {
+                              const key = `${item.id}-${format}`;
+                              return (
+                                <button
+                                  key={format}
+                                  type="button"
+                                  className="btn btn-primary btn-compact"
+                                  disabled={exportingKey === key}
+                                  onClick={() => void handleExportMaterial(item, format)}
+                                >
+                                  {exportingKey === key ? <Loader2 size={14} className="spin" /> : <FileDown size={14} />}
+                                  {format.toUpperCase()}
+                                </button>
+                              );
+                            })}
+                          </div>
                         </div>
                       </article>
                     );

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}
+      .line{stroke:#111;stroke-width:3;fill:none}
+      .thin{stroke:#444;stroke-width:2;fill:none}
+      .box{fill:#fff;stroke:#111;stroke-width:3;rx:18}
+      .soft{fill:#f5f5f5;stroke:#111;stroke-width:2;rx:14}
+      .dark{fill:#111}
+      .title{font:700 52px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .s{font:400 20px "Microsoft YaHei",Arial,sans-serif;fill:#333}
+      .w{font:700 24px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .arrow{stroke:#111;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="95">P12 商业方案与社会价值</text>
+  <line class="line" x1="70" y1="135" x2="1530" y2="135"/>
+  
+  <rect class="box" x="105" y="220" width="640" height="430"/><text class="h" x="133" y="268">商业路径</text>
+  <text class="t" x="165" y="325">体验版：低门槛体验</text>
+  <text class="t" x="165" y="395">专业版：标准办案闭环</text>
+  <text class="t" x="165" y="465">旗舰版：高频与深度能力</text>
+  <text class="t" x="165" y="535">机构定制：私有化部署 / 行业知识库 / 工具接入</text>
+  <rect class="box" x="855" y="220" width="640" height="430"/><text class="h" x="883" y="268">社会价值</text>
+  <text class="t" x="915" y="325">降低检索整理成本</text>
+  <text class="t" x="915" y="395">提升中小主体可及性</text>
+  <text class="t" x="915" y="465">强化依据追溯与留痕</text>
+  <text class="t" x="915" y="535">扩展 Co-Sight 行业应用</text>
+
+</svg>

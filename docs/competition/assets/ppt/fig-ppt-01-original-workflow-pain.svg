@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}
+      .navy{fill:#082451}
+      .teal{fill:#1b9a97}
+      .gold{fill:#d99a1f}
+      .gold2{fill:#f1bd34}
+      .white{fill:#fff}
+      .panel{fill:#fff;stroke:#082451;stroke-width:3.2;rx:26}
+      .card{fill:#fff;stroke:#082451;stroke-width:3;rx:16}
+      .pain{fill:#fff;stroke:#082451;stroke-width:3;rx:18}
+      .thin{stroke:#082451;stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+      .arrow{fill:#1b9a97}
+      .dash{stroke:#1b9a97;stroke-width:2.6;stroke-dasharray:8 9}
+      .title{font:700 38px "Microsoft YaHei",Arial,sans-serif;fill:#082451}
+      .h{font:700 34px "Microsoft YaHei",Arial,sans-serif;fill:#082451}
+      .t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#26384d}
+      .label{font:700 28px "Microsoft YaHei",Arial,sans-serif;fill:#082451}
+      .num{font:700 48px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .bottom{font:700 40px "Microsoft YaHei",Arial,sans-serif;fill:#082451}
+      .bottomGold{font:700 46px "Microsoft YaHei",Arial,sans-serif;fill:#b97800}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+
+  <rect class="panel" x="26" y="36" width="910" height="560"/>
+  <text class="title" x="330" y="112">传统法律工作流程</text>
+
+  <g transform="translate(64,185)">
+    <rect class="card" x="0" y="0" width="138" height="285"/>
+    <circle class="teal" cx="69" cy="42" r="22"/><text class="num" x="55" y="59" font-size="30">1</text>
+    <path class="thin" d="M42 96 h45 l24 24 v92 h-69 z M86 96 v27 h25 M57 136 h34 M57 162 h26"/>
+    <path class="thin" d="M55 176 h66 v48 h-66 z"/>
+    <text class="label" x="22" y="258">材料整理</text>
+  </g>
+  <polygon class="arrow" points="178,318 212,342 178,366"/>
+  <g transform="translate(230,185)">
+    <rect class="card" x="0" y="0" width="138" height="285"/>
+    <circle class="teal" cx="69" cy="42" r="22"/><text class="num" x="55" y="59" font-size="30">2</text>
+    <path class="thin" d="M42 100 h70 v92 h-70 z M56 127 h42 M56 153 h32 M56 179 h26"/>
+    <circle class="thin" cx="94" cy="170" r="32"/><path class="thin" d="M118 194 l28 28"/>
+    <text class="label" x="22" y="258">法规检索</text>
+  </g>
+  <polygon class="arrow" points="344,318 378,342 344,366"/>
+  <g transform="translate(396,185)">
+    <rect class="card" x="0" y="0" width="138" height="285"/>
+    <circle class="teal" cx="69" cy="42" r="22"/><text class="num" x="55" y="59" font-size="30">3</text>
+    <path class="thin" d="M42 108 h72 v102 h-72 z M58 134 l10 10 18-22 M58 164 l10 10 18-22 M58 194 l10 10 18-22"/>
+    <path class="thin" d="M58 108 v-14 h40 v14"/>
+    <text class="label" x="22" y="258">证据核对</text>
+  </g>
+  <polygon class="arrow" points="510,318 544,342 510,366"/>
+  <g transform="translate(562,185)">
+    <rect class="card" x="0" y="0" width="138" height="285"/>
+    <circle class="teal" cx="69" cy="42" r="22"/><text class="num" x="55" y="59" font-size="30">4</text>
+    <path class="thin" d="M42 100 h70 l18 18 v92 h-88 z M112 100 v22 h20 M58 136 h42 M58 162 h42 M58 188 h30"/>
+    <path class="thin" d="M100 190 l42-42 16 16 -42 42 -22 6 z"/>
+    <text class="label" x="22" y="258">文书撰写</text>
+  </g>
+  <polygon class="arrow" points="676,318 710,342 676,366"/>
+  <g transform="translate(728,185)">
+    <rect class="card" x="0" y="0" width="138" height="285"/>
+    <circle class="teal" cx="69" cy="42" r="22"/><text class="num" x="55" y="59" font-size="30">5</text>
+    <path class="thin" d="M42 108 h72 v102 h-72 z M58 132 h38 M58 158 h30 M58 184 h26"/>
+    <circle class="thin" cx="108" cy="190" r="30"/><path class="thin" d="M92 190 l12 12 22-26"/>
+    <text class="label" x="22" y="258">人工复核</text>
+  </g>
+
+  <line class="dash" x1="970" y1="36" x2="970" y2="596"/>
+
+  <g transform="translate(1010,38)">
+    <rect class="pain" x="0" y="0" width="560" height="150"/>
+    <circle class="gold" cx="74" cy="75" r="45"/><circle class="gold2" cx="64" cy="63" r="34" opacity=".55"/>
+    <text class="num" x="60" y="94">1</text>
+    <line x1="148" y1="28" x2="148" y2="122" stroke="#7a8798" stroke-width="3"/>
+    <text class="h" x="185" y="70">效率低</text>
+    <text class="t" x="185" y="112">合同审查、争议整理耗时长</text>
+  </g>
+  <g transform="translate(1010,238)">
+    <rect class="pain" x="0" y="0" width="560" height="150"/>
+    <circle class="gold" cx="74" cy="75" r="45"/><circle class="gold2" cx="64" cy="63" r="34" opacity=".55"/>
+    <text class="num" x="60" y="94">2</text>
+    <line x1="148" y1="28" x2="148" y2="122" stroke="#7a8798" stroke-width="3"/>
+    <text class="h" x="185" y="70">过程不透明</text>
+    <text class="t" x="185" y="112">执行过程难复盘、难追责、难审核</text>
+  </g>
+  <g transform="translate(1010,438)">
+    <rect class="pain" x="0" y="0" width="560" height="150"/>
+    <circle class="gold" cx="74" cy="75" r="45"/><circle class="gold2" cx="64" cy="63" r="34" opacity=".55"/>
+    <text class="num" x="60" y="94">3</text>
+    <line x1="148" y1="28" x2="148" y2="122" stroke="#7a8798" stroke-width="3"/>
+    <text class="h" x="185" y="70">交付成本高</text>
+    <text class="t" x="185" y="112">报告和文书整理依赖人工</text>
+  </g>
+
+  <rect class="panel" x="26" y="660" width="1548" height="170"/>
+  <path class="thin" d="M118 710 l42 -28 l42 28 v48 c0 42 -42 68 -42 68 s-42 -26 -42 -68 z"/>
+  <circle class="teal" cx="160" cy="760" r="28"/><path class="thin" d="M145 760 l12 13 24 -28" stroke="#fff"/>
+  <text class="bottom" x="255" y="765">法律业务需要</text>
+  <text class="bottomGold" x="570" y="765">“事实、依据、过程、交付”</text>
+  <text class="bottom" x="1260" y="765">的完整链路</text>
+</svg>

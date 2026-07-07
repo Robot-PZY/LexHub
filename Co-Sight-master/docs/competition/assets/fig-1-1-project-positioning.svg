@@ -1,0 +1,56 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+  <defs>
+    <style>
+      .bg{fill:#ffffff}.panel{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.title{font:700 34px "Microsoft YaHei",Arial,sans-serif;fill:#1f2937}.h{font:700 24px "Microsoft YaHei",Arial,sans-serif;fill:#1f3a5f}.t{font:500 18px "Microsoft YaHei",Arial,sans-serif;fill:#334155}.s{font:500 15px "Microsoft YaHei",Arial,sans-serif;fill:#64748b}.accent{fill:#2f5597}.brand{fill:#2f5597}.soft{fill:#f3f6fa;stroke:#c7d2e5;stroke-width:1.5}.arrow{stroke:#2f5597;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1200" height="680"/>
+  <text class="title" x="60" y="70">律枢 LexHub 项目定位总览</text>
+  <text class="s" x="60" y="105">基于 Co-Sight 超级智能体框架的法律行业智能体协同平台</text>
+
+  <rect class="panel" x="70" y="155" width="300" height="360" rx="18"/>
+  <circle class="brand" cx="120" cy="210" r="24"/>
+  <text class="h" x="155" y="218">Co-Sight 底座</text>
+  <rect class="soft" x="105" y="260" width="230" height="44" rx="12"/>
+  <text class="t" x="130" y="288">多智能体协同</text>
+  <rect class="soft" x="105" y="318" width="230" height="44" rx="12"/>
+  <text class="t" x="130" y="346">DAG 任务编排</text>
+  <rect class="soft" x="105" y="376" width="230" height="44" rx="12"/>
+  <text class="t" x="130" y="404">工具调用</text>
+  <rect class="soft" x="105" y="434" width="230" height="44" rx="12"/>
+  <text class="t" x="130" y="462">Replay 回放</text>
+
+  <path class="arrow" d="M390 335 C430 335, 455 335, 495 335"/>
+
+  <rect class="panel" x="515" y="125" width="330" height="420" rx="18"/>
+  <circle class="accent" cx="565" cy="180" r="24"/>
+  <text class="h" x="600" y="188">LexHub 行业增强</text>
+  <rect class="soft" x="555" y="228" width="250" height="44" rx="12"/>
+  <text class="t" x="580" y="256">法律智能体</text>
+  <rect class="soft" x="555" y="286" width="250" height="44" rx="12"/>
+  <text class="t" x="580" y="314">法规知识库</text>
+  <rect class="soft" x="555" y="344" width="250" height="44" rx="12"/>
+  <text class="t" x="580" y="372">材料库与文书导出</text>
+  <rect class="soft" x="555" y="402" width="250" height="44" rx="12"/>
+  <text class="t" x="580" y="430">执行快照与审计链</text>
+  <rect class="soft" x="555" y="460" width="250" height="44" rx="12"/>
+  <text class="t" x="580" y="488">管理端配置</text>
+
+  <path class="arrow" d="M865 335 C905 335, 930 335, 970 335"/>
+
+  <rect class="panel" x="990" y="155" width="150" height="360" rx="18"/>
+  <text class="h" x="1025" y="215">法律</text>
+  <text class="h" x="1025" y="250">任务</text>
+  <text class="h" x="1025" y="285">交付</text>
+  <rect class="accent" x="1020" y="325" width="90" height="8" rx="4"/>
+  <text class="s" x="1018" y="370">合同审查</text>
+  <text class="s" x="1018" y="405">争议解决</text>
+  <text class="s" x="1018" y="440">公司治理</text>
+  <text class="s" x="1018" y="475">数据合规</text>
+  <text class="s" x="1018" y="510">法规研究</text>
+</svg>
+
+

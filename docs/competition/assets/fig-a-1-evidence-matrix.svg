@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs>
+<style>
+.bg{fill:#ffffff}.title{font:700 30px 'Microsoft YaHei',Arial;fill:#1f2937}
+.h{font:700 16px 'Microsoft YaHei',Arial;fill:#1f3a5f}
+.s{font:500 13px 'Microsoft YaHei',Arial;fill:#64748b}
+.axis{stroke:#9ca3af;stroke-width:1.5}.grid{stroke:#e5e7eb;stroke-width:1}
+.base{fill:#cbd5e1}.lex{fill:#2f5597}.cell{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1}
+</style>
+</defs>
+<rect class="bg" width="100%" height="100%"/>
+<text class="title" x="56" y="58">交付证据矩阵</text>
+<text class="s" x="56" y="88">将赛题要求映射到可检查的文件、页面和运行记录</text>
+<rect class="cell" x="70" y="120" width="245" height="46"/>
+<text class="h" x="84" y="149">评审关注点</text>
+<rect class="cell" x="315" y="120" width="275" height="46"/>
+<text class="h" x="329" y="149">代码/配置证据</text>
+<rect class="cell" x="590" y="120" width="275" height="46"/>
+<text class="h" x="604" y="149">页面/服务证据</text>
+<rect class="cell" x="865" y="120" width="275" height="46"/>
+<text class="h" x="879" y="149">文档/运行证据</text>
+<rect class="cell" x="70" y="166" width="245" height="72"/>
+<text class="s" x="84" y="194">业务场景分析</text>
+<rect class="cell" x="315" y="166" width="275" height="72"/>
+<text class="s" x="329" y="194">test/</text>
+<rect class="cell" x="590" y="166" width="275" height="72"/>
+<text class="s" x="604" y="194">README.md</text>
+<rect class="cell" x="865" y="166" width="275" height="72"/>
+<text class="s" x="879" y="194">technical report</text>
+<rect class="cell" x="70" y="238" width="245" height="72"/>
+<text class="s" x="84" y="266">智能体角色分工</text>
+<rect class="cell" x="315" y="238" width="275" height="72"/>
+<text class="s" x="329" y="266">agent-registry.json</text>
+<rect class="cell" x="590" y="238" width="275" height="72"/>
+<text class="s" x="604" y="266">Workspace run page</text>
+<rect class="cell" x="865" y="238" width="275" height="72"/>
+<text class="s" x="879" y="266">agent pipeline</text>
+<rect class="cell" x="70" y="310" width="245" height="72"/>
+<text class="s" x="84" y="338">DAG 编排</text>
+<rect class="cell" x="315" y="310" width="275" height="72"/>
+<text class="s" x="329" y="338">legal-workflow.json</text>
+<rect class="cell" x="590" y="310" width="275" height="72"/>
+<text class="s" x="604" y="338">DagExecutionPanel</text>
+<rect class="cell" x="865" y="310" width="275" height="72"/>
+<text class="s" x="879" y="338">replay</text>
+<rect class="cell" x="70" y="382" width="245" height="72"/>
+<text class="s" x="84" y="410">工具集成</text>
+<rect class="cell" x="315" y="382" width="275" height="72"/>
+<text class="s" x="329" y="410">legal_search_toolkit.py</text>
+<rect class="cell" x="590" y="382" width="275" height="72"/>
+<text class="s" x="604" y="410">services/legal_kb</text>
+<rect class="cell" x="865" y="382" width="275" height="72"/>
+<text class="s" x="879" y="410">tool trace</text>
+<rect class="cell" x="70" y="454" width="245" height="72"/>
+<text class="s" x="84" y="482">可信安全</text>
+<rect class="cell" x="315" y="454" width="275" height="72"/>
+<text class="s" x="329" y="482">audit_log.py</text>
+<rect class="cell" x="590" y="454" width="275" height="72"/>
+<text class="s" x="604" y="482">execution_snapshot.py</text>
+<rect class="cell" x="865" y="454" width="275" height="72"/>
+<text class="s" x="879" y="482">replay</text>
+<rect class="cell" x="70" y="526" width="245" height="72"/>
+<text class="s" x="84" y="554">文书交付</text>
+<rect class="cell" x="315" y="526" width="275" height="72"/>
+<text class="s" x="329" y="554">document_export.py</text>
+<rect class="cell" x="590" y="526" width="275" height="72"/>
+<text class="s" x="604" y="554">Workspace result page</text>
+<rect class="cell" x="865" y="526" width="275" height="72"/>
+<text class="s" x="879" y="554">DOCX/PDF export</text>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}.line{stroke:#111;stroke-width:3;fill:none}.box{fill:#fff;stroke:#111;stroke-width:3;rx:18}.soft{fill:#f5f5f5;stroke:#111;stroke-width:2;rx:14}
+      .title{font:700 52px "Microsoft YaHei",Arial,sans-serif;fill:#111}.h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#111}.t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="95">13 社会价值</text>
+  <line class="line" x1="70" y1="135" x2="1530" y2="135"/>
+  <rect class="box" x="125" y="250" width="390" height="260"/>
+  <text class="h" x="210" y="330">降低成本</text>
+  <text class="t" x="185" y="405">减少检索、整理、</text>
+  <text class="t" x="185" y="455">文书初稿时间消耗</text>
+  <rect class="box" x="605" y="250" width="390" height="260"/>
+  <text class="h" x="690" y="330">提升可及性</text>
+  <text class="t" x="665" y="405">让中小主体更容易</text>
+  <text class="t" x="665" y="455">获得基础法律支持</text>
+  <rect class="box" x="1085" y="250" width="390" height="260"/>
+  <text class="h" x="1170" y="330">强化追溯</text>
+  <text class="t" x="1145" y="405">保留依据、过程、</text>
+  <text class="t" x="1145" y="455">导出结果记录</text>
+  <rect class="soft" x="260" y="645" width="1080" height="90"/>
+  <text class="h" x="440" y="700">扩展 Co-Sight 在法律行业的应用场景</text>
+</svg>

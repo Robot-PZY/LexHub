@@ -50,6 +50,54 @@
       "keywords": ["中华人民共和国劳动合同法"],
       "tags": ["官方法规", "劳动法", "合同"],
       "category": "法律"
+    },
+    {
+      "id": "labor-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国劳动法",
+      "keywords": ["中华人民共和国劳动法"],
+      "tags": ["官方法规", "劳动法"],
+      "category": "法律"
+    },
+    {
+      "id": "labor-arbitration-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国劳动争议调解仲裁法",
+      "keywords": ["中华人民共和国劳动争议调解仲裁法"],
+      "tags": ["官方法规", "劳动争议", "仲裁"],
+      "category": "法律"
+    },
+    {
+      "id": "personal-info-protection-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国个人信息保护法",
+      "keywords": ["中华人民共和国个人信息保护法"],
+      "tags": ["官方法规", "个人信息", "合规"],
+      "category": "法律"
+    },
+    {
+      "id": "cybersecurity-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国网络安全法",
+      "keywords": ["中华人民共和国网络安全法"],
+      "tags": ["官方法规", "网络安全", "合规"],
+      "category": "法律"
+    },
+    {
+      "id": "data-security-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国数据安全法",
+      "keywords": ["中华人民共和国数据安全法"],
+      "tags": ["官方法规", "数据安全", "合规"],
+      "category": "法律"
+    },
+    {
+      "id": "arbitration-law",
+      "source_id": "npc_flk",
+      "name": "中华人民共和国仲裁法",
+      "keywords": ["中华人民共和国仲裁法"],
+      "tags": ["官方法规", "仲裁", "争议解决"],
+      "category": "法律"
     }
   ]
 }

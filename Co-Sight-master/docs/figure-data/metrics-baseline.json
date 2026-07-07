@@ -1,0 +1,67 @@
+{
+  "title": "LexHub 演示基准指标",
+  "scenario": "法律任务端到端演示",
+  "metrics": [
+    {
+      "id": "task_time",
+      "label": "单任务处理时间",
+      "unit": "min",
+      "direction": "lower_better",
+      "traditional": 45,
+      "lexhub": 12,
+      "note": "覆盖材料接入、事实梳理、法规检索和初稿形成"
+    },
+    {
+      "id": "traceability",
+      "label": "引用可追溯率",
+      "unit": "%",
+      "direction": "higher_better",
+      "traditional": 60,
+      "lexhub": 88,
+      "note": "是否能定位到法规、案例、模板或来源摘要"
+    },
+    {
+      "id": "reviewability",
+      "label": "过程复核覆盖",
+      "unit": "%",
+      "direction": "higher_better",
+      "traditional": 35,
+      "lexhub": 100,
+      "note": "是否保留任务阶段、工具调用和回放记录"
+    },
+    {
+      "id": "delivery",
+      "label": "文书初稿形成",
+      "unit": "%",
+      "direction": "higher_better",
+      "traditional": 45,
+      "lexhub": 90,
+      "note": "是否能形成结构化报告或可导出文书"
+    },
+    {
+      "id": "tool_visibility",
+      "label": "工具调用可见性",
+      "unit": "%",
+      "direction": "higher_better",
+      "traditional": 20,
+      "lexhub": 92,
+      "note": "是否能查看搜索、法规检索、文档处理等调用轨迹"
+    }
+  ],
+  "evidence_matrix": [
+    ["业务场景分析", "test/", "README.md", "technical report"],
+    ["智能体角色分工", "agent-registry.json", "Workspace run page", "agent pipeline"],
+    ["DAG 编排", "legal-workflow.json", "DagExecutionPanel", "replay"],
+    ["工具集成", "legal_search_toolkit.py", "services/legal_kb", "tool trace"],
+    ["可信安全", "audit_log.py", "execution_snapshot.py", "replay"],
+    ["文书交付", "document_export.py", "Workspace result page", "DOCX/PDF export"]
+  ],
+  "legal_sources": [
+    ["法律法规", "国家法律法规数据库", "法律、行政法规、监察法规、司法解释、地方性法规等", "法规条文与效力状态"],
+    ["行政法规", "国家行政法规库", "现行有效行政法规及历史文本", "行政监管与合规依据"],
+    ["指导案例", "最高人民法院指导性案例", "裁判规则、争议焦点、裁判要旨", "类案参考与裁判尺度"],
+    ["裁判文书", "中国裁判文书网", "公开裁判文书、案由、法院、裁判理由", "案例检索与事实比对"],
+    ["检察案例", "最高人民检察院指导性案例", "检察履职、监督规则、典型案例", "刑事、公益诉讼和合规参考"],
+    ["项目知识", "LexHub 本地知识库", "法规种子、模板、测试材料、团队规则", "向量检索、模板匹配和导出依据"]
+  ]
+}

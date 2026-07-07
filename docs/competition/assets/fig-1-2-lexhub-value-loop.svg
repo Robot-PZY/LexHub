@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs>
+    <style>
+      .bg{fill:#fff}.title{font:700 30px 'Microsoft YaHei',Arial;fill:#1f2937}
+      .sub{font:500 14px 'Microsoft YaHei',Arial;fill:#64748b}
+      .h{font:700 18px 'Microsoft YaHei',Arial;fill:#1f3a5f}
+      .t{font:500 14px 'Microsoft YaHei',Arial;fill:#334155}
+      .box{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1.5;rx:8}
+      .core{fill:#eef4ff;stroke:#2f5597;stroke-width:2;rx:10}
+      .arrow{stroke:#2f5597;stroke-width:2;fill:none;marker-end:url(#arrow)}
+      .soft{stroke:#cbd5e1;stroke-width:1.4;fill:none}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L8,3 z" fill="#2f5597"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="100%" height="100%"/>
+  <text class="title" x="56" y="58">LexHub 法律任务价值闭环</text>
+  <text class="sub" x="56" y="88">从材料接入到可复核交付：多智能体、DAG、法规知识库与审计链协同工作</text>
+
+  <rect class="box" x="70" y="155" width="210" height="120"/>
+  <text class="h" x="96" y="195">材料与任务输入</text>
+  <text class="t" x="96" y="228">任务描述 / 场景选择</text>
+  <text class="t" x="96" y="252">PDF / DOCX / 表格材料</text>
+
+  <rect class="core" x="345" y="120" width="260" height="190"/>
+  <text class="h" x="385" y="165">DAG 多智能体流程</text>
+  <text class="t" x="385" y="198">任务理解</text>
+  <text class="t" x="385" y="222">证据质检</text>
+  <text class="t" x="385" y="246">法规研究 / 文书生成</text>
+  <text class="t" x="385" y="270">交叉审查 / 合规监测</text>
+
+  <rect class="box" x="670" y="155" width="230" height="120"/>
+  <text class="h" x="700" y="195">法律知识与工具</text>
+  <text class="t" x="700" y="228">法规 RAG / 类案线索</text>
+  <text class="t" x="700" y="252">搜索 / 文档处理 / 导出</text>
+
+  <rect class="box" x="970" y="155" width="230" height="120"/>
+  <text class="h" x="1000" y="195">结构化交付成果</text>
+  <text class="t" x="1000" y="228">事实摘要 / 法规依据</text>
+  <text class="t" x="1000" y="252">风险提示 / DOCX、PDF</text>
+
+  <rect class="box" x="345" y="430" width="260" height="130"/>
+  <text class="h" x="386" y="470">可信过程记录</text>
+  <text class="t" x="386" y="504">Replay 回放</text>
+  <text class="t" x="386" y="528">Execution Snapshot</text>
+  <text class="t" x="386" y="552">Audit Chain</text>
+
+  <rect class="box" x="670" y="430" width="230" height="130"/>
+  <text class="h" x="700" y="470">业务价值</text>
+  <text class="t" x="700" y="504">减少重复整理</text>
+  <text class="t" x="700" y="528">提升依据追溯</text>
+  <text class="t" x="700" y="552">支持人工复核</text>
+
+  <path class="arrow" d="M280 215 H340"/>
+  <path class="arrow" d="M605 215 H665"/>
+  <path class="arrow" d="M900 215 H965"/>
+  <path class="arrow" d="M475 310 V425"/>
+  <path class="arrow" d="M605 495 H665"/>
+  <path class="soft" d="M1085 275 C1085 640 160 640 160 280"/>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#fff}
+      .line{stroke:#111;stroke-width:3;fill:none}
+      .thin{stroke:#444;stroke-width:2;fill:none}
+      .box{fill:#fff;stroke:#111;stroke-width:3;rx:18}
+      .soft{fill:#f5f5f5;stroke:#111;stroke-width:2;rx:14}
+      .dark{fill:#111}
+      .title{font:700 52px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .h{font:700 30px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .t{font:400 24px "Microsoft YaHei",Arial,sans-serif;fill:#111}
+      .s{font:400 20px "Microsoft YaHei",Arial,sans-serif;fill:#333}
+      .w{font:700 24px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .arrow{stroke:#111;stroke-width:4;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 Z" fill="#111"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <text class="title" x="70" y="95">P9 功能演示：结果交付</text>
+  <line class="line" x1="70" y1="135" x2="1530" y2="135"/>
+  
+  <rect class="box" x="100" y="220" width="420" height="260"/><text class="h" x="128" y="268">结果页</text><text class="s" x="128" y="302">结构化结论 / 法规依据 / 风险提示</text>
+  <rect class="box" x="590" y="220" width="420" height="260"/><text class="h" x="618" y="268">DOCX/PDF 导出</text><text class="s" x="618" y="302">文书初稿 / 归档 / 交付</text>
+  <rect class="box" x="1080" y="220" width="420" height="260"/><text class="h" x="1108" y="268">Replay 回放</text><text class="s" x="1108" y="302">阶段回放 / 工具轨迹 / 审计摘要</text>
+  <rect class="soft" x="380" y="560" width="840" height="110"/><text class="h" x="408" y="608">管理端配置</text><text class="s" x="408" y="642">模型 / API / 知识库 / 策略</text>
+  <rect class="soft" x="290" y="745" width="1020" height="66"/>
+  <text class="h" x="380" y="786">结构化结果 / 文书导出 / 过程复盘 / 策略配置</text>
+
+</svg>

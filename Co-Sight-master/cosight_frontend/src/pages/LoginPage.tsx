@@ -11,7 +11,6 @@ import {
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import BrandLogo from '../components/app/BrandLogo';
-import { resetDemoMaterials } from '../lib/api';
 import {
   ensureDemoSeedVersion,
   isReservedAdminAccount,
@@ -63,7 +62,6 @@ function LoginPage() {
 
   useEffect(() => {
     if (ensureDemoSeedVersion()) {
-      void resetDemoMaterials().catch(() => undefined);
       resetDemoRuntimeData({ clearProfile: true });
     }
   }, []);

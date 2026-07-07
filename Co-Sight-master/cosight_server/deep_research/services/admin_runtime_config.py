@@ -50,6 +50,32 @@ def _mask_secret(value: str | None) -> str:
     return f"{text[:4]}****{text[-4:]}"
 
 
+def _is_masked_secret(value: Any) -> bool:
+    text = str(value or "").strip()
+    return bool(text) and (set(text) == {"*"} or "****" in text)
+
+
+def _preserve_masked_secrets(
+    incoming_items: list[dict[str, Any]],
+    current_items: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    current_by_id = {
+        str(item.get("id") or ""): item
+        for item in current_items
+        if isinstance(item, dict) and item.get("id")
+    }
+    merged: list[dict[str, Any]] = []
+    for item in incoming_items:
+        if not isinstance(item, dict):
+            continue
+        copied = deepcopy(item)
+        current = current_by_id.get(str(copied.get("id") or ""))
+        if current and _is_masked_secret(copied.get("apiKey")):
+            copied["apiKey"] = current.get("apiKey", "")
+        merged.append(copied)
+    return merged
+
+
 def _normalize_model_entry(item: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": str(item.get("id") or "").strip(),
@@ -139,13 +165,13 @@ def save_admin_settings(payload: dict[str, Any]) -> dict[str, Any]:
     if "models" in incoming:
         next_settings["models"] = [
             _normalize_model_entry(item)
-            for item in (incoming.get("models") or [])
+            for item in _preserve_masked_secrets(incoming.get("models") or [], current.get("models") or [])
             if isinstance(item, dict) and item.get("id")
         ]
     if "apis" in incoming:
         next_settings["apis"] = [
             _normalize_api_entry(item)
-            for item in (incoming.get("apis") or [])
+            for item in _preserve_masked_secrets(incoming.get("apis") or [], current.get("apis") or [])
             if isinstance(item, dict) and item.get("id")
         ]
     if "mcpTools" in incoming:

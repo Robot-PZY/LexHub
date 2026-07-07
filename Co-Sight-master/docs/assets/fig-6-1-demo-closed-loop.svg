@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+  <defs>
+    <style>
+      .bg{fill:#ffffff}.node{fill:#f3f6fa;stroke:#c7d2e5;stroke-width:1.6}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 18px "Microsoft YaHei",Arial;fill:#1f3a5f}.s{font:500 13px "Microsoft YaHei",Arial;fill:#64748b}.arrow{stroke:#2f5597;stroke-width:3;fill:none;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="1200" height="620"/>
+  <text class="title" x="60" y="65">功能演示闭环</text>
+  <rect class="node" x="80" y="255" width="145" height="82" rx="12"/>
+  <text class="h" x="118" y="288">任务受理</text>
+  <text class="s" x="105" y="314">/workspace</text>
+  <path class="arrow" d="M230 296 L305 296"/>
+  <rect class="node" x="315" y="255" width="145" height="82" rx="12"/>
+  <text class="h" x="353" y="288">过程执行</text>
+  <text class="s" x="342" y="314">/workspace/run</text>
+  <path class="arrow" d="M465 296 L540 296"/>
+  <rect class="node" x="550" y="255" width="145" height="82" rx="12"/>
+  <text class="h" x="588" y="288">结果交付</text>
+  <text class="s" x="576" y="314">/workspace/result</text>
+  <path class="arrow" d="M700 296 L775 296"/>
+  <rect class="node" x="785" y="255" width="145" height="82" rx="12"/>
+  <text class="h" x="823" y="288">过程复盘</text>
+  <text class="s" x="835" y="314">/replay</text>
+  <path class="arrow" d="M930 296 L1005 296"/>
+  <rect class="node" x="1015" y="255" width="145" height="82" rx="12"/>
+  <text class="h" x="1053" y="288">能力配置</text>
+  <text class="s" x="1043" y="314">/admin</text>
+  <path class="arrow" d="M1088 340 C1088 455, 152 455, 152 342"/>
+  <text class="s" x="410" y="485">管理端配置模型、API、知识库和规则，支撑下一次任务执行</text>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <style>
+      .bg{fill:#f6f8fa}.navy{fill:#123a63}.teal{fill:#1c8ca8}.gold{fill:#d99a2b}.white{fill:#fff}
+      .title{font:700 54px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.sub{font:400 25px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}
+      .center{font:700 34px "Microsoft YaHei",Arial,sans-serif;fill:#fff}.h{font:700 28px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.t{font:400 22px "Microsoft YaHei",Arial,sans-serif;fill:#26384d}.wh{font:700 25px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+      .node{fill:#fff;stroke:#123a63;stroke-width:3;rx:18}.nodeT{fill:#fff;stroke:#1c8ca8;stroke-width:3;rx:18}.nodeG{fill:#fff;stroke:#d99a2b;stroke-width:3;rx:18}
+      .line{stroke:#1c8ca8;stroke-width:4;fill:none}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="navy" x="54" y="40" width="86" height="86" rx="10"/><text class="white" x="83" y="99" font-size="52" font-weight="700">7</text>
+  <text class="title" x="165" y="86">智能体协同</text><text class="sub" x="168" y="122">用角色分工承接真实法律业务流程</text>
+  <line x1="55" y1="150" x2="1540" y2="150" stroke="#123a63" stroke-width="4"/>
+  <circle class="navy" cx="800" cy="410" r="120"/>
+  <text class="center" x="700" y="395">任务理解</text><text class="center" x="710" y="445">智能体</text>
+  <path class="line" d="M710 330 L515 240"/><path class="line" d="M890 330 L1085 240"/><path class="line" d="M675 430 L480 430"/><path class="line" d="M925 430 L1120 430"/><path class="line" d="M715 500 L520 630"/><path class="line" d="M885 500 L1080 630"/>
+  <rect class="nodeT" x="320" y="190" width="270" height="100"/><text class="h" x="375" y="248">证据质检</text><text class="t" x="365" y="278">缺口清单</text>
+  <rect class="node" x="1010" y="190" width="270" height="100"/><text class="h" x="1065" y="248">法规研究</text><text class="t" x="1055" y="278">法规案例依据</text>
+  <rect class="node" x="270" y="380" width="270" height="100"/><text class="h" x="325" y="438">文书生成</text><text class="t" x="315" y="468">报告函件草稿</text>
+  <rect class="nodeG" x="1060" y="380" width="270" height="100"/><text class="h" x="1115" y="438">交叉审查</text><text class="t" x="1108" y="468">高风险复核</text>
+  <rect class="nodeG" x="340" y="600" width="270" height="100"/><text class="h" x="395" y="658">合规监测</text><text class="t" x="390" y="688">审计与门禁</text>
+  <rect class="nodeT" x="990" y="600" width="270" height="100"/><text class="h" x="1045" y="658">结果交付</text><text class="t" x="1040" y="688">导出与归档</text>
+  <rect class="navy" x="280" y="790" width="1040" height="58" rx="29"/>
+  <text class="wh" x="420" y="828">6 类智能体协作，覆盖事实、依据、文书、复核、审计</text>
+</svg>

@@ -1,0 +1,48 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+  <defs><style>
+    .bg{fill:#ffffff}.panel{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 18px "Microsoft YaHei",Arial;fill:#1f3a5f}.s{font:500 14px "Microsoft YaHei",Arial;fill:#64748b}.axis{stroke:#9ca3af;stroke-width:2}.trad{fill:#cbd5e1}.lex{fill:#2f5597}.grid{stroke:#e5e7eb;stroke-width:1}
+  </style></defs>
+  <rect class="bg" width="1200" height="680"/>
+  <text class="title" x="60" y="65">效果评估对比</text>
+  <rect class="panel" x="80" y="115" width="1040" height="480" rx="18"/>
+  <line class="axis" x1="170" y1="520" x2="1050" y2="520"/>
+  <line class="axis" x1="170" y1="170" x2="170" y2="520"/>
+  <line class="grid" x1="170" y1="450" x2="1050" y2="450"/>
+  <line class="grid" x1="170" y1="380" x2="1050" y2="380"/>
+  <line class="grid" x1="170" y1="310" x2="1050" y2="310"/>
+  <line class="grid" x1="170" y1="240" x2="1050" y2="240"/>
+
+  <text class="s" x="115" y="525">低</text>
+  <text class="s" x="115" y="245">高</text>
+
+  <text class="h" x="245" y="555">处理效率</text>
+  <rect class="trad" x="250" y="230" width="48" height="290" rx="8"/>
+  <rect class="lex" x="310" y="335" width="48" height="185" rx="8"/>
+  <text class="s" x="245" y="210">45min</text>
+  <text class="s" x="308" y="315">12min</text>
+
+  <text class="h" x="445" y="555">引用追溯</text>
+  <rect class="trad" x="455" y="310" width="48" height="210" rx="8"/>
+  <rect class="lex" x="515" y="212" width="48" height="308" rx="8"/>
+  <text class="s" x="452" y="292">60%</text>
+  <text class="s" x="512" y="194">88%</text>
+
+  <text class="h" x="650" y="555">过程复核</text>
+  <rect class="trad" x="660" y="430" width="48" height="90" rx="8"/>
+  <rect class="lex" x="720" y="170" width="48" height="350" rx="8"/>
+  <text class="s" x="638" y="412">分散</text>
+  <text class="s" x="704" y="152">全链路</text>
+
+  <text class="h" x="855" y="555">交付效率</text>
+  <rect class="trad" x="865" y="400" width="48" height="120" rx="8"/>
+  <rect class="lex" x="925" y="220" width="48" height="300" rx="8"/>
+  <text class="s" x="850" y="382">人工整理</text>
+  <text class="s" x="915" y="202">自动导出</text>
+
+  <rect class="trad" x="390" y="615" width="22" height="14" rx="3"/>
+  <text class="s" x="420" y="628">传统方式</text>
+  <rect class="lex" x="540" y="615" width="22" height="14" rx="3"/>
+  <text class="s" x="570" y="628">LexHub 演示基准</text>
+</svg>
+
+

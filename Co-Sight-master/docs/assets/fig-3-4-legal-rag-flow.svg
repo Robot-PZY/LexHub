@@ -1,0 +1,28 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="680" viewBox="0 0 1200 680">
+  <defs><style>
+    .bg{fill:#ffffff}.box{fill:#ffffff;stroke:#b8bec8;stroke-width:2}.source{fill:#f3f6fa;stroke:#c7d2e5}.out{fill:#f3f6fa;stroke:#c7d2e5}.title{font:700 34px "Microsoft YaHei",Arial;fill:#1f2937}.h{font:700 20px "Microsoft YaHei",Arial;fill:#1f3a5f}.s{font:500 14px "Microsoft YaHei",Arial;fill:#64748b}.arrow{stroke:#2f5597;stroke-width:3;fill:none;marker-end:url(#arrow)}
+  </style><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 Z" fill="#2f5597"/></marker></defs>
+  <rect class="bg" width="1200" height="680"/>
+  <text class="title" x="60" y="65">法规检索与知识融合流程</text>
+  <rect class="box" x="70" y="285" width="150" height="80" rx="16"/><text class="h" x="105" y="318">法律问题</text><text class="s" x="98" y="344">任务描述/争议焦点</text>
+  <path class="arrow" d="M225 325 L295 325"/>
+  <rect class="box" x="305" y="285" width="160" height="80" rx="16"/><text class="h" x="345" y="318">查询处理</text><text class="s" x="335" y="344">关键词 / 场景</text>
+  <path class="arrow" d="M470 325 L540 325"/>
+  <rect class="source" x="555" y="150" width="180" height="70" rx="14"/><text class="h" x="615" y="182">本地法规库</text><text class="s" x="605" y="205">Chroma / JSON</text>
+  <rect class="source" x="555" y="260" width="180" height="70" rx="14"/><text class="h" x="610" y="292">外部法规</text><text class="s" x="600" y="315">NPC / 得理 API</text>
+  <rect class="source" x="555" y="370" width="180" height="70" rx="14"/><text class="h" x="615" y="402">模板类案</text><text class="s" x="600" y="425">文书模板 / 案例</text>
+  <rect class="source" x="555" y="480" width="180" height="70" rx="14"/><text class="h" x="615" y="512">联网搜索</text><text class="s" x="600" y="535">Tavily / Google</text>
+  <path class="arrow" d="M465 325 C515 325, 515 185, 550 185"/>
+  <path class="arrow" d="M465 325 L550 295"/>
+  <path class="arrow" d="M465 325 L550 405"/>
+  <path class="arrow" d="M465 325 C515 325, 515 515, 550 515"/>
+  <rect class="box" x="820" y="285" width="160" height="80" rx="16"/><text class="h" x="860" y="318">结果融合</text><text class="s" x="848" y="344">排序 / 去重 / 摘要</text>
+  <path class="arrow" d="M735 185 C790 185, 790 320, 815 320"/>
+  <path class="arrow" d="M735 295 L815 320"/>
+  <path class="arrow" d="M735 405 L815 335"/>
+  <path class="arrow" d="M735 515 C790 515, 790 340, 815 340"/>
+  <path class="arrow" d="M985 325 L1050 325"/>
+  <rect class="out" x="1060" y="285" width="110" height="80" rx="16"/><text class="h" x="1095" y="318">输出</text><text class="s" x="1082" y="344">法规/案例/来源</text>
+</svg>
+
+

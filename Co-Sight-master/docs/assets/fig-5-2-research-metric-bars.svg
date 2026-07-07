@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760">
+<defs>
+<style>
+.bg{fill:#ffffff}.title{font:700 30px 'Microsoft YaHei',Arial;fill:#1f2937}
+.h{font:700 16px 'Microsoft YaHei',Arial;fill:#1f3a5f}
+.s{font:500 13px 'Microsoft YaHei',Arial;fill:#64748b}
+.axis{stroke:#9ca3af;stroke-width:1.5}.grid{stroke:#e5e7eb;stroke-width:1}
+.base{fill:#cbd5e1}.lex{fill:#2f5597}.cell{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1}
+</style>
+</defs>
+<rect class="bg" width="100%" height="100%"/>
+<text class="title" x="56" y="58">端到端任务指标对比</text>
+<text class="s" x="56" y="88">演示基准：传统处理方式 vs LexHub 任务链路</text>
+<line class="axis" x1="270" y1="115" x2="270" y2="590"/>
+<line class="axis" x1="270" y1="590" x2="1090" y2="590"/>
+<line class="grid" x1="270.0" y1="115" x2="270.0" y2="590"/>
+<text class="s" x="262.0" y="614">0</text>
+<line class="grid" x1="434.0" y1="115" x2="434.0" y2="590"/>
+<text class="s" x="426.0" y="614">20</text>
+<line class="grid" x1="598.0" y1="115" x2="598.0" y2="590"/>
+<text class="s" x="590.0" y="614">40</text>
+<line class="grid" x1="762.0" y1="115" x2="762.0" y2="590"/>
+<text class="s" x="754.0" y="614">60</text>
+<line class="grid" x1="926.0" y1="115" x2="926.0" y2="590"/>
+<text class="s" x="918.0" y="614">80</text>
+<line class="grid" x1="1090.0" y1="115" x2="1090.0" y2="590"/>
+<text class="s" x="1082.0" y="614">100</text>
+<text class="h" x="56" y="149">单任务处理时间</text>
+<text class="s" x="56" y="171">覆盖材料接入、事实梳理、法规检索和初稿形成</text>
+<rect class="base" x="270" y="133" width="218.7" height="20" rx="4"/>
+<rect class="lex" x="270" y="165" width="820.0" height="20" rx="4"/>
+<text class="s" x="496.7" y="148">传统：45min</text>
+<text class="s" x="1098.0" y="180">LexHub：12min</text>
+<text class="h" x="56" y="244">引用可追溯率</text>
+<text class="s" x="56" y="266">是否能定位到法规、案例、模板或来源摘要</text>
+<rect class="base" x="270" y="228" width="492.0" height="20" rx="4"/>
+<rect class="lex" x="270" y="260" width="721.6" height="20" rx="4"/>
+<text class="s" x="770.0" y="243">传统：60%</text>
+<text class="s" x="999.6" y="275">LexHub：88%</text>
+<text class="h" x="56" y="339">过程复核覆盖</text>
+<text class="s" x="56" y="361">是否保留任务阶段、工具调用和回放记录</text>
+<rect class="base" x="270" y="323" width="287.0" height="20" rx="4"/>
+<rect class="lex" x="270" y="355" width="820.0" height="20" rx="4"/>
+<text class="s" x="565.0" y="338">传统：35%</text>
+<text class="s" x="1098.0" y="370">LexHub：100%</text>
+<text class="h" x="56" y="434">文书初稿形成</text>
+<text class="s" x="56" y="456">是否能形成结构化报告或可导出文书</text>
+<rect class="base" x="270" y="418" width="369.0" height="20" rx="4"/>
+<rect class="lex" x="270" y="450" width="738.0" height="20" rx="4"/>
+<text class="s" x="647.0" y="433">传统：45%</text>
+<text class="s" x="1016.0" y="465">LexHub：90%</text>
+<text class="h" x="56" y="529">工具调用可见性</text>
+<text class="s" x="56" y="551">是否能查看搜索、法规检索、文档处理等调用轨迹</text>
+<rect class="base" x="270" y="513" width="164.0" height="20" rx="4"/>
+<rect class="lex" x="270" y="545" width="754.4" height="20" rx="4"/>
+<text class="s" x="442.0" y="528">传统：20%</text>
+<text class="s" x="1032.4" y="560">LexHub：92%</text>
+<rect class="base" x="900" y="62" width="20" height="12" rx="2"/>
+<text class="s" x="928" y="73">传统方式</text>
+<rect class="lex" x="1015" y="62" width="20" height="12" rx="2"/>
+<text class="s" x="1043" y="73">LexHub</text>
+</svg>

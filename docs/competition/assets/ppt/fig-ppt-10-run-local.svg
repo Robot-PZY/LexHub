@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs><style>
+    .bg{fill:#f6f8fa}.navy{fill:#123a63}.teal{fill:#1c8ca8}.gold{fill:#d99a2b}.white{fill:#fff}.line{stroke:#123a63;stroke-width:4;fill:none;marker-end:url(#a)}
+    .title{font:700 54px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.h{font:700 28px "Microsoft YaHei",Arial,sans-serif;fill:#123a63}.t{font:400 23px "Microsoft YaHei",Arial,sans-serif;fill:#26384d}.wh{font:700 24px "Microsoft YaHei",Arial,sans-serif;fill:#fff}
+    .node{fill:#fff;stroke:#123a63;stroke-width:3;rx:14}.nodeT{fill:#fff;stroke:#1c8ca8;stroke-width:3;rx:14}.card{fill:#fff;stroke:#d7e0ea;stroke-width:2;rx:14}
+  </style><marker id="a" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#123a63"/></marker></defs>
+  <rect class="bg" width="1600" height="900"/><rect class="navy" x="54" y="40" width="86" height="86" rx="10"/><text class="white" x="70" y="99" font-size="52" font-weight="700">10</text><text class="title" x="165" y="95">执行过程局部示例</text><line x1="55" y1="150" x2="1540" y2="150" stroke="#123a63" stroke-width="4"/>
+  <text class="h" x="90" y="230">DAG 执行图</text>
+  <g transform="translate(90,270)">
+    <rect class="node" x="0" y="0" width="170" height="76"/><text class="h" x="30" y="49">任务理解</text><path class="line" d="M175 38 H245"/>
+    <rect class="node" x="260" y="0" width="170" height="76"/><text class="h" x="290" y="49">信息检索</text><path class="line" d="M435 38 H505"/>
+    <rect class="nodeT" x="520" y="0" width="170" height="76"/><text class="h" x="550" y="49">分析评估</text><path class="line" d="M695 38 H765"/>
+    <rect class="node" x="780" y="0" width="170" height="76"/><text class="h" x="810" y="49">报告生成</text><path class="line" d="M955 38 H1025"/>
+    <rect class="node" x="1040" y="0" width="170" height="76"/><text class="h" x="1090" y="49">结束</text>
+  </g>
+  <text class="h" x="90" y="445">智能体状态</text>
+  <g transform="translate(90,480)">
+    <rect class="card" x="0" y="0" width="280" height="130"/><text class="h" x="32" y="42">需求理解 Agent</text><text class="t" x="32" y="82">状态：已完成</text><rect class="teal" x="32" y="104" width="215" height="10" rx="5"/>
+    <rect class="card" x="315" y="0" width="280" height="130"/><text class="h" x="347" y="42">法规研究 Agent</text><text class="t" x="347" y="82">状态：已完成</text><rect class="teal" x="347" y="104" width="215" height="10" rx="5"/>
+    <rect class="card" x="630" y="0" width="280" height="130"/><text class="h" x="662" y="42">分析评估 Agent</text><text class="t" x="662" y="82">状态：进行中</text><rect class="gold" x="662" y="104" width="140" height="10" rx="5"/>
+    <rect class="card" x="945" y="0" width="280" height="130"/><text class="h" x="977" y="42">报告生成 Agent</text><text class="t" x="977" y="82">状态：等待中</text><rect fill="#d7e0ea" x="977" y="104" width="215" height="10" rx="5"/>
+  </g>
+  <text class="h" x="90" y="690">工具调用记录</text>
+  <rect class="card" x="90" y="720" width="1300" height="55"/><text class="t" x="125" y="755">10:15:42  知识检索 search_knowledge  成功  关键词：合同 风险 责任</text>
+  <rect class="card" x="90" y="785" width="1300" height="55"/><text class="t" x="125" y="820">10:15:49  内容摘要 summarize  进行中  对检索内容进行摘要提炼</text>
+</svg>
