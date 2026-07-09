@@ -33,13 +33,16 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 38%),
+    linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
   color: #fff;
-  box-shadow: 0 8px 18px rgba(36, 60, 88, 0.18);
+  border-color: rgba(214, 168, 79, 0.38);
+  box-shadow: 0 8px 18px rgba(11, 45, 77, 0.2), inset 0 1px 0 rgba(241, 212, 138, 0.28);
 }
 
 .btn-primary:hover:not(:disabled) {
-  box-shadow: 0 12px 24px rgba(22, 71, 97, 0.24);
+  box-shadow: 0 12px 24px rgba(11, 45, 77, 0.26), inset 0 1px 0 rgba(241, 212, 138, 0.34);
 }
 
 .btn-secondary {
@@ -98,7 +101,7 @@
 .ds-badge-primary {
   background: var(--color-primary-soft);
   color: var(--color-primary);
-  border-color: var(--color-primary-muted);
+  border-color: rgba(18, 62, 102, 0.18);
 }
 
 .ds-badge-success {
@@ -502,7 +505,7 @@
   justify-content: center;
   background: linear-gradient(135deg, var(--color-primary-soft), var(--color-accent-soft));
   color: var(--color-primary);
-  border: 1px solid var(--color-primary-muted);
+  border: 1px solid rgba(214, 168, 79, 0.28);
 }
 
 /* ── Eyebrow ── */
@@ -580,9 +583,9 @@
   overflow: hidden;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 50% 48%, #ffffff 0 58%, rgba(255, 253, 248, 0.86) 100%);
-  border: 1px solid rgba(222, 216, 205, 0.68);
-  box-shadow: 0 10px 24px rgba(16, 45, 77, 0.08);
+    radial-gradient(circle at 50% 48%, #ffffff 0 52%, rgba(247, 234, 208, 0.86) 100%);
+  border: 1px solid rgba(214, 168, 79, 0.32);
+  box-shadow: 0 10px 24px rgba(11, 45, 77, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
 }
 
 .brand-logo-mark-react::after {

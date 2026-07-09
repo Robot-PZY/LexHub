@@ -1,7 +1,8 @@
-import { ArrowRight, Briefcase, ChevronDown, FileClock } from 'lucide-react';
+import { Archive, ArrowRight, Briefcase, ChevronDown, ClipboardList, FileClock, FolderOpen } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
+import { Badge } from '../components/ui';
 import EmptyState from '../components/ui/EmptyState';
 import LoadingState from '../components/ui/LoadingState';
 import PageHeader from '../components/ui/PageHeader';
@@ -46,10 +47,10 @@ function WorkspaceResultPage() {
         pendingCount = 0;
       }
     }
-    if (isLive && isCompleted) return '本次任务结果已同步';
-    if (snapshot) return '已载入任务结果';
+    if (isLive && isCompleted) return '本次结论已同步';
+    if (snapshot) return '已载入审查结论';
     if (pendingCount > 0) return `${pendingCount} 项待处理`;
-    return '等待任务完成';
+    return '等待办理完成';
   }, [isLive, isCompleted, snapshot]);
 
   const handleOpenDeliverable = () => {
@@ -79,34 +80,43 @@ function WorkspaceResultPage() {
 
   return (
     <AppShell
-      title="任务结果"
-      subtitle="查看结论、建议与导出"
+      title="审查结论"
+      subtitle="查看法律结论、风险提示、依据来源与文书交付"
       actions={(
         <>
-          <Link className="btn btn-secondary" to="/workspace/run">查看执行过程</Link>
-          <Link className="btn btn-secondary" to="/replay">归档与回放</Link>
-          <Link className="btn btn-primary" to="/materials">材料库</Link>
+          <Link className="lex-button lex-button-secondary lex-button-md" to="/workspace/run">
+            <ClipboardList size={16} />
+            查看办理进度
+          </Link>
+          <Link className="lex-button lex-button-secondary lex-button-md" to="/replay">
+            <Archive size={16} />
+            案件归档
+          </Link>
+          <Link className="lex-button lex-button-primary lex-button-md" to="/materials">
+            <FolderOpen size={16} />
+            材料库
+          </Link>
         </>
       )}
       onLogout={handleLogout}
     >
       <PageHeader
         icon={Briefcase}
-        title={query ? `任务结果 · ${query.slice(0, 32)}${query.length > 32 ? '…' : ''}` : '任务结果'}
-        subtitle={`${outputProfile.primaryLabel}为主交付 · 执行报告统一呈现 · 文书按需生成`}
-        badge={<span className="ds-badge ds-badge-primary">{statusSummary}</span>}
+        title={query ? `审查结论 · ${query.slice(0, 32)}${query.length > 32 ? '…' : ''}` : '审查结论'}
+        subtitle={`${outputProfile.primaryLabel}为主交付 · 报告统一呈现 · 文书按需生成`}
+        badge={<Badge tone="primary" pill>{statusSummary}</Badge>}
       />
 
-      {loading && <LoadingState label="载入任务结果…" />}
+      {loading && <LoadingState label="载入审查结论…" />}
 
       {!loading && !hasResult && (
         <EmptyState
           icon={<FileClock size={22} />}
-          title="暂无任务结果"
-          description="请先在智能工作台发起任务，执行完成后结果会自动出现在这里。"
+          title="暂无审查结论"
+          description="请先在事项受理页提交材料与诉求，办理完成后结论会自动出现在这里。"
           action={(
-            <Link className="btn btn-primary" to="/workspace" style={{ marginTop: 8 }}>
-              发起任务
+            <Link className="lex-button lex-button-primary lex-button-md" to="/workspace" style={{ marginTop: 8 }}>
+              发起事项
               <ArrowRight size={16} />
             </Link>
           )}
@@ -116,21 +126,26 @@ function WorkspaceResultPage() {
       {!loading && hasResult && (
         <div className="workspace-result-layout workspace-result-layout-wide">
           {isCompleted && (
-            <div className="workspace-success-banner">
-              <strong>任务执行完成</strong>
-              <span>
-                本场景主交付为「{outputProfile.primaryLabel}」
-                {outputProfile.showDeliverable ? '；正式文书可按需展开生成' : '；详见下方任务报告'}。
-              </span>
+            <div className="workspace-success-banner workspace-result-complete-banner">
+              <div className="workspace-result-complete-icon">
+                <Briefcase size={18} />
+              </div>
+              <div>
+                <strong>事项办理完成</strong>
+                <span>
+                  本场景主交付为「{outputProfile.primaryLabel}」
+                  {outputProfile.showDeliverable ? '；正式文书可按需展开生成' : '；详见下方审查报告'}。
+                </span>
+              </div>
             </div>
           )}
 
           {isDocumentPrimary && deliverablePanel}
 
           <TaskReportPanel
-            title={query || '任务总结报告'}
+            title={query || '审查结论报告'}
             scenarioId={scenario}
-            resultSummary={resultSummary || '任务仍在处理中，请稍后再查看完整结论。'}
+            resultSummary={resultSummary || '事项仍在办理中，请稍后再查看完整结论。'}
             resultInsight={resultInsight}
             snapshot={snapshot}
             statusSummary={statusSummary}
@@ -154,8 +169,8 @@ function WorkspaceResultPage() {
                 onClick={() => setAppendixOpen((open) => !open)}
               >
                 <div>
-                  <strong>执行附录</strong>
-                  <span>工具调用轨迹 · 最近 {liveToolCalls.length} 条</span>
+                  <strong>办理附录</strong>
+                  <span>处理动作记录 · 最近 {liveToolCalls.length} 条</span>
                 </div>
                 <ChevronDown size={18} className={appendixOpen ? 'open' : ''} />
               </button>
@@ -164,14 +179,17 @@ function WorkspaceResultPage() {
           )}
 
           <section className="ds-card workspace-result-links">
-            <strong>相关入口</strong>
+            <div>
+              <strong>相关入口</strong>
+              <p>继续追踪办理过程、归档记录或补充材料。</p>
+            </div>
             <div className="workspace-result-link-row">
-              <Link className="text-button" to="/workspace/run">返回执行过程（DAG）</Link>
-              <Link className="text-button" to="/replay">归档与回放</Link>
+              <Link className="text-button" to="/workspace/run">返回办理进度</Link>
+              <Link className="text-button" to="/replay">案件归档</Link>
               <Link className="text-button" to="/materials">查看材料库</Link>
               {workspacePath ? (
                 <Link className="text-button" to={`/workspace/run?replay=true&workspace=${encodeURIComponent(workspacePath)}`}>
-                  回放本次任务
+                  查看本次办理记录
                 </Link>
               ) : null}
             </div>

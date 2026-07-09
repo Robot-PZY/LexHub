@@ -2,6 +2,7 @@ import { Sparkles, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
+import { Badge, Button, Panel } from '../components/ui';
 import ComposerPanel from '../components/workspace/ComposerPanel';
 import ScenarioIntakePanel from '../components/workspace/ScenarioIntakePanel';
 import { fetchLegalToolkit } from '../lib/api';
@@ -29,10 +30,10 @@ const GENERAL_SCENARIO_ID = 'general_analysis';
 const optionalScenarios = SCENARIO_DEFINITIONS.filter((item) => item.id !== GENERAL_SCENARIO_ID);
 
 const intakeSteps = [
-  { id: 'scene', label: '选场景', desc: '可选专项，不选即通用' },
-  { id: 'intake', label: '填表单', desc: '文书类型与关键信息' },
-  { id: 'task', label: '写任务', desc: '描述事实与目标' },
-  { id: 'run', label: '开始处理', desc: '进入 DAG 执行页' },
+  { id: 'scene', label: '定场景', desc: '选择业务类型' },
+  { id: 'intake', label: '补要素', desc: '确认文书与关键事实' },
+  { id: 'task', label: '述事实', desc: '说明诉求与材料' },
+  { id: 'run', label: '提交办理', desc: '生成办理路径' },
 ];
 
 function createIntakeForScenario(scenarioId: string): DocumentIntake {
@@ -86,7 +87,7 @@ function WorkspacePage() {
         pendingCount = 0;
       }
     }
-    if (lastStep) return '可继续上次任务';
+    if (lastStep) return '可继续上次事项';
     if (pendingCount > 0) return `${pendingCount} 项待处理`;
     return '等待开始';
   }, []);
@@ -131,7 +132,7 @@ function WorkspacePage() {
       uploadIds,
       scenario: effectiveScenarioId,
       taskId,
-      taskTitle: baseMessage.slice(0, 48) || documentIntake.templateLabel || '未命名任务',
+      taskTitle: baseMessage.slice(0, 48) || documentIntake.templateLabel || '未命名事项',
       documentIntake: needsIntake ? documentIntake : undefined,
     });
     clearWorkspaceDraft();
@@ -165,22 +166,21 @@ function WorkspacePage() {
 
   return (
     <AppShell
-      title="智能工作台"
-      subtitle="选场景、填表单、描述任务 — 统一进入 Co-Sight 调度"
+      title="事项受理"
+      subtitle="选择场景、补充要素、上传材料，形成可追踪的办理路径"
       badge={(
-        <span className="ds-badge ds-badge-primary">
-          <Sparkles size={12} />
+        <Badge tone="primary" icon={<Sparkles size={12} />}>
           {statusSummary}
-        </span>
+        </Badge>
       )}
-      actions={<Link className="btn btn-secondary" to="/materials">材料库</Link>}
+      actions={<Link className="lex-button lex-button-secondary lex-button-md" to="/materials">查看材料库</Link>}
       onLogout={handleLogout}
     >
       <div className="workspace-intake-shell">
-        <section className="ds-card workspace-command-card workspace-intake-card">
+        <Panel as="section" className="workspace-command-card workspace-intake-card">
           <div className="workspace-intake-layout">
-            <aside className="workspace-intake-rail" aria-label="任务步骤">
-              <p className="workspace-intake-rail-label">WORKFLOW</p>
+            <aside className="workspace-intake-rail" aria-label="事项受理步骤">
+              <p className="workspace-intake-rail-label">INTAKE</p>
               {intakeSteps
                 .filter((step) => step.id !== 'intake' || needsIntake)
                 .map((step, index) => (
@@ -196,10 +196,10 @@ function WorkspacePage() {
 
             <div className="workspace-intake-main">
               <div className="workspace-intake-hero">
-                <p className="eyebrow">LEGAL TASK INTAKE</p>
-                <h2>描述任务，开始处理</h2>
+                <p className="eyebrow">LEGAL MATTER INTAKE</p>
+                <h2>说明事项，启动办理</h2>
                 <p>
-                  选择专项场景后将出现文书表单；填写后与任务描述一并提交，执行完成后在「任务结果」自动生成文书。
+                  选择专项场景后补充关键事实与文书要素；提交后系统会整理材料、检索依据并在「审查结论」中沉淀报告与文书。
                 </p>
               </div>
 
@@ -207,20 +207,22 @@ function WorkspacePage() {
                 <div className="workspace-scenario-board" aria-label="场景类型">
                   <div className="workspace-scenario-board-head">
                     <div>
-                      <span className="workspace-scenario-board-title">专项场景</span>
-                      <em>可选 · 不选则按通用分析处理</em>
+                      <span className="workspace-scenario-board-title">业务场景</span>
+                      <em>可选 · 不选则按通用法律分析处理</em>
                     </div>
                     {selectedScenario ? (
-                      <button
+                      <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         className="workspace-scenario-clear"
                         onClick={() => handleScenarioToggle(selectedScenario)}
                       >
                         <X size={14} />
                         取消选择
-                      </button>
+                      </Button>
                     ) : (
-                      <span className="workspace-scenario-default-badge">当前：通用分析</span>
+                      <Badge tone="neutral" className="workspace-scenario-default-badge">当前：通用分析</Badge>
                     )}
                   </div>
 
@@ -258,29 +260,29 @@ function WorkspacePage() {
                   onDraftChange={setDraft}
                   onSubmit={handleSubmit}
                   submitDisabled={needsIntake && !intakeValid}
-                  placeholder={activeDefinition?.placeholder ?? '请描述任务目标与已知事实…'}
+                  placeholder={activeDefinition?.placeholder ?? '请描述事项目标、已知事实与希望获得的结论…'}
                   scenarioHint={selectedScenario && activeScenario
                     ? `${activeScenario.title}：${activeScenario.description}`
-                    : '通用分析：系统将自动规划检索、分析与输出路径。'}
+                    : '通用分析：系统将自动整理事实、检索依据并形成输出建议。'}
                   uploadMeta={{
                     userAccount: demoUser?.account ?? 'user',
                     taskId,
-                    taskTitle: draft.trim().slice(0, 48) || documentIntake.templateLabel || '未命名任务',
+                    taskTitle: draft.trim().slice(0, 48) || documentIntake.templateLabel || '未命名事项',
                   }}
                 />
               </div>
             </div>
           </div>
-        </section>
+        </Panel>
 
         {hasHistory && (
           <div className="workspace-intake-foot">
-            <span>有未完成的任务？</span>
-            <Link className="text-button" to="/workspace/run">继续执行</Link>
+            <span>有未完成的事项？</span>
+            <Link className="text-button" to="/workspace/run">继续办理</Link>
             <span className="workspace-intake-foot-sep">·</span>
-            <Link className="text-button" to="/workspace/result">查看结果</Link>
+            <Link className="text-button" to="/workspace/result">查看结论</Link>
             <span className="workspace-intake-foot-sep">·</span>
-            <Link className="text-button" to="/replay">归档回放</Link>
+            <Link className="text-button" to="/replay">案件归档</Link>
           </div>
         )}
       </div>

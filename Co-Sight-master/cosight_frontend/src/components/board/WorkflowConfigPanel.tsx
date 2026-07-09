@@ -17,7 +17,7 @@ function WorkflowConfigPanel({ config, compact = false, readOnly = false }: Work
       <div className="workflow-config-head">
         <Workflow size={18} />
         <div>
-          <p className="eyebrow">WORKFLOW CONFIG</p>
+          <p className="eyebrow">MATTER PATH</p>
           <strong>{config.name}</strong>
           <span>
             {config.framework} v{config.version}
@@ -29,12 +29,12 @@ function WorkflowConfigPanel({ config, compact = false, readOnly = false }: Work
 
       <div className="workflow-config-grid">
         <article className="workflow-config-block">
-          <strong>智能体编排</strong>
+          <strong>协作角色配置</strong>
           <div className="workflow-agent-list">
             {config.agents.map((agent) => (
               <div key={agent.id} className="workflow-agent-row">
                 <em>{agent.name}</em>
-                <span>{agent.trigger ?? '按需调度'}</span>
+                <span>{agent.trigger ?? '按需协作'}</span>
                 {agent.modelEnv && <code>{agent.modelEnv}</code>}
               </div>
             ))}
@@ -43,7 +43,7 @@ function WorkflowConfigPanel({ config, compact = false, readOnly = false }: Work
 
         {dagNodes.length > 0 && (
           <article className="workflow-config-block">
-            <strong>DAG 节点与条件分支</strong>
+            <strong>办理节点与条件分支</strong>
             <div className="workflow-dag-list">
               {dagNodes.map((node, index) => (
                 <div key={node.id} className="workflow-dag-row">
@@ -65,7 +65,7 @@ function WorkflowConfigPanel({ config, compact = false, readOnly = false }: Work
 
       {routingRules.length > 0 && (
         <div className="workflow-routing-rules">
-          <strong>动态调度规则</strong>
+          <strong>动态办理规则</strong>
           <ul>
             {routingRules.map((rule) => (
               <li key={rule}>{rule}</li>

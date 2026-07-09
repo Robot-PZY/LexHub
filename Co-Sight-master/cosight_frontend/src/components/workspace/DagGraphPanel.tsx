@@ -21,10 +21,10 @@ const NODE_WIDTH = 196;
 const NODE_HEIGHT = 108;
 
 function statusLabel(status: string) {
-  if (status === 'running') return '执行中';
+  if (status === 'running') return '办理中';
   if (status === 'completed') return '已完成';
   if (status === 'failed') return '需处理';
-  return '待执行';
+  return '待办理';
 }
 
 function StatusIcon({ status }: { status: string }) {
@@ -146,15 +146,15 @@ function DagGraphPanel({
           <Network size={18} />
           <div>
             <p className="eyebrow">路径规划</p>
-            <strong>Co-Sight DAG 节点图</strong>
+            <strong>事项办理路径</strong>
           </div>
         </div>
-        <p className="dag-graph-desc">提交任务后，将在此展示带依赖关系的执行路径，并可点击查看每步详情与阶段结果。</p>
+        <p className="dag-graph-desc">提交事项后，将在此展示材料整理、依据检索、风险审查与文书交付的推进路径。</p>
       </section>
     );
   }
 
-  const statusHint = preview ? '模板预览' : readOnly ? '回放模式' : processing ? '执行中' : '已完成';
+  const statusHint = preview ? '模板预览' : readOnly ? '归档查看' : processing ? '办理中' : '已完成';
   const showDetail = !compact && !preview;
   const isCompleted = !processing && !preview;
 
@@ -165,10 +165,10 @@ function DagGraphPanel({
         <div className="dag-graph-title-block">
           <p className="eyebrow">路径规划</p>
           <strong>{layout.title}</strong>
-          <em>{compact && preview ? '工作流模板' : `${layout.statusText || statusHint} · 点击节点查看阶段结果`}</em>
+          <em>{compact && preview ? '办理模板' : `${layout.statusText || statusHint} · 点击节点查看阶段结论`}</em>
         </div>
         <span className="dag-graph-stat">
-          {layout.nodes.length} 步 · {layout.edges.length} 边 · {layout.progressLabel}
+          {layout.nodes.length} 步 · {layout.edges.length} 条关联 · {layout.progressLabel}
         </span>
       </div>
 
@@ -178,7 +178,7 @@ function DagGraphPanel({
             className="dag-graph-canvas"
             viewBox={`0 0 ${graphViewport.width} ${graphViewport.height}`}
             role="img"
-            aria-label="Co-Sight DAG 节点图"
+            aria-label="事项办理路径图"
             preserveAspectRatio="xMidYMid meet"
           >
             <defs>
@@ -272,7 +272,7 @@ function DagGraphPanel({
           ) : (
             <article className="ds-card step-tool-detail-panel step-tool-detail-placeholder">
               <strong>节点详情</strong>
-              <p>点击左侧节点，查看阶段结果与工具调用。</p>
+              <p>点击左侧节点，查看阶段结论与处理动作。</p>
             </article>
           )
         ) : null}

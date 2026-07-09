@@ -30,7 +30,7 @@ function AdminPoliciesPage() {
   return (
     <AdminShell
       title="策略规则"
-      subtitle="调度策略与审查规则集中维护。"
+      subtitle="办理策略与审查规则集中维护。"
       actions={(
         <button type="button" className="btn btn-primary" onClick={handleSave}>
           <Save size={16} />
@@ -41,7 +41,7 @@ function AdminPoliciesPage() {
       <PageHeader
         icon={GitBranch}
         title="策略规则"
-        subtitle="合并原「调度策略」与「审查规则」，保留核心可编辑能力。"
+        subtitle="集中维护办理路径判断与审查规则，保留核心可编辑能力。"
       />
 
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}
@@ -53,7 +53,7 @@ function AdminPoliciesPage() {
           onClick={() => setSearchParams({ tab: 'routing' })}
         >
           <GitBranch size={14} />
-          调度策略 ({routingDraft.length})
+          办理策略 ({routingDraft.length})
         </button>
         <button
           type="button"
@@ -68,8 +68,8 @@ function AdminPoliciesPage() {
       <section className="ds-card admin-panel admin-panel-wide admin-rules-compact">
         <p className="admin-panel-desc">
           {tab === 'routing'
-            ? '当任务状态满足条件时，系统自动选择对应智能体介入。'
-            : '交叉审查智能体依据这些规则标记事实冲突、证据缺口与引用不足。'}
+            ? '当事项状态满足条件时，系统自动选择对应协作角色介入。'
+            : '结论复核角色依据这些规则标记事实冲突、证据缺口与引用不足。'}
         </p>
 
         <div className="admin-rule-editor admin-rule-editor-compact">
@@ -101,7 +101,7 @@ function AdminPoliciesPage() {
           className="btn btn-secondary admin-inline-btn"
           onClick={() => setActiveDraft([
             ...activeDraft,
-            tab === 'routing' ? '新增调度规则：当……时，调度……智能体。' : '新增审查规则：……',
+            tab === 'routing' ? '新增办理规则：当……时，协作……角色介入。' : '新增审查规则：……',
           ])}
         >
           <Plus size={16} />

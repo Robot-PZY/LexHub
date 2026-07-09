@@ -39,7 +39,7 @@ export const SCENARIO_DEFINITIONS: ScenarioDefinition[] = [
     examples: ['请根据我提供的材料，归纳核心问题并给出下一步处理建议。'],
     placeholder: '描述你的目标与已知事实，系统将自动规划检索、分析与输出路径…',
     deliverables: [
-      { id: 'task_summary_report', label: '任务总结报告', description: '归纳问题、过程与建议' },
+      { id: 'task_summary_report', label: '事项总结报告', description: '归纳问题、过程与建议' },
     ],
     outputProfile: {
       primary: 'report',
@@ -47,7 +47,7 @@ export const SCENARIO_DEFINITIONS: ScenarioDefinition[] = [
       deliverableCollapsed: false,
       autoGenerate: false,
       primaryLabel: '分析结论',
-      primaryHint: '以任务报告为主交付，无需额外文书。',
+      primaryHint: '以事项报告为主交付，无需额外文书。',
     },
   },
   {
@@ -79,7 +79,7 @@ export const SCENARIO_DEFINITIONS: ScenarioDefinition[] = [
     placeholder: '列出调研主题、希望覆盖的信息维度与输出格式…',
     deliverables: [
       { id: 'legal_opinion_summary', label: '调研摘要', description: '法规与公开信息结论' },
-      { id: 'task_summary_report', label: '任务总结报告', description: '完整过程与发现' },
+      { id: 'task_summary_report', label: '事项总结报告', description: '完整过程与发现' },
     ],
     outputProfile: {
       primary: 'research',
@@ -108,7 +108,7 @@ export const SCENARIO_DEFINITIONS: ScenarioDefinition[] = [
       deliverableCollapsed: false,
       autoGenerate: true,
       primaryLabel: '审查结论与文书',
-      primaryHint: '任务完成后将结合表单信息自动生成合同审查报告，可切换其他文书类型。',
+      primaryHint: '事项完成后将结合表单信息自动生成合同审查报告，可切换其他文书类型。',
     },
   },
   {
@@ -233,7 +233,7 @@ export function getScenarioOutputProfile(scenarioId?: string): ScenarioOutputPro
     showDeliverable: false,
     deliverableCollapsed: true,
     autoGenerate: false,
-    primaryLabel: '任务结论',
-    primaryHint: '以任务报告为主交付。',
+    primaryLabel: '办理结论',
+    primaryHint: '以事项报告为主交付。',
   };
 }

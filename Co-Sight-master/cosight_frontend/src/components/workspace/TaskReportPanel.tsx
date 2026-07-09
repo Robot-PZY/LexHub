@@ -3,6 +3,7 @@ import { CheckCircle2, FileText, ShieldCheck, Sparkles } from 'lucide-react';
 import type { ResultInsight } from '../../types/chat';
 import type { ExecutionSnapshot } from '../../types/execution';
 import ExecutionExportActions from '../documents/ExecutionExportActions';
+import { Badge } from '../ui';
 import { buildExportPayloadFromSnapshot } from '../../lib/execution-export';
 import { parseMarkdownSections, renderMarkdownHtml } from '../../lib/report-parser';
 import {
@@ -54,17 +55,17 @@ function TaskReportPanel({
   const findingCount = riskStats.high + riskStats.medium + riskStats.low;
 
   return (
-    <section className="ds-card task-report-panel">
+    <section className="ds-card task-report-panel task-report-panel-redesign">
       <div className="task-report-head">
         <div>
-          <p className="eyebrow">TASK REPORT</p>
-          <h2>{snapshot?.title || title || '任务总结报告'}</h2>
+          <p className="eyebrow">LEGAL REVIEW</p>
+          <h2>{snapshot?.title || title || '审查结论报告'}</h2>
           <p className="task-report-subtitle">
-            {scenario ? `${scenario.title} · ${scenario.description}` : 'Co-Sight 多智能体协同执行报告'}
+            {scenario ? `${scenario.title} · ${scenario.description}` : '法律事项办理报告'}
           </p>
         </div>
         <div className="task-report-head-actions">
-          <span className="ds-badge ds-badge-success">{statusSummary}</span>
+          <Badge tone="success" pill>{statusSummary}</Badge>
           {exportPayload && (
             <ExecutionExportActions
               payload={exportPayload}
@@ -76,22 +77,22 @@ function TaskReportPanel({
       </div>
 
       <div className="task-report-stats">
-        <article>
-          <span>执行阶段</span>
+        <article className="task-report-stat-phase">
+          <span>办理阶段</span>
           <strong>{completedSteps}/{totalSteps || '—'}</strong>
           <em>已完成</em>
         </article>
-        <article>
-          <span>工具调用</span>
+        <article className="task-report-stat-tool">
+          <span>处理动作</span>
           <strong>{toolCount || '—'}</strong>
           <em>次检索与处理</em>
         </article>
-        <article>
+        <article className="task-report-stat-risk">
           <span>风险识别</span>
           <strong>{findingCount > 0 ? findingCount : '—'}</strong>
           <em>{findingCount > 0 ? `高 ${riskStats.high} · 中 ${riskStats.medium}` : '见报告正文'}</em>
         </article>
-        <article>
+        <article className="task-report-stat-evidence">
           <span>引用依据</span>
           <strong>{resultInsight.evidenceReferences.length}</strong>
           <em>条可追溯来源</em>
@@ -142,7 +143,7 @@ function TaskReportPanel({
 
           {snapshot && snapshot.steps.length > 0 && (
             <article className="task-report-side-card">
-              <strong><Sparkles size={14} /> 执行阶段</strong>
+              <strong><Sparkles size={14} /> 办理阶段</strong>
               <div className="task-report-steps">
                 {snapshot.steps.map((step) => (
                   <div key={`${step.index}-${step.title}`} className={`task-report-step ${step.status}`}>

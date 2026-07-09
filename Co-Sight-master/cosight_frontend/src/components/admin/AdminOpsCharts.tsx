@@ -167,11 +167,11 @@ function AdminOpsCharts() {
             </div>
             <div className="admin-ops-kpi-row">
               <div>
-                <span>API 就绪率</span>
+                <span>服务就绪率</span>
                 <strong>{data.summary.apiReadyRatio}%</strong>
               </div>
               <div>
-                <span>回放归档</span>
+                <span>归档记录</span>
                 <strong>{data.summary.replayCount ?? 0}</strong>
               </div>
             </div>
@@ -181,7 +181,7 @@ function AdminOpsCharts() {
             <div className="admin-ops-card-head">
               <Users size={16} />
               <strong>近期活跃</strong>
-              <em>最近登录或任务跟进</em>
+              <em>最近登录或事项跟进</em>
             </div>
             <div className="admin-active-users admin-active-users-compact">
               {recentUsers.map((user) => (

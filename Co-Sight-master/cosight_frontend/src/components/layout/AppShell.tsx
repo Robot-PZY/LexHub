@@ -22,7 +22,7 @@ function useBreadcrumbs(pathname: string) {
     return [{ path: '/', label: '首页' }];
   }
 
-  return segments.reduce<Array<{ path: string; label: string }>>((acc, _seg) => {
+  return segments.reduce<Array<{ path: string; label: string }>>((acc) => {
     const path = `/${segments.slice(0, acc.length + 1).join('/')}`;
     acc.push({ path, label: ROUTE_LABELS[path] || path });
     return acc;
@@ -72,7 +72,7 @@ function AppShell({ title, subtitle, badge, actions, children, onLogout }: AppSh
             }}
           >
             <Plus size={16} />
-            <span>{role === 'admin' ? '管理控制台' : '发起新任务'}</span>
+            <span>{role === 'admin' ? '管理控制台' : '发起新事项'}</span>
           </button>
 
           {navGroups.map((group) => (

@@ -11,7 +11,7 @@ export type AtomicCapability = {
 };
 
 export const ATOMIC_CAPABILITIES: AtomicCapability[] = [
-  { id: 'plan', label: '任务拆解', agentId: 'planner', keywords: ['规划', '拆解', '理解任务'], toolHints: [] },
+  { id: 'plan', label: '事项拆解', agentId: 'planner', keywords: ['规划', '拆解', '事项受理'], toolHints: [] },
   { id: 'material_parse', label: '材料解析', agentId: 'evidence', keywords: ['阅读', '解析', 'OCR', '上传材料'], toolHints: ['file_read', 'read_file', 'file_upload'] },
   { id: 'fact_extract', label: '事实抽取', agentId: 'evidence', keywords: ['事实', '争议焦点', '整理', '梳理', '收集', '归纳'], toolHints: [] },
   { id: 'evidence_match', label: '证据匹配', agentId: 'evidence', keywords: ['证据', '待证', '匹配', '缺口', '清单', '补充'], toolHints: [] },

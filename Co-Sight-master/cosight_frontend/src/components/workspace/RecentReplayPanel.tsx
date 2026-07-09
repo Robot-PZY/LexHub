@@ -13,7 +13,7 @@ function RecentReplayPanel({ items }: RecentReplayPanelProps) {
       <EmptyState
         icon={<FolderOpen size={22} />}
         title="暂无近期记录"
-        description="完成一次任务处理后，最近的记录会显示在这里，方便继续查看或恢复处理。"
+        description="完成一次事项办理后，最近的记录会显示在这里，方便继续查看或恢复处理。"
       />
     );
   }

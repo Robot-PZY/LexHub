@@ -1,5 +1,5 @@
 const DEFAULT_STEPS = [
-  { id: 'planner', label: '规划', title: '任务规划' },
+  { id: 'planner', label: '受理', title: '事项受理' },
   { id: 'retrieval', label: '检索', title: '依据检索' },
   { id: 'analysis', label: '分析', title: '风险分析' },
   { id: 'generation', label: '生成', title: '文书生成' },
@@ -15,7 +15,7 @@ function AgentPipeline({ activeStep = 'planner', compact = false }: AgentPipelin
   const activeIndex = Math.max(0, DEFAULT_STEPS.findIndex((s) => s.id === activeStep));
 
   return (
-    <div className={`agent-pipeline${compact ? ' agent-pipeline-compact' : ''}`} role="list" aria-label="多智能体处理管线">
+    <div className={`agent-pipeline${compact ? ' agent-pipeline-compact' : ''}`} role="list" aria-label="事项办理路径">
       {DEFAULT_STEPS.map((step, index) => {
         const isActive = step.id === activeStep;
         const isDone = index < activeIndex;

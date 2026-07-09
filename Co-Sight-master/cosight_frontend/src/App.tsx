@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import ProtectedRoute from './components/app/ProtectedRoute';
 import AdminLayout from './components/layout/AdminShell';
 import LandingPage from './pages/LandingPage';
@@ -26,8 +26,11 @@ import AdminPoliciesPage from './pages/admin/AdminPoliciesPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
 
 function App() {
+  const location = useLocation();
+
   return (
-    <Routes>
+    <div className="page-transition-stage" key={`${location.pathname}${location.search}`}>
+      <Routes location={location}>
       <Route path="/" element={<LandingPage />} />
       <Route path="/board" element={<BoardPage />} />
       <Route path="/login" element={<LoginPage />} />
@@ -172,7 +175,8 @@ function App() {
         <Route path="agents" element={<Navigate to="/admin" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+      </Routes>
+    </div>
   );
 }
 

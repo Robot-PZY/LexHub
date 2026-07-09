@@ -8,8 +8,8 @@ import { useAdminSettings } from '../../hooks/useAdminSettings';
 const TABS: Array<{ id: StackTab; label: string; icon: typeof SlidersHorizontal }> = [
   { id: 'overview', label: '总览', icon: Layers3 },
   { id: 'models', label: '模型', icon: SlidersHorizontal },
-  { id: 'apis', label: 'API 工具', icon: KeyRound },
-  { id: 'tools', label: 'Co-Sight 工具', icon: Bot },
+  { id: 'apis', label: '外部服务', icon: KeyRound },
+  { id: 'tools', label: '处理能力', icon: Bot },
 ];
 
 function AdminConnectionsPage() {
@@ -25,10 +25,10 @@ function AdminConnectionsPage() {
   return (
     <AdminShell
       title="能力总览"
-      subtitle="只读展示 Co-Sight 编排能力与律枢模型 / API / 工具配置状态。"
+      subtitle="只读展示 LexHub 办理能力与模型、外部服务、处理能力配置状态。"
       badge={(
         <span className="ds-badge ds-badge-primary">
-          模型 {readyModelCount}/{settings.models.length} · API {readyApiCount}/{settings.apis.length}
+          模型 {readyModelCount}/{settings.models.length} · 服务 {readyApiCount}/{settings.apis.length}
         </span>
       )}
       actions={(
@@ -41,7 +41,7 @@ function AdminConnectionsPage() {
       <PageHeader
         icon={Layers3}
         title="系统能力栈"
-        subtitle="整合 Co-Sight 原生工具目录与律枢自行配置的模型、API 位；不在此页编辑，请在 .env 或 runtime 配置文件中维护密钥。"
+        subtitle="整合模型能力、外部服务与本地处理能力；本页用于总览，密钥与运行配置请在对应管理页维护。"
       />
 
       <div className="admin-tab-bar">

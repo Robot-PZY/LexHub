@@ -96,7 +96,7 @@ function FileUploadZone({
         <Upload size={22} />
         <div>
           <strong>{uploading ? '正在上传材料…' : '拖拽或选择本地文件'}</strong>
-          <span>{hint || '支持 PDF、Word、TXT、Markdown、图片等格式。上传成功后会自动关联到当前任务。'}</span>
+          <span>{hint || '支持 PDF、Word、TXT、Markdown、图片等格式。上传成功后会自动关联到当前事项。'}</span>
         </div>
         <button type="button" className="btn btn-secondary" onClick={() => inputRef.current?.click()} disabled={uploading}>
           选择文件

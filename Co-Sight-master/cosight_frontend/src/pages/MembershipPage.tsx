@@ -36,7 +36,7 @@ function MembershipPage() {
       return;
     }
     if (tier === currentTier) {
-      showToast('您当前已是该套餐（演示环境，无需重复操作）。');
+      showToast('您当前已是该套餐，无需重复操作。');
       return;
     }
     setPendingTier(tier);
@@ -47,7 +47,7 @@ function MembershipPage() {
     setMembershipTierForAccount(profile.account, pendingTier);
     const plan = MEMBERSHIP_PLANS.find((item) => item.id === pendingTier);
     setPendingTier(null);
-    showToast(`演示升级成功：已切换至「${plan?.label ?? pendingTier}」（未产生真实扣费）。`);
+    showToast(`套餐已切换至「${plan?.label ?? pendingTier}」（当前体验环境未产生真实扣费）。`);
   };
 
   const handleLogout = () => {
@@ -58,13 +58,13 @@ function MembershipPage() {
   return (
     <AppShell
       title="会员中心"
-      subtitle={profile?.account ? `当前账号：${profile.account}` : '演示套餐与续费'}
+      subtitle={profile?.account ? `当前账号：${profile.account}` : '套餐与续费'}
       onLogout={handleLogout}
     >
       <PageHeader
         icon={Crown}
         title="会员中心"
-        subtitle="演示环境：升级/续费仅切换本地套餐状态，不产生真实支付。"
+        subtitle="按事项规模与交付需求选择不同能力组合。"
       />
 
       {toast && <div className="admin-save-hint membership-toast">{toast}</div>}
@@ -87,7 +87,7 @@ function MembershipPage() {
       <section className="landing-pricing-section membership-pricing-section">
         <div className="landing-section-head">
           <p className="eyebrow">套餐方案</p>
-          <h2>按任务规模选择能力组合，支持升级与续费（演示）。</h2>
+          <h2>按事项规模选择能力组合，支持升级与续费。</h2>
         </div>
         <div className="landing-pricing-grid">
           {MEMBERSHIP_PLANS.map((plan) => {
@@ -135,26 +135,26 @@ function MembershipPage() {
       <section className="ds-card membership-demo-note">
         <Sparkles size={16} />
         <p>
-          本页面为<strong>演示效果</strong>：点击升级后将立即在本地切换会员档位，侧边栏徽章与任务权限展示会同步更新，不涉及真实支付网关。
+          当前版本为本地体验环境：点击升级后会切换会员档位，侧边栏徽章与事项权限展示会同步更新，不涉及真实支付网关。
         </p>
       </section>
 
       {pendingTier && (
         <div className="membership-modal-backdrop" role="presentation" onClick={() => setPendingTier(null)}>
           <div className="membership-modal" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
-            <p className="eyebrow">演示收银台</p>
+            <p className="eyebrow">套餐确认</p>
             <h3>
               确认{MEMBERSHIP_PLANS.find((p) => p.id === pendingTier)?.label}
               {currentTier === pendingTier ? '续费' : '升级'}
             </h3>
             <p className="membership-modal-desc">
               将切换至「{MEMBERSHIP_PLANS.find((p) => p.id === pendingTier)?.label}」。
-              演示环境不会发起真实扣费，仅更新本地会员状态。
+              当前体验环境不会发起真实扣费，仅更新本地会员状态。
             </p>
             <div className="membership-modal-actions">
               <button type="button" className="btn btn-secondary" onClick={() => setPendingTier(null)}>取消</button>
               <button type="button" className="btn btn-primary" onClick={confirmDemoCheckout}>
-                确认演示支付
+                确认切换
               </button>
             </div>
           </div>

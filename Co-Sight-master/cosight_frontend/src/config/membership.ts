@@ -13,7 +13,7 @@ export const MEMBERSHIP_TIERS: MembershipTierMeta[] = [
     id: 'trial',
     label: '体验版',
     shortLabel: '体验',
-    description: '功能精简，用于体验 Co-Sight 编排与基础流程。',
+    description: '功能精简，用于体验法律事项受理与基础办理流程。',
     tone: 'muted',
   },
   {
@@ -42,7 +42,7 @@ export const MEMBERSHIP_PLANS: MembershipPlanDetail[] = [
     priceLabel: '免费',
     priceNote: '适合初次体验',
     periodLabel: '永久体验额度',
-    features: ['基础任务体验', 'DAG 执行预览', '回放记录查看', '材料库归档'],
+    features: ['基础事项受理', '办理路径预览', '归档记录查看', '材料库归档'],
     cta: '当前体验',
   },
   {
@@ -50,7 +50,7 @@ export const MEMBERSHIP_PLANS: MembershipPlanDetail[] = [
     priceLabel: '¥199',
     priceNote: '按月计费（演示）',
     periodLabel: '/ 月',
-    features: ['法律智能体协同', '完整 DAG 动态编排', 'DOCX / PDF 导出', '回放与材料归档', '法规混合检索'],
+    features: ['法律角色协同', '完整办理路径', 'DOCX / PDF 导出', '案件与材料归档', '法规混合检索'],
     cta: '升级专业版',
   },
   {
@@ -58,7 +58,7 @@ export const MEMBERSHIP_PLANS: MembershipPlanDetail[] = [
     priceLabel: '¥499',
     priceNote: '按月计费（演示）',
     periodLabel: '/ 月',
-    features: ['Pro 全部能力', '更高任务额度', '高级工具包', '优先调度', '机构协作席位（规划）'],
+    features: ['Pro 全部能力', '更高事项额度', '高级处理能力', '优先办理', '机构协作席位（规划）'],
     cta: '升级旗舰版',
   },
 ];

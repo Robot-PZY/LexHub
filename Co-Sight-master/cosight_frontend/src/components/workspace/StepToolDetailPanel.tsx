@@ -12,7 +12,7 @@ type StepToolDetailPanelProps = {
 };
 
 function statusText(status: string) {
-  if (status === 'running') return '执行中';
+  if (status === 'running') return '办理中';
   if (status === 'completed') return '已完成';
   if (status === 'failed') return '失败';
   return '等待';
@@ -83,9 +83,9 @@ function StepToolDetailPanel({ detail, stepCount = 1, allCompleted = false }: St
           <p>
             {detail.status === 'running'
               ? runningTool
-                ? `正在执行：${formatToolDisplaySummary(runningTool)}`
-                : '本步执行中，完成后将在此展示阶段结论。'
-              : '本步完成后，Co-Sight 会在此沉淀阶段性结论。'}
+                ? `正在处理：${formatToolDisplaySummary(runningTool)}`
+                : '本步办理中，完成后将在此展示阶段结论。'
+              : '本步完成后，系统会在此沉淀阶段性结论。'}
           </p>
         </section>
       )}
@@ -103,7 +103,7 @@ function StepToolDetailPanel({ detail, stepCount = 1, allCompleted = false }: St
         onClick={() => setToolsOpen((open) => !open)}
       >
         <Wrench size={14} />
-        <span>工具调用 {tools.length} 条</span>
+        <span>处理动作 {tools.length} 条</span>
         <em>{toolsOpen ? '收起' : '展开'}</em>
         <ChevronDown size={16} className={toolsOpen ? 'open' : ''} />
       </button>
@@ -111,7 +111,7 @@ function StepToolDetailPanel({ detail, stepCount = 1, allCompleted = false }: St
       {toolsOpen && (
         <div className="step-tool-compact-list">
           {tools.length === 0 ? (
-            <p className="step-tool-detail-empty">暂无工具记录。</p>
+            <p className="step-tool-detail-empty">暂无处理记录。</p>
           ) : (
             tools.map((tool) => (
               <div key={tool.id} className={`step-tool-compact-row ${tool.status}`}>

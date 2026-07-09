@@ -7,7 +7,7 @@ import LoadingState from '../components/ui/LoadingState';
 import PageHeader from '../components/ui/PageHeader';
 import StatCard from '../components/ui/StatCard';
 import { fetchKnowledgeVectorStats, fetchToolchainStatus, legalSearch } from '../lib/api';
-import { TOOLCHAIN_CATEGORIES, COSIGHT_SUBTITLE } from '../lib/cosight-narrative';
+import { TOOLCHAIN_CATEGORIES } from '../lib/cosight-narrative';
 import { clearAuthed, loadWorkspaceDraft, loadWorkspaceSession } from '../lib/storage';
 import type { ApiIntegration } from '../types/legal';
 import type { LegalSearchHit, LegalSearchResult } from '../types/legal-search';
@@ -134,15 +134,15 @@ function ResearchPage() {
   return (
     <AppShell
       title="法规研究"
-      subtitle={`${COSIGHT_SUBTITLE} · 法规研究智能体调用搜索/RAG 工具。`}
-      badge={result ? <DataSourceBadge source="api" /> : <span className="ds-badge ds-badge-primary">≥3 类工具链</span>}
+      subtitle="围绕法律问题检索法规、案例与本地知识库，形成可追溯依据。"
+      badge={result ? <DataSourceBadge source="api" /> : <span className="ds-badge ds-badge-primary">多源检索</span>}
       actions={<button type="button" className="btn btn-secondary" onClick={() => navigate('/workspace')}>生成文书</button>}
       onLogout={handleLogout}
     >
       <PageHeader
         icon={BookOpenCheck}
         title="法规研究台"
-        subtitle="调用得理法规案例库、NPC 公开法规库与本地 Chroma 知识库，结果保留引用来源。"
+        subtitle="检索得理法规案例库、NPC 公开法规库与本地知识库，结果保留引用来源。"
       />
 
       <section className="feature-stat-grid">
@@ -191,7 +191,7 @@ function ResearchPage() {
               <div key={question}>
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <strong>{question}</strong>
-                <em>{index === 0 && result ? '当前检索问题' : '可由规划智能体与法规研究智能体协作生成'}</em>
+                <em>{index === 0 && result ? '当前检索问题' : '可由事项受理与法规研究角色协作生成'}</em>
               </div>
             ))}
           </div>
@@ -204,7 +204,7 @@ function ResearchPage() {
             <p>
               {result
                 ? `共命中法规 ${result.laws.length} 条、案例 ${result.cases.length} 条、本地知识 ${result.local.length} 条。来源：${result.sources.map((item) => sourceLabels[item] ?? item).join('、') || '无'}。请结合案件材料人工复核后再用于文书生成。`
-                : '输入问题并点击「开始检索」，系统会调用得理 / NPC / Chroma 混合检索并展示可追溯引用。'}
+                : '输入问题并点击「开始检索」，系统会进行得理 / NPC / 本地知识库混合检索并展示可追溯引用。'}
             </p>
           </div>
         </article>
@@ -213,9 +213,9 @@ function ResearchPage() {
           <article className="ds-card feature-panel">
             <div className="feature-card-title">
               <FileSearch size={18} />
-              <strong>检索工具链</strong>
+              <strong>检索能力</strong>
             </div>
-            {metaLoading ? <LoadingState label="加载工具状态…" compact /> : (
+            {metaLoading ? <LoadingState label="加载检索能力状态…" compact /> : (
               <div className="feature-mini-list">
                 {(researchIntegrations.length ? researchIntegrations : integrations.slice(0, 3)).map((item) => (
                   <div key={item.id}>
@@ -224,7 +224,7 @@ function ResearchPage() {
                   </div>
                 ))}
                 {!researchIntegrations.length && !integrations.length && (
-                  <div><span>混合法规检索 API</span><em>待连接</em></div>
+                  <div><span>混合法规检索服务</span><em>待连接</em></div>
                 )}
               </div>
             )}
@@ -247,10 +247,10 @@ function ResearchPage() {
       <section className="ds-card feature-panel feature-panel-wide">
         <div className="feature-panel-head">
           <div>
-            <p className="eyebrow">TOOLCHAIN</p>
-            <h2>法规研究相关工具类型</h2>
+            <p className="eyebrow">RESEARCH SOURCES</p>
+            <h2>法规研究相关来源</h2>
           </div>
-          <span className="ds-badge ds-badge-success">赛题要求 ≥3 类</span>
+          <span className="ds-badge ds-badge-success">多源互证</span>
         </div>
         <div className="toolchain-board-grid compact">
           {TOOLCHAIN_CATEGORIES.map((item) => (

@@ -23,15 +23,15 @@ function ReviewPage() {
   return (
     <AppShell
       title="审查结果"
-      subtitle="交叉审查智能体对事实、证据、法规和文书进行复核。"
+      subtitle="结论复核角色对事实、证据、法规和文书进行一致性审查。"
       badge={<DataSourceBadge source={source} />}
       actions={<button type="button" className="btn btn-primary" onClick={() => navigate('/reports')}>生成报告</button>}
       onLogout={handleLogout}
     >
       <PageHeader
         icon={ShieldCheck}
-        title="交叉审查结果"
-        subtitle="审查智能体不直接替代专业判断，而是标记不一致、缺依据和可能产生幻觉风险的部分。"
+        title="结论复核结果"
+        subtitle="系统不替代专业判断，而是标记不一致、缺依据和可能产生风险的部分。"
       />
 
       {loading ? <LoadingState label="加载审查结果…" /> : (
@@ -72,8 +72,8 @@ function ReviewPage() {
                 <p>
                   {data.overallVerdict}
                   {data.dataSource === 'replay'
-                    ? '。审查矩阵与审计链均来自最新 replay.json 真实执行记录。'
-                    : '。请先在工作台执行一条任务以生成 replay 审查数据。'}
+                    ? '。审查矩阵与审计链均来自最新真实办理记录。'
+                    : '。请先在事项受理页完成一次办理，以生成审查数据。'}
                 </p>
               </div>
             </article>

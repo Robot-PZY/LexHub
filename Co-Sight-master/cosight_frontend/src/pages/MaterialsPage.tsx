@@ -39,8 +39,8 @@ function formatTime(isoString: string): string {
 
 function taskGroupLabel(item: MaterialItem): string {
   if (item.taskTitle?.trim()) return item.taskTitle.trim();
-  if (item.workspacePath) return item.workspacePath.replace(/^work_space_/, '任务 ');
-  if (item.taskId) return `任务 ${item.taskId.slice(0, 8)}`;
+  if (item.workspacePath) return item.workspacePath.replace(/^work_space_/, '事项 ');
+  if (item.taskId) return `事项 ${item.taskId.slice(0, 8)}`;
   return '未归档上传';
 }
 
@@ -122,7 +122,7 @@ function MaterialsPage() {
 
   const handleReset = async () => {
     await resetDemoMaterials().catch(() => undefined);
-    setResetHint('材料库已清空，仅保留后续任务产生的上传与正式交付物。');
+    setResetHint('材料库已清空，仅保留后续事项产生的上传与正式交付物。');
     window.setTimeout(() => setResetHint(''), 3500);
     await load();
   };
@@ -163,7 +163,7 @@ function MaterialsPage() {
       actions={(
         <>
           <button type="button" className="btn btn-ghost" onClick={() => void handleReset()}>清空材料库</button>
-          <Link className="btn btn-primary" to="/workspace">发起任务</Link>
+          <Link className="btn btn-primary" to="/workspace">发起事项</Link>
         </>
       )}
       onLogout={handleLogout}
@@ -171,16 +171,16 @@ function MaterialsPage() {
       <PageHeader
         icon={FolderOpen}
         title="材料库"
-        subtitle="按用户与任务归档：保留上传材料、正式报告与生成文书；过程 Step 中间稿默认不展示。"
+        subtitle="按用户与事项归档：保留上传材料、正式报告与生成文书；办理过程中的中间稿默认不展示。"
       />
 
       {resetHint && <div className="admin-save-hint">{resetHint}</div>}
 
       <section className="feature-stat-grid materials-stat-grid">
         <StatCard label="归档材料" value={`${stats.total}`} description="当前用户可见交付物" />
-        <StatCard label="上传材料" value={`${stats.uploads}`} description="任务提交时上传" />
-        <StatCard label="生成文书" value={`${stats.generated}`} description="每任务最多保留 2 份" />
-        <StatCard label="正式报告" value={`${stats.reports}`} description="每任务最多保留 2 份" />
+        <StatCard label="上传材料" value={`${stats.uploads}`} description="事项提交时上传" />
+        <StatCard label="生成文书" value={`${stats.generated}`} description="每事项最多保留 2 份" />
+        <StatCard label="正式报告" value={`${stats.reports}`} description="每事项最多保留 2 份" />
       </section>
 
       <section className="ds-card materials-panel">
@@ -206,8 +206,8 @@ function MaterialsPage() {
           <EmptyState
             icon={<FolderOpen size={22} />}
             title="暂无材料"
-            description="完成一次任务后，上传文件与正式交付物会按任务归档显示在这里。"
-            action={<Link className="btn btn-primary" to="/workspace" style={{ marginTop: 8 }}>去发起任务</Link>}
+            description="完成一次事项后，上传文件与正式交付物会按事项归档显示在这里。"
+            action={<Link className="btn btn-primary" to="/workspace" style={{ marginTop: 8 }}>去发起事项</Link>}
           />
         )}
 

@@ -6,15 +6,15 @@ import { useAdminSettings } from '../../hooks/useAdminSettings';
 import type { ModelCapabilityType, ModelProviderConfig } from '../../types/admin-config';
 
 const capabilityMeta: Record<ModelCapabilityType, { label: string; icon: typeof BrainCircuit; tone: string }> = {
-  text_llm: { label: '语言推理 LLM', icon: BrainCircuit, tone: 'text' },
+  text_llm: { label: '语言推理模型', icon: BrainCircuit, tone: 'text' },
   vision_ocr: { label: '视觉 / OCR', icon: Eye, tone: 'vision' },
   multimodal: { label: '多模态复核', icon: Layers, tone: 'multi' },
   embedding: { label: '向量嵌入', icon: Sparkles, tone: 'embed' },
 };
 
 const sectionOrder: Array<{ type: ModelCapabilityType; title: string; desc: string }> = [
-  { type: 'text_llm', title: '语言推理模型', desc: '任务理解、法规研究、文书生成等文本智能体。' },
-  { type: 'vision_ocr', title: '视觉与 OCR 能力', desc: '合同扫描、票据识图、PDF 解析，不仅依赖纯 LLM。' },
+  { type: 'text_llm', title: '语言推理模型', desc: '事项受理、法规研究、文书生成等文本能力。' },
+  { type: 'vision_ocr', title: '视觉与 OCR 能力', desc: '合同扫描、票据识图、PDF 解析，支持材料质检。' },
   { type: 'multimodal', title: '多模态与复核', desc: '结合文本、材料与规则引擎的交叉审查能力。' },
 ];
 
@@ -41,13 +41,13 @@ function AdminModelsPage() {
     <AdminShell title="模型配置" subtitle="按能力类型配置语言模型、视觉 OCR 与多模态复核。">
       <PageHeader
         icon={SlidersHorizontal}
-        title="智能体能力配置"
-        subtitle="智能体不等于单一 LLM：证据质检需要 OCR/视觉模型，交叉审查可结合规则引擎与多模态能力。"
+        title="协作角色能力配置"
+        subtitle="协作角色不等于单一模型：证据质检需要 OCR/视觉模型，结论复核可结合规则引擎与多模态能力。"
         action={<button type="button" className="btn btn-primary" onClick={() => saveSettings({ models: draft })}><Save size={16} />保存配置</button>}
       />
 
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}
-      <p className="admin-form-desc">保存后将写入后端 `config/runtime/admin_settings.json`，下一任务自动生效；未填写的项仍使用 `.env`。</p>
+      <p className="admin-form-desc">保存后将更新后端运行配置，下一次事项办理自动生效；未填写的项沿用默认配置。</p>
 
       <section className="admin-runtime-banner">
         <article>
@@ -138,12 +138,12 @@ function AdminModelsPage() {
 
                     <div className="admin-field-row">
                       <label className="admin-field">
-                        <span>API Key</span>
+                        <span>访问密钥</span>
                         <input
                           type="password"
                           value={model.apiKey}
                           onChange={(event) => updateDraft(model.id, { apiKey: event.target.value })}
-                          placeholder="输入该能力对应的 API Key"
+                          placeholder="输入该能力对应的访问密钥"
                         />
                       </label>
                       <label className="admin-field">

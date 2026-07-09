@@ -12,8 +12,8 @@ function AgentRegistryPanel({ registry, compact = false }: AgentRegistryPanelPro
       <section className="ds-card agent-registry-strip">
         <div className="agent-registry-strip-head">
           <Bot size={16} />
-          <strong>智能体注册</strong>
-          <span>{registry.agents.length} 个角色 · 工具由 Co-Sight 调度调用</span>
+          <strong>专业角色注册</strong>
+          <span>{registry.agents.length} 个角色 · 按事项状态协同办理</span>
         </div>
         <div className="agent-registry-strip-list">
           {registry.agents.map((agent) => (
@@ -31,8 +31,8 @@ function AgentRegistryPanel({ registry, compact = false }: AgentRegistryPanelPro
       <div className="agent-registry-head">
         <Bot size={18} />
         <div>
-          <p className="eyebrow">智能体注册表</p>
-          <strong>角色 · 能力 · 工具</strong>
+          <p className="eyebrow">角色注册表</p>
+          <strong>角色 · 能力 · 处理动作</strong>
         </div>
       </div>
 
@@ -41,7 +41,7 @@ function AgentRegistryPanel({ registry, compact = false }: AgentRegistryPanelPro
           <article key={agent.id} className={`agent-registry-card ${agent.role}`}>
             <div className="agent-registry-card-top">
               <strong>{agent.name}</strong>
-              <span className="ds-badge ds-badge-primary">{agent.role === 'orchestrator' ? '调度' : agent.role === 'reviewer' ? '复核' : '执行'}</span>
+              <span className="ds-badge ds-badge-primary">{agent.role === 'orchestrator' ? '受理' : agent.role === 'reviewer' ? '复核' : '办理'}</span>
             </div>
             <p>{agent.capabilities.slice(0, 3).join(' · ')}</p>
             <div className="agent-registry-tools">

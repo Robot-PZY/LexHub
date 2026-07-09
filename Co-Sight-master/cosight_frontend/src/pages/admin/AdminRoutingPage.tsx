@@ -24,7 +24,7 @@ import type { WorkflowConfig } from '../../types/workflow';
 const ruleIcons = [Search, FileText, Scale, ShieldCheck, AlertTriangle];
 
 function extractAgentTag(rule: string): string {
-  const match = rule.match(/调度(.+?)智能体/);
+  const match = rule.match(/(?:协作|调度)(.+?)(?:角色|智能体)/);
   return match?.[1] ?? '通用';
 }
 
@@ -68,11 +68,11 @@ function AdminRoutingPage() {
   const configRules = workflowConfig?.routingRules ?? [];
 
   return (
-    <AdminShell title="调度策略" subtitle="状态驱动规则与工作流拓扑预览。">
+    <AdminShell title="办理策略" subtitle="状态驱动规则与办理路径预览。">
       <PageHeader
         icon={GitBranch}
-        title="动态调度策略"
-        subtitle="根据材料完整度、法规缺口与风险等级自动选择智能体；DAG 拓扑由工作流配置定义。"
+        title="动态办理策略"
+        subtitle="根据材料完整度、法规缺口与风险等级自动选择协作角色；办理路径由流程配置定义。"
         action={(
           <button type="button" className="btn btn-primary" onClick={() => saveSettings({ routingRules: draft })}>
             <Save size={16} />
@@ -94,7 +94,7 @@ function AdminRoutingPage() {
         </article>
         <article>
           <strong>5</strong>
-          <span>可调度智能体</span>
+          <span>协作角色</span>
         </article>
       </section>
 
@@ -102,8 +102,8 @@ function AdminRoutingPage() {
         <div className="admin-routing-main">
           <div className="admin-config-section-head">
             <div>
-              <h3>调度规则</h3>
-              <p>当任务状态满足条件时，系统自动选择对应智能体介入。</p>
+              <h3>办理规则</h3>
+              <p>当事项状态满足条件时，系统自动选择对应协作角色介入。</p>
             </div>
             <span className="ds-badge ds-badge-success">可编辑</span>
           </div>
@@ -146,7 +146,7 @@ function AdminRoutingPage() {
           <button
             type="button"
             className="btn btn-secondary admin-inline-btn"
-            onClick={() => setDraft([...draft, '新增调度规则：当……时，调度……智能体。'])}
+            onClick={() => setDraft([...draft, '新增办理规则：当……时，协作……角色介入。'])}
           >
             <Plus size={16} />
             新增规则
@@ -158,7 +158,7 @@ function AdminRoutingPage() {
             <div className="admin-topology-head">
               <div>
                 <p className="eyebrow">WORKFLOW TOPOLOGY</p>
-                <strong>Co-Sight 工作流拓扑</strong>
+                <strong>LexHub 办理路径</strong>
               </div>
               <div className="admin-topology-badges">
                 <span className="ds-badge ds-badge-primary"><Lock size={12} /> 只读</span>
@@ -166,11 +166,11 @@ function AdminRoutingPage() {
               </div>
             </div>
             <p className="admin-panel-desc">
-              DAG 结构由
+              办理路径由
               {' '}
               <code>legal-workflow.json</code>
               {' '}
-              定义，展示任务从理解 → 证据 → 研究 → 生成 → 审查的编排路径。
+              定义，展示事项从受理 → 证据 → 研究 → 生成 → 复核的办理路径。
             </p>
 
             {workflowLoading ? (

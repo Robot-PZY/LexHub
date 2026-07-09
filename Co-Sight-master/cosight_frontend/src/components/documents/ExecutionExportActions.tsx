@@ -18,16 +18,16 @@ function ExecutionExportActions({
   hint,
 }: ExecutionExportActionsProps) {
   const sourceLabel = useMemo(() => {
-    if (!payload) return '暂无执行数据';
-    if (payload.generationMode === 'llm') return 'LLM API 生成';
+    if (!payload) return '暂无办理数据';
+    if (payload.generationMode === 'llm') return '智能生成';
     if (payload.executionSnapshot || payload.workspacePath || payload.preferExecution) {
-      return 'Co-Sight 真实执行';
+      return '真实办理记录';
     }
-    return 'Demo 模板';
+    return '模板生成';
   }, [payload]);
 
   if (!payload) {
-    return <span className="execution-export-empty">{hint ?? '完成一次任务后可导出真实执行记录。'}</span>;
+    return <span className="execution-export-empty">{hint ?? '完成一次事项后可导出真实办理记录。'}</span>;
   }
 
   return (

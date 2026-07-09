@@ -83,7 +83,7 @@ function resolveCaseFacts(payload: ExportDocumentPayload): string {
   if (payload.executionSnapshot) {
     return buildCaseFactsFromSnapshot(payload.executionSnapshot);
   }
-  return payload.title?.trim() || '请根据当前法律任务生成文书草稿。';
+  return payload.title?.trim() || '请根据当前法律事项生成文书草稿。';
 }
 
 async function generateAndExportDocument(payload: ExportDocumentPayload): Promise<string> {
@@ -94,7 +94,7 @@ async function generateAndExportDocument(payload: ExportDocumentPayload): Promis
     useResearch: payload.useResearch ?? true,
     exportFormat: payload.format,
   });
-  if (!result) throw new Error('文书生成失败，请检查 LLM API 配置。');
+  if (!result) throw new Error('文书生成失败，请检查文书生成服务配置。');
 
   const exportInfo = result.export as { filename?: string; mediaType?: string; contentBase64?: string } | undefined;
   if (exportInfo?.contentBase64 && exportInfo.filename) {

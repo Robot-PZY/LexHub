@@ -33,7 +33,7 @@ function ReportsPage() {
   return (
     <AppShell
       title="总结报告"
-      subtitle="汇总调度过程、证据、研究、审查和输出建议。"
+      subtitle="汇总办理过程、证据材料、依据研究、风险审查和输出建议。"
       badge={<DataSourceBadge source={source} />}
       actions={(
         <ExecutionExportActions
@@ -46,20 +46,20 @@ function ReportsPage() {
     >
       <PageHeader
         icon={BarChart3}
-        title="任务总结报告"
-        subtitle="报告正文优先写入 Co-Sight 真实执行记录；页面概览数据仍可用于评委快速理解。"
+        title="事项总结报告"
+        subtitle="报告正文优先写入最近办理记录；概览数据用于快速理解事项状态。"
       />
 
       {exportHint && <div className="admin-save-hint">{exportHint}</div>}
-      {snapshotLoading && <LoadingState label="同步最近执行记录…" compact />}
+      {snapshotLoading && <LoadingState label="同步最近办理记录…" compact />}
 
       {loading ? <LoadingState label="加载报告数据…" /> : (
         <>
           <section className="feature-stat-grid">
-            <StatCard label="调用智能体" value={`${data.stats.agents}`} description="含交叉审查智能体" />
+            <StatCard label="协作角色" value={`${data.stats.agents}`} description="含结论复核角色" />
             <StatCard label="关键发现" value={`${data.stats.findings}`} description="证据、条款、引用、输出风险" />
             <StatCard label="报告状态" value={data.stats.status} description="可导出前需复核" />
-            <StatCard label="执行来源" value={snapshot ? 'Co-Sight 真实' : '概览 Demo'} description={snapshot ? `${snapshot.stats.toolCallCount} 次工具` : '待任务执行'} />
+            <StatCard label="记录来源" value={snapshot ? '最近办理' : '概览数据'} description={snapshot ? `${snapshot.stats.toolCallCount} 次处理动作` : '待事项办理'} />
           </section>
 
           <section className="feature-layout">
@@ -95,7 +95,7 @@ function ReportsPage() {
                   <strong>报告价值</strong>
                 </div>
                 <div className="feature-mini-list">
-                  <div><span>过程可解释</span><em>展示调度</em></div>
+                  <div><span>过程可解释</span><em>展示办理路径</em></div>
                   <div><span>依据可追溯</span><em>引用来源</em></div>
                   <div><span>结果可复核</span><em>审查意见</em></div>
                 </div>

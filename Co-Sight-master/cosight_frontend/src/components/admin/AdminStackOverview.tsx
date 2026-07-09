@@ -253,14 +253,14 @@ function AdminStackOverview({
       <div className="admin-stack-panel">
         <div className="admin-stack-banner">
           <div>
-            <strong>Co-Sight 编排 + 律枢法律智能体</strong>
+            <strong>LexHub 办理引擎 + 法律协作角色</strong>
             <p>
-              底层由 Co-Sight Planner / Actor 驱动任务拆解与工具调用；律枢在其上注册法律智能体，
-              并通过模型、API 与本地知识库扩展能力。
+              系统按事项状态组织受理、证据、研究、文书与复核角色，
+              并通过模型、外部服务与本地知识库扩展办理能力。
             </p>
           </div>
           <div className="admin-stack-banner-badges">
-            <span className="ds-badge">Co-Sight</span>
+            <span className="ds-badge">办理引擎</span>
             <span className="ds-badge ds-badge-primary">律枢 LexHub</span>
             <DataSourceBadge source={registrySource} />
           </div>
@@ -268,15 +268,15 @@ function AdminStackOverview({
 
         {runtimeInfo && <div className="admin-save-hint">{runtimeInfo}</div>}
         {syncState === 'local' && (
-          <div className="admin-save-hint">后端未连接，状态来自本地演示数据。</div>
+          <div className="admin-save-hint">后端未连接，当前展示本地样例数据。</div>
         )}
 
         <section className="admin-stack-stat-grid">
           {[
-            { icon: Bot, value: registry.agents.length, label: '注册智能体' },
+            { icon: Bot, value: registry.agents.length, label: '协作角色' },
             { icon: BrainCircuit, value: `${modelReadyCount}/${models.length}`, label: '模型已配置' },
-            { icon: Globe, value: `${apiReadyCount}/${apis.length}`, label: 'API 就绪' },
-            { icon: Wrench, value: registry.toolCatalog.length, label: 'Co-Sight 工具' },
+            { icon: Globe, value: `${apiReadyCount}/${apis.length}`, label: '服务就绪' },
+            { icon: Wrench, value: registry.toolCatalog.length, label: '处理能力' },
           ].map((stat) => {
             const Icon = stat.icon;
             return (
@@ -295,19 +295,19 @@ function AdminStackOverview({
           <div className="admin-stack-section-title">
             <div>
               <h3>运行时能力栈</h3>
-              <p>编排 → 智能体 → 模型 → 外部服务</p>
+              <p>流程引擎 → 协作角色 → 模型 → 外部服务</p>
             </div>
           </div>
           <div className="admin-stack-flow">
             <div className="admin-stack-flow-layer admin-stack-flow-layer-accent">
-              <em>编排层</em>
-              <strong>Co-Sight Planner / Actor</strong>
-              <p>DAG · 工具轨迹 · WebSocket</p>
+              <em>流程层</em>
+              <strong>LexHub 办理引擎</strong>
+              <p>办理路径 · 处理轨迹 · 实时同步</p>
             </div>
             <div className="admin-stack-flow-agents">
               {registry.agents.map((agent) => (
                 <div key={agent.id} className={`admin-stack-flow-agent ${agent.role}`}>
-                  <strong>{agent.name.replace('智能体', '')}</strong>
+                  <strong>{agent.name.replace('智能体', '').replace('角色', '')}</strong>
                   <span>{agent.triggers[0]}</span>
                 </div>
               ))}
@@ -335,7 +335,7 @@ function AdminStackOverview({
     return (
       <div className="admin-stack-panel">
         <StackInfoStrip>
-          各法律智能体对应模型位；未填写时回退到 <code>.env</code> 中的 PLAN / ACT / VISION 等变量。
+          各法律协作角色对应模型能力；未填写时沿用后端默认运行配置。
         </StackInfoStrip>
 
         {groups.map((type) => {
@@ -363,10 +363,10 @@ function AdminStackOverview({
                         <StatusPill status={status} />
                       </div>
                       <StackSpecList items={[
-                        { label: '模型', value: model.modelName || '沿用 .env', mono: true },
-                        { label: 'Base URL', value: model.baseUrl || '沿用 .env', mono: true },
-                        { label: 'API Key', value: model.apiKey ? maskSecret(model.apiKey) : '沿用 .env', mono: true },
-                        { label: '环境变量', value: MODEL_ENV_HINT[model.id] ?? '—', mono: true },
+                        { label: '模型', value: model.modelName || '沿用默认配置', mono: true },
+                        { label: '服务地址', value: model.baseUrl || '沿用默认配置', mono: true },
+                        { label: '访问密钥', value: model.apiKey ? maskSecret(model.apiKey) : '沿用默认配置', mono: true },
+                        { label: '配置项', value: MODEL_ENV_HINT[model.id] ?? '—', mono: true },
                       ]} />
                       {model.capabilities.length > 0 && (
                         <div className="admin-stack-tag-row">
@@ -422,9 +422,9 @@ function AdminStackOverview({
             </div>
           )}
           <StackSpecList items={[
-            { label: '管理端 Key', value: api.apiKey ? maskSecret(api.apiKey) : '未填写', mono: true },
-            { label: 'Endpoint', value: api.endpoint || '—', mono: true },
-            { label: '.env 检测', value: envStatusLabel(env) },
+            { label: '访问密钥', value: api.apiKey ? maskSecret(api.apiKey) : '未填写', mono: true },
+            { label: '服务地址', value: api.endpoint || '—', mono: true },
+            { label: '后端检测', value: envStatusLabel(env) },
           ]} />
           {env?.envKeys && env.envKeys.length > 0 && (
             <div className="admin-stack-env-keys">
@@ -440,7 +440,7 @@ function AdminStackOverview({
     return (
       <div className="admin-stack-panel">
         <StackInfoStrip>
-          律枢外部 API 对接位，含合同审查类参考集成；<code>.env 检测</code> 来自后端启动扫描。
+          LexHub 外部服务对接位，含合同审查、法规检索与文书交付能力；就绪状态来自后端启动扫描。
           <DataSourceBadge source={toolchainSource} />
         </StackInfoStrip>
 
@@ -458,10 +458,10 @@ function AdminStackOverview({
   return (
     <div className="admin-stack-panel">
       <StackInfoStrip>
-        Co-Sight Actor 工具目录（<code>agent-registry.json</code>），对应各智能体 <code>registeredTools</code>。
+        办理引擎处理能力目录，对应各协作角色可调用的服务能力。
       </StackInfoStrip>
 
-      <StackSection title="智能体 ↔ 工具" hint="Planner 运行时动态选择调用" count={registry.agents.length}>
+      <StackSection title="协作角色 ↔ 处理能力" hint="运行时按事项状态动态选择" count={registry.agents.length}>
         <div className="admin-stack-agent-grid">
           {registry.agents.map((agent) => (
             <article key={agent.id} className={`ds-card admin-stack-agent-card role-${agent.role}`}>
@@ -469,13 +469,13 @@ function AdminStackOverview({
                 <strong>{agent.name}</strong>
                 <StatusPill status="builtin" label={AGENT_ROLE_LABEL[agent.role] ?? agent.role} />
               </div>
-              <span className="admin-stack-agent-model">{agent.modelLabel ?? 'Co-Sight Model'}</span>
+              <span className="admin-stack-agent-model">{agent.modelLabel ?? '默认模型'}</span>
               <div className="admin-stack-tool-pills">
                 {(agent.registeredTools.length ? agent.registeredTools : ['planner_only']).map((toolId) => {
                   const entry = registry.toolCatalog.find((t) => t.id === toolId);
                   return (
                     <span key={toolId} className="admin-stack-tool-pill">
-                      {entry?.label ?? (toolId === 'planner_only' ? '无外挂工具' : toolId)}
+                      {entry?.label ?? (toolId === 'planner_only' ? '无需外部能力' : toolId)}
                     </span>
                   );
                 })}
@@ -485,13 +485,13 @@ function AdminStackOverview({
         </div>
       </StackSection>
 
-      <StackSection title="工具目录" hint="按分类汇总" count={sortedToolCatalog.length}>
+      <StackSection title="处理能力目录" hint="按分类汇总" count={sortedToolCatalog.length}>
         <div className="ds-card admin-stack-catalog-card">
           <table className="admin-stack-catalog-table">
             <thead>
               <tr>
                 <th>分类</th>
-                <th>工具 ID</th>
+                <th>能力 ID</th>
                 <th>名称</th>
                 <th>依赖 / 说明</th>
               </tr>
@@ -514,12 +514,12 @@ function AdminStackOverview({
         </div>
       </StackSection>
 
-      <StackSection title="自定义 MCP" hint="config/runtime/custom_mcp_tools.json" count={mcpTools.length}>
+      <StackSection title="自定义扩展能力" hint="本地扩展服务配置" count={mcpTools.length}>
         {mcpTools.length === 0 ? (
           <div className="admin-stack-empty">
             <Wrench size={22} />
-            <strong>暂无自定义 MCP</strong>
-            <p>内置工具目录已覆盖法律工作流演示，无需额外挂载。</p>
+            <strong>暂无自定义扩展能力</strong>
+            <p>内置处理能力已覆盖当前法律事项办理流程，无需额外挂载。</p>
           </div>
         ) : (
           <div className="admin-stack-mcp-grid">
@@ -529,7 +529,7 @@ function AdminStackOverview({
                 <p>{tool.description_zh}</p>
                 <StackSpecList items={[
                   { label: 'skill_name', value: tool.skill_name, mono: true },
-                  { label: 'command', value: tool.mcp_server_config.command, mono: true },
+                  { label: '启动命令', value: tool.mcp_server_config.command, mono: true },
                   { label: 'args', value: tool.mcp_server_config.args.join(' ') || '—', mono: true },
                 ]} />
               </article>

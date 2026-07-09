@@ -17,8 +17,8 @@ function ToolchainSummaryPanel({ toolCalls }: ToolchainSummaryPanelProps) {
       <div className="toolchain-summary-head">
         <Wrench size={18} />
         <div>
-          <strong>工具链覆盖</strong>
-          <span>赛题要求至少 3 类工具/API，当前任务已触发 {activeCategoryCount} 类</span>
+          <strong>处理能力覆盖</strong>
+          <span>当前事项已触发 {activeCategoryCount} 类能力</span>
         </div>
       </div>
 
@@ -29,7 +29,7 @@ function ToolchainSummaryPanel({ toolCalls }: ToolchainSummaryPanelProps) {
           return (
             <article key={category.id} className={`toolchain-category-card ${active ? 'active' : ''}`}>
               <strong>{category.label}</strong>
-              <span>{active ? `${matchedTools.length} 个工具` : '待触发'}</span>
+              <span>{active ? `${matchedTools.length} 个动作` : '待触发'}</span>
               <em>{active ? matchedTools.join('、') : category.examples.join(' / ')}</em>
             </article>
           );
@@ -38,7 +38,7 @@ function ToolchainSummaryPanel({ toolCalls }: ToolchainSummaryPanelProps) {
 
       {toolCalls.length > 0 && (
         <div className="toolchain-recent">
-          <span>最近调用</span>
+          <span>最近处理</span>
           <div className="toolchain-recent-list">
             {toolCalls.slice(0, 4).map((tool) => (
               <span key={tool.id} className="ds-chip">

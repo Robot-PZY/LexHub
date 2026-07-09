@@ -14,12 +14,12 @@ function PerformanceComparisonPanel({ benchmark, compact = false }: PerformanceC
       <div className="performance-comparison-head">
         <TrendingUp size={18} />
         <div>
-          <p className="eyebrow">PERFORMANCE BENCHMARK</p>
+          <p className="eyebrow">SERVICE BENCHMARK</p>
           <strong>{benchmark.title}</strong>
           {benchmark.note ? <em>{benchmark.note}</em> : null}
         </div>
         <span className={`ds-badge ${isReplay ? 'ds-badge-success' : 'ds-badge-warning'}`}>
-          {isReplay ? `replay 实测 · ${benchmark.sampleCount ?? 0} 条` : '待实测'}
+          {isReplay ? `办理记录 · ${benchmark.sampleCount ?? 0} 条` : '待补充记录'}
         </span>
       </div>
 
@@ -34,7 +34,7 @@ function PerformanceComparisonPanel({ benchmark, compact = false }: PerformanceC
             <strong>{benchmark.summary.accuracyGain}</strong>
           </div>
           <div>
-            <span>回放覆盖</span>
+            <span>记录覆盖</span>
             <strong>{benchmark.summary.replayCoverage}</strong>
           </div>
         </div>
@@ -44,7 +44,7 @@ function PerformanceComparisonPanel({ benchmark, compact = false }: PerformanceC
         <div className="performance-table-head">
           <span>指标</span>
           <span>传统方案</span>
-          <span>Co-Sight</span>
+          <span>LexHub</span>
           <span>提升</span>
         </div>
         {benchmark.metrics.map((metric) => (

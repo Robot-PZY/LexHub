@@ -83,7 +83,7 @@ function ToolCallToast({ toolCalls, processing = true }: ToolCallToastProps) {
           <div className="tool-call-toast-head">
             <Wrench size={12} />
             <strong>
-              {activeToast.status === 'running' ? '正在调用' : activeToast.status === 'failed' ? '调用失败' : '调用完成'}
+              {activeToast.status === 'running' ? '正在处理' : activeToast.status === 'failed' ? '处理异常' : '处理完成'}
             </strong>
             {activeToast.stepLabel ? <span>{activeToast.stepLabel}</span> : null}
           </div>

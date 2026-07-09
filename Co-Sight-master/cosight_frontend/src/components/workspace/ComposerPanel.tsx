@@ -1,6 +1,7 @@
 import { FileText, Paperclip, Send } from 'lucide-react';
 import { useState } from 'react';
 import type { UploadedFileInfo } from '../../lib/chat';
+import { Button } from '../ui';
 import FileUploadZone from './FileUploadZone';
 
 const templateSections: Array<{ label: string; text: string }> = [
@@ -56,7 +57,7 @@ function ComposerPanel({
         <textarea
           value={draft}
           onChange={(event) => onDraftChange(event.target.value)}
-          placeholder={placeholder || '描述你的法律任务：事实背景、已有材料、希望输出的结果…'}
+          placeholder={placeholder || '描述你的法律事项：事实背景、已有材料、希望输出的结果…'}
           rows={12}
         />
         {scenarioHint ? <p className="composer-scenario-hint">{scenarioHint}</p> : null}
@@ -85,7 +86,7 @@ function ComposerPanel({
           compact
           collapsible={false}
           uploadMeta={uploadMeta}
-          hint="支持合同、票据、截图、聊天记录等。也可只上传材料，由系统补充任务描述。"
+          hint="支持合同、票据、截图、聊天记录等。也可只上传材料，由系统补充事项描述。"
         />
       )}
 
@@ -110,15 +111,15 @@ function ComposerPanel({
       </div>
 
       <div className="composer-toolbar composer-toolbar-intake">
-        <button
+        <Button
           type="button"
-          className="btn btn-primary btn-block"
+          fullWidth
+          leadingIcon={<Send size={16} />}
           onClick={handleSubmit}
           disabled={!canSubmit || submitDisabled}
         >
-          <Send size={16} />
-          <span>开始处理</span>
-        </button>
+          开始处理
+        </Button>
       </div>
     </div>
   );

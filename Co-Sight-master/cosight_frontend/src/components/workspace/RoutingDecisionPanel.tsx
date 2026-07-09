@@ -20,9 +20,9 @@ function RoutingDecisionPanel({ routing, loading = false, source }: RoutingDecis
       <section className="ds-card routing-decision-card">
         <div className="routing-decision-head">
           <GitBranch size={18} />
-          <strong>调度决策</strong>
+          <strong>路径研判</strong>
         </div>
-        <p className="workspace-side-caption-react">正在分析任务状态…</p>
+        <p className="workspace-side-caption-react">正在分析事项状态…</p>
       </section>
     );
   }
@@ -32,9 +32,9 @@ function RoutingDecisionPanel({ routing, loading = false, source }: RoutingDecis
       <section className="ds-card routing-decision-card">
         <div className="routing-decision-head">
           <GitBranch size={18} />
-          <strong>调度决策</strong>
+          <strong>路径研判</strong>
         </div>
-        <p className="workspace-side-caption-react">输入任务描述后，系统将展示状态驱动的调度建议。</p>
+        <p className="workspace-side-caption-react">输入事项描述后，系统将展示状态驱动的办理建议。</p>
       </section>
     );
   }
@@ -46,11 +46,11 @@ function RoutingDecisionPanel({ routing, loading = false, source }: RoutingDecis
       <div className="routing-decision-head">
         <div>
           <p className="eyebrow">ROUTING DECISION</p>
-          <strong>状态驱动调度</strong>
+          <strong>状态驱动办理</strong>
         </div>
         {source && (
           <span className={`ds-badge ${source === 'api' ? 'ds-badge-success' : 'ds-badge-warning'}`}>
-            {source === 'api' ? '实时' : 'Demo'}
+            {source === 'api' ? '实时' : '示例'}
           </span>
         )}
       </div>

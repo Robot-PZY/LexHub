@@ -34,7 +34,7 @@ export function sanitizePhaseNote(note: string, context: SanitizePhaseNoteContex
   text = text.replace(/\n{3,}/g, '\n\n').trim();
 
   if (!text && context.completed) {
-    return `本步「${context.stepTitle}」已完成，详细内容已写入任务归档。`;
+    return `本步「${context.stepTitle}」已完成，详细内容已写入案件归档。`;
   }
 
   return text;
@@ -43,14 +43,14 @@ export function sanitizePhaseNote(note: string, context: SanitizePhaseNoteContex
 export function buildStepNextHint(context: SanitizePhaseNoteContext): string | null {
   if (context.completed) {
     if (context.stepIndex >= context.stepCount - 1) {
-      return '全部步骤已完成，可前往任务结果页查看总结报告与正式交付物。';
+      return '全部步骤已完成，可前往审查结论页查看总结报告与正式交付物。';
     }
-    return `本步已完成。可继续查看后续步骤，或前往任务结果页获取完整报告。`;
+    return `本步已完成。可继续查看后续步骤，或前往审查结论页获取完整报告。`;
   }
 
   if (context.stepIndex < context.stepCount - 1) {
-    return `本步完成后，系统将按 DAG 继续执行后续步骤。`;
+    return `本步完成后，系统将按办理路径继续推进后续步骤。`;
   }
 
-  return '最后一步执行中，完成后将生成任务总结。';
+  return '最后一步办理中，完成后将生成事项总结。';
 }

@@ -30,7 +30,7 @@ import type { DemoOverview } from '../types/demo';
 import type { AuditLog } from '../types/audit';
 import type { ReplayWorkspace } from '../types/replay';
 
-const archiveSignals = ['过程沉淀', '可继续处理', '评审可回放'];
+const archiveSignals = ['过程沉淀', '可继续办理', '结论可复核'];
 
 function formatTime(isoString: string): string {
   const date = new Date(isoString);
@@ -45,13 +45,13 @@ function formatTime(isoString: string): string {
 }
 
 function extractLocalStepTitle(raw: string | null): string {
-  if (!raw) return '暂无最近处理记录';
+  if (!raw) return '暂无最近办理记录';
   try {
     const parsed = JSON.parse(raw) as { message?: { data?: { initData?: { title?: string } } } };
     const title = parsed.message?.data?.initData?.title;
-    return typeof title === 'string' && title.trim() ? title : '已发现最近处理记录';
+    return typeof title === 'string' && title.trim() ? title : '已发现最近办理记录';
   } catch {
-    return '已发现最近处理记录';
+    return '已发现最近办理记录';
   }
 }
 
@@ -244,7 +244,7 @@ function ReplayPage() {
       index,
       title: step.title,
       status: step.status,
-      statusLabel: step.status === 'completed' ? '已完成' : step.status === 'running' ? '执行中' : '待执行',
+      statusLabel: step.status === 'completed' ? '已完成' : step.status === 'running' ? '办理中' : '待办理',
     }));
   }, [remoteSnapshot, localReplaySummary.steps]);
 
@@ -269,21 +269,21 @@ function ReplayPage() {
 
   return (
     <AppShell
-      title="归档与回放"
-      subtitle="任务历史、过程快照与继续处理入口"
+      title="案件归档"
+      subtitle="事项历史、办理快照与继续推进入口"
       badge={(
         <span className="ds-badge ds-badge-primary">
           <Sparkles size={12} />
           {localReplaySummary.statusSummary}
         </span>
       )}
-      actions={<Link className="btn btn-primary" to="/workspace">发起新任务</Link>}
+      actions={<Link className="btn btn-primary" to="/workspace">发起新事项</Link>}
       onLogout={handleLogout}
     >
       <PageHeader
         icon={FileClock}
-        title="归档与回放中心"
-        subtitle="沉淀每次 Co-Sight 执行过程，并支持将 replay 真实记录导出为 DOCX/PDF。"
+        title="案件归档中心"
+        subtitle="沉淀每次事项办理过程，并支持将办理记录导出为 DOCX/PDF。"
         action={(
           <ExecutionExportActions
             payload={exportPayload}
@@ -299,7 +299,7 @@ function ReplayPage() {
       </div>
 
       <div className="replay-summary-grid">
-        <StatCard label="历史记录" value={overview ? `${overview.stats.replay_count}` : '--'} description="已归档处理记录" />
+        <StatCard label="历史记录" value={overview ? `${overview.stats.replay_count}` : '--'} description="已归档办理记录" />
         <StatCard label="待处理内容" value={`${localReplaySummary.pendingCount}`} description="可恢复推进的本地事项" />
         <StatCard label="可信等级" value={localReplaySummary.resultInsight.credibility.label} description="基于最近结果快照" />
         <StatCard label="复核等级" value={localReplaySummary.resultInsight.credibility.reviewLabel} description="反映人工复核建议强度" />
@@ -319,7 +319,7 @@ function ReplayPage() {
           )}
         </div>
         <p className="replay-snapshot-conclusion">
-          {localReplaySummary.resultSummary || '提交任务后，这里会展示最近阶段结论。'}
+          {localReplaySummary.resultSummary || '提交事项后，这里会展示最近阶段结论。'}
         </p>
       </section>
 
@@ -335,8 +335,8 @@ function ReplayPage() {
           <section className="ds-card replay-timeline-card">
             <div className="replay-section-head">
               <div>
-                <p className="eyebrow">执行轨迹</p>
-                <h2>阶段回放</h2>
+                <p className="eyebrow">办理轨迹</p>
+                <h2>阶段记录</h2>
               </div>
             </div>
             <div className="replay-step-timeline">
@@ -350,7 +350,7 @@ function ReplayPage() {
                 </article>
               ))}
               {replaySteps.length === 0 && (
-                <p className="replay-timeline-empty">完成一次任务后，可在此按阶段回放执行过程。</p>
+                <p className="replay-timeline-empty">完成一次事项后，可在此按阶段查看办理过程。</p>
               )}
             </div>
           </section>
@@ -391,10 +391,10 @@ function ReplayPage() {
             <EmptyState
               icon={<FileClock size={22} />}
               title="暂无历史记录"
-              description="完成一次任务处理后，这里会保存对应记录，方便后续查看、演示和继续推进。"
+              description="完成一次事项办理后，这里会保存对应记录，方便后续查看、复核和继续推进。"
               action={(
                 <Link className="btn btn-primary" to="/workspace" style={{ marginTop: 8 }}>
-                  发起第一项任务
+                  发起第一项事项
                 </Link>
               )}
             />
@@ -407,7 +407,7 @@ function ReplayPage() {
               </div>
               <div className="replay-item-copy">
                 <strong>{item.title}</strong>
-                <span>{item.workspace_name} · {item.message_count} 条事件 · DAG 可回放</span>
+                <span>{item.workspace_name} · {item.message_count} 条记录 · 办理路径可查看</span>
               </div>
               <div className="replay-item-side">
                 <div className="replay-item-time">
@@ -420,7 +420,7 @@ function ReplayPage() {
                   onClick={() =>
                     navigate(`/workspace/run?replay=true&workspace=${encodeURIComponent(item.workspace_path)}`)}
                 >
-                  播放回放
+                  查看记录
                 </button>
               </div>
             </article>

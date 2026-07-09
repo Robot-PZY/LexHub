@@ -26,18 +26,18 @@ function StepFlowPanel({ steps, toolCalls }: StepFlowPanelProps) {
   return (
     <section className="records-panel-react workspace-side-panel-react">
       <div className="records-head-react">
-        <strong>Co-Sight DAG 阶段推进</strong>
-        <span className="workspace-side-caption-react">{steps.length} 个 DAG 节点</span>
+        <strong>办理路径阶段推进</strong>
+        <span className="workspace-side-caption-react">{steps.length} 个路径节点</span>
       </div>
 
       {steps.length === 0 ? (
         <article className="workspace-side-empty-react">
           <strong>等待系统开始规划</strong>
-          <span>任务提交后，这里会展示阶段节点、推进顺序和当前执行位置。</span>
+          <span>事项提交后，这里会展示阶段节点、推进顺序和当前办理位置。</span>
         </article>
       ) : (
         <>
-          <div className="step-dag-lite-react" aria-label="执行路径概览">
+          <div className="step-dag-lite-react" aria-label="办理路径概览">
             {steps.map((step, index) => {
               const isSelected = step.id === selectedStepId;
               const isLast = index === steps.length - 1;
@@ -84,7 +84,7 @@ function StepFlowPanel({ steps, toolCalls }: StepFlowPanelProps) {
                 <strong>{selectedStep.title}</strong>
                 <span className={`step-detail-status-react ${selectedStep.status}`}>
                   {selectedStep.status === 'running'
-                    ? '执行中'
+                    ? '办理中'
                     : selectedStep.status === 'completed'
                       ? '已完成'
                       : selectedStep.status === 'failed'
@@ -94,7 +94,7 @@ function StepFlowPanel({ steps, toolCalls }: StepFlowPanelProps) {
               </div>
               <p>{selectedStep.summary}</p>
               <div className="step-detail-meta-react">
-                <span>负责智能体: {formatLegalAgentLabel(selectedStep.agent)}</span>
+                <span>负责角色: {formatLegalAgentLabel(selectedStep.agent)}</span>
                 <span>
                   最近更新:
                   {new Date(selectedStep.timestamp).toLocaleTimeString('zh-CN', {
@@ -104,9 +104,9 @@ function StepFlowPanel({ steps, toolCalls }: StepFlowPanelProps) {
                 </span>
               </div>
               <div className="step-detail-tools-react">
-                <strong>关联工具调用</strong>
+                <strong>关联处理动作</strong>
                 {relatedToolCalls.length === 0 ? (
-                  <span>当前阶段暂未产生独立工具调用记录。</span>
+                  <span>当前阶段暂未产生独立处理动作记录。</span>
                 ) : (
                   relatedToolCalls.map((toolCall) => (
                     <span key={toolCall.id} className="step-detail-tool-chip-react">

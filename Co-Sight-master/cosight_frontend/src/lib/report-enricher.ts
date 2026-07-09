@@ -38,23 +38,23 @@ export function enrichReportMarkdown(
     ?? steps.filter((step) => step.status === 'completed').length;
   const total = snapshot?.stats.stepCount ?? steps.length;
   const toolCount = snapshot?.stats.toolCallCount ?? snapshot?.tools.length ?? 0;
-  const body = trimmed || resultInsight.conclusion || '任务已完成，详见下方阶段执行与建议。';
+  const body = trimmed || resultInsight.conclusion || '事项已完成，详见下方阶段办理与建议。';
 
-  const lines: string[] = ['## 任务概览'];
+  const lines: string[] = ['## 事项概览'];
   if (scenarioTitle) lines.push(`**场景类型**：${scenarioTitle}`);
-  if (snapshot?.taskQuery) lines.push(`**任务描述**：${snapshot.taskQuery}`);
-  lines.push(`**执行进度**：${completed}/${total} 步骤已完成`);
-  if (toolCount > 0) lines.push(`**工具调用**：${toolCount} 次`);
+  if (snapshot?.taskQuery) lines.push(`**事项描述**：${snapshot.taskQuery}`);
+  lines.push(`**办理进度**：${completed}/${total} 步骤已完成`);
+  if (toolCount > 0) lines.push(`**处理动作**：${toolCount} 次`);
   lines.push(
     `**可信度评分**：${resultInsight.credibility.score}（${resultInsight.credibility.label}）`,
     '',
-    '## 执行摘要',
+    '## 办理摘要',
     body,
     '',
   );
 
   if (steps.length > 0) {
-    lines.push('## 阶段执行结果', '| 阶段 | 状态 | 说明 |', '| --- | --- | --- |');
+    lines.push('## 阶段办理结果', '| 阶段 | 状态 | 说明 |', '| --- | --- | --- |');
     steps.forEach((step) => {
       const note = (step.note || '—').replace(/\|/g, '/').slice(0, 72);
       lines.push(`| ${step.title} | ${step.statusLabel} | ${note} |`);
@@ -92,5 +92,5 @@ export function buildExecutiveSummary(
 
   const completed = snapshot?.stats.completedSteps ?? snapshot?.steps.filter((s) => s.status === 'completed').length ?? 0;
   const total = snapshot?.stats.stepCount ?? snapshot?.steps.length ?? 0;
-  return `已完成 ${completed}/${total} 个执行阶段，共调用 ${snapshot?.stats.toolCallCount ?? 0} 次工具。${resultInsight.recommendation}`;
+  return `已完成 ${completed}/${total} 个办理阶段，共记录 ${snapshot?.stats.toolCallCount ?? 0} 次处理动作。${resultInsight.recommendation}`;
 }

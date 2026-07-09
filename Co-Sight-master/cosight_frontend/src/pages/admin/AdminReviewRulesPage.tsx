@@ -13,11 +13,11 @@ function AdminReviewRulesPage() {
   }, [settings.reviewRules]);
 
   return (
-    <AdminShell title="审查规则" subtitle="配置交叉审查智能体的判断维度。">
+    <AdminShell title="审查规则" subtitle="配置结论复核角色的判断维度。">
       <PageHeader
         icon={ShieldCheck}
         title="审查规则库"
-        subtitle="审查智能体依据这些规则标记事实冲突、证据缺口、引用不足和文书风险。"
+        subtitle="结论复核角色依据这些规则标记事实冲突、证据缺口、引用不足和文书风险。"
         action={<button type="button" className="btn btn-primary" onClick={() => saveSettings({ reviewRules: draft })}><Save size={16} />保存规则</button>}
       />
 

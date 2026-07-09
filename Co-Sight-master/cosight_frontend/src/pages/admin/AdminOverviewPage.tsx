@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import { BookOpen, GitBranch, LayoutDashboard, PlugZap, RefreshCw, RotateCcw, Users, Zap } from 'lucide-react';
 import AdminOpsCharts from '../../components/admin/AdminOpsCharts';
 import { AdminShell } from '../../components/layout/AdminShell';
-import PageHeader from '../../components/ui/PageHeader';
-import StatCard from '../../components/ui/StatCard';
+import { Badge, Button, PageHeader, Panel, StatCard } from '../../components/ui';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 import { fetchDemoRuntimeStatus, fetchToolchainStatus, resetDemoMaterials, testAdminSettingsConnection, type AdminSettingsTestResult } from '../../lib/api';
 import { fetchWithFallback } from '../../lib/demo-fetch';
@@ -75,24 +74,33 @@ function AdminOverviewPage() {
     <AdminShell
       title="系统概览"
       subtitle="管理端精简版：配置、知识库、策略与用户。"
-      badge={<span className="ds-badge ds-badge-primary">{syncState === 'synced' ? '已同步' : runtime?.status === 'ready' ? 'Ready' : 'Config'}</span>}
+      badge={<Badge tone="primary">{syncState === 'synced' ? '已同步' : runtime?.status === 'ready' ? 'Ready' : 'Config'}</Badge>}
       actions={(
         <>
-          <button type="button" className="btn btn-primary" disabled={testing} onClick={() => void handleTestConnection()}>
-            <Zap size={16} />
+          <Button
+            type="button"
+            disabled={testing}
+            loading={testing}
+            leadingIcon={<Zap size={16} />}
+            onClick={() => void handleTestConnection()}
+          >
             {testing ? '测试中…' : '测试连接'}
-          </button>
-          <button type="button" className="btn btn-secondary" onClick={() => void load()}>
-            <RefreshCw size={16} />
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            leadingIcon={<RefreshCw size={16} />}
+            onClick={() => void load()}
+          >
             刷新
-          </button>
+          </Button>
         </>
       )}
     >
       <PageHeader
         icon={LayoutDashboard}
         title="律枢管理控制台"
-        subtitle="配置、运营与用户一屏掌握；下方图表基于本地数据，运行任务后可切换为回放聚合。"
+        subtitle="配置、运营与用户一屏掌握；下方图表基于本地数据，完成事项后可沉淀为归档统计。"
       />
 
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}
@@ -100,10 +108,10 @@ function AdminOverviewPage() {
       {runtimeInfo && <div className="admin-save-hint">{runtimeInfo}</div>}
 
       <section className="feature-stat-grid admin-overview-stats">
-        <StatCard label="模型就绪" value={`${readyModelCount}/${settings.models.length}`} description="管理端 / .env" />
-        <StatCard label="API 就绪" value={`${readyApiCount}/${settings.apis.length}`} description="外部服务位" />
+        <StatCard label="模型就绪" value={`${readyModelCount}/${settings.models.length}`} description="管理配置" />
+        <StatCard label="服务就绪" value={`${readyApiCount}/${settings.apis.length}`} description="外部服务位" />
         <StatCard label="知识库" value={`${settings.knowledgeBases.length}`} description="法规/案例/模板" />
-        <StatCard label="后端工具链" value={`${toolchain?.summary.ready ?? 0}/${toolchain?.summary.total ?? 0}`} description=".env 就绪项" />
+        <StatCard label="处理能力" value={`${toolchain?.summary.ready ?? 0}/${toolchain?.summary.total ?? 0}`} description="后端就绪项" />
       </section>
 
       <section className="admin-quick-nav">
@@ -121,11 +129,9 @@ function AdminOverviewPage() {
       <AdminOpsCharts />
 
       {testOpen && (testError || testResult) && (
-        <section className="ds-card admin-panel admin-test-panel">
-          <div className="admin-panel-head-inline">
-            <strong>连接测试</strong>
-            <button type="button" className="btn btn-ghost" onClick={() => setTestOpen(false)}>收起</button>
-          </div>
+        <Panel className="admin-test-panel" title="连接测试" actions={(
+          <Button type="button" variant="ghost" size="sm" onClick={() => setTestOpen(false)}>收起</Button>
+        )}>
           {testError && <div className="admin-save-hint admin-save-hint-error">{testError}</div>}
           {testResult && (
             <div className="admin-test-summary">
@@ -138,14 +144,13 @@ function AdminOverviewPage() {
               </span>
             </div>
           )}
-        </section>
+        </Panel>
       )}
 
       <div className="admin-overview-foot">
-        <button type="button" className="btn btn-ghost" onClick={handleResetDemo}>
-          <RotateCcw size={16} />
+        <Button type="button" variant="ghost" leadingIcon={<RotateCcw size={16} />} onClick={handleResetDemo}>
           重置本地数据
-        </button>
+        </Button>
       </div>
     </AdminShell>
   );

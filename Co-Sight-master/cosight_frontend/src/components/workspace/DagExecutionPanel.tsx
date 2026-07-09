@@ -9,7 +9,7 @@ type DagExecutionPanelProps = {
 };
 
 function statusText(status: string) {
-  if (status === 'running') return '执行中';
+  if (status === 'running') return '办理中';
   if (status === 'completed') return '已完成';
   if (status === 'failed') return '需处理';
   if (status === 'branch') return '条件分支';
@@ -25,22 +25,22 @@ function DagExecutionPanel({ steps, toolCalls, processing = false }: DagExecutio
     <section className="ds-card dag-execution-panel">
       <div className="dag-execution-head">
         <div>
-          <p className="eyebrow">CO-SIGHT DAG</p>
-          <strong>任务编排执行视图</strong>
+          <p className="eyebrow">MATTER PATH</p>
+          <strong>事项办理路径视图</strong>
         </div>
         <div className="dag-execution-meta">
           <span className="ds-badge ds-badge-primary">{hopCount} 跳</span>
-          <span className="ds-badge ds-badge-success">{toolCalls.length} 次工具调用</span>
+          <span className="ds-badge ds-badge-success">{toolCalls.length} 次处理动作</span>
         </div>
       </div>
 
       <p className="dag-execution-desc">
         {processing
-          ? '展示 Co-Sight DAG 实际执行路径：节点可跳步、返工或并行触发工具，而非固定流水线。'
-          : '提交任务后，这里会展示 Co-Sight 拆解出的 DAG 节点、分支条件与工具挂载情况。'}
+          ? '展示事项实际办理路径：节点可跳步、返工或并行触发处理动作，而非固定流水线。'
+          : '提交事项后，这里会展示系统拆解出的办理节点、分支条件与处理动作。'}
       </p>
 
-      <div className="dag-graph" aria-label="DAG 执行图">
+      <div className="dag-graph" aria-label="事项办理路径图">
         {nodes.map((node, index) => (
           <div key={node.id} className="dag-graph-row">
             <article className={`dag-graph-node ${node.status}`}>
@@ -49,7 +49,7 @@ function DagExecutionPanel({ steps, toolCalls, processing = false }: DagExecutio
                 <strong>{node.label}</strong>
                 <em>{statusText(node.status)}</em>
               </div>
-              <p>{node.summary || '等待 Co-Sight 推进到该节点。'}</p>
+              <p>{node.summary || '等待系统推进到该节点。'}</p>
               <div className="dag-graph-node-meta">
                 <span>{formatLegalAgentLabel(node.agent)}</span>
                 {node.tools.length > 0 && <span>{node.tools.join(' / ')}</span>}

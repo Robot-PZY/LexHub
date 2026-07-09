@@ -8,9 +8,9 @@ type AuditLogPanelProps = {
 
 const TYPE_LABELS: Record<string, string> = {
   session_start: '会话启动',
-  task_submit: '任务提交',
-  agent_stage: '智能体阶段',
-  tool_call: '工具调用',
+  task_submit: '事项提交',
+  agent_stage: '办理阶段',
+  tool_call: '处理动作',
   credibility_analysis: '可信分级',
   session_summary: '会话摘要',
   audit_seal: '审计封存',
@@ -30,7 +30,7 @@ function AuditLogPanel({ auditLog, compact = false }: AuditLogPanelProps) {
             {auditLog.entryCount} 条记录 · chain={auditLog.chainHash}
           </em>
         </div>
-        <span className="ds-badge ds-badge-success">replay 溯源</span>
+        <span className="ds-badge ds-badge-success">归档溯源</span>
       </div>
 
       {!compact && (

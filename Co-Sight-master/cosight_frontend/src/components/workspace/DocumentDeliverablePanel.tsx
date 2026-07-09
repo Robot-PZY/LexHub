@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDown, FileText, Loader2, Sparkles } from 'lucide-react';
+import { ChevronDown, FileText, Sparkles } from 'lucide-react';
 import ExecutionExportActions from '../documents/ExecutionExportActions';
+import { Button } from '../ui';
 import { generateContractDocumentViaApi, generateDocumentViaApi } from '../../lib/api';
 import { buildCaseFactsFromSnapshot, buildExportPayloadFromSnapshot } from '../../lib/execution-export';
 import { renderMarkdownHtml } from '../../lib/report-parser';
@@ -35,7 +36,7 @@ function DocumentDeliverablePanel({
   const scenario = findScenario(scenarioId ?? '');
   const profile = getScenarioOutputProfile(scenarioId);
   const deliverables = scenario?.deliverables ?? [
-    { id: 'task_summary_report' as DocumentTemplateId, label: '任务总结报告', description: '基于执行结果生成' },
+    { id: 'task_summary_report' as DocumentTemplateId, label: '事项总结报告', description: '基于办理结果生成' },
   ];
   const defaultTemplate = documentIntake?.templateId ?? deliverables[0].id;
   const [activeTemplate, setActiveTemplate] = useState<DocumentTemplateId>(defaultTemplate);
@@ -102,7 +103,7 @@ function DocumentDeliverablePanel({
           useResearch: true,
         });
         if (!result) {
-          setError('文书生成失败，请检查 LLM API 配置。');
+          setError('文书生成失败，请检查文书生成服务配置。');
           setPreview(null);
           return;
         }
@@ -129,7 +130,7 @@ function DocumentDeliverablePanel({
         extraInstructions: documentIntake?.extraInstructions,
       });
       if (!result) {
-        setError('文书生成失败，请检查 LLM API 配置。');
+        setError('文书生成失败，请检查文书生成服务配置。');
         setPreview(null);
         return;
       }
@@ -175,7 +176,7 @@ function DocumentDeliverablePanel({
           <h3>{prominent ? profile.primaryLabel : '附加文书'}</h3>
           <p>
             {documentIntake
-              ? `已载入任务前填写的「${documentIntake.templateLabel}」参数，结合执行结论生成。`
+              ? `已载入事项受理时填写的「${documentIntake.templateLabel}」参数，结合办理结论生成。`
               : prominent
                 ? profile.primaryHint
                 : '本场景以报告/审查为主，如需律师函等正式文书可在此按需生成。'}
@@ -183,25 +184,25 @@ function DocumentDeliverablePanel({
         </div>
         <div className="document-deliverable-head-actions">
           {collapsed && (
-            <button
+            <Button
               type="button"
-              className="btn btn-secondary"
+              variant="secondary"
               onClick={() => setExpanded((value) => !value)}
+              trailingIcon={<ChevronDown size={16} className={expanded ? 'open' : ''} />}
             >
               {expanded ? '收起' : '展开文书区'}
-              <ChevronDown size={16} className={expanded ? 'open' : ''} />
-            </button>
+            </Button>
           )}
           {(expanded || !collapsed) && (
-            <button
+            <Button
               type="button"
-              className="btn btn-primary"
-              disabled={generating}
+              variant="primary"
+              loading={generating}
+              leadingIcon={<Sparkles size={16} />}
               onClick={() => void handleGenerate()}
             >
-              {generating ? <Loader2 size={16} className="spin" /> : <Sparkles size={16} />}
               {preview ? '重新生成' : '生成文书预览'}
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -236,7 +237,7 @@ function DocumentDeliverablePanel({
               <div className="document-deliverable-skeleton-line" />
               <div className="document-deliverable-skeleton-line" />
               <div className="document-deliverable-skeleton-block" />
-              <p>正在结合任务表单、执行结论与法规检索生成文书…</p>
+              <p>正在结合事项信息、办理结论与法规检索生成文书…</p>
             </div>
           )}
 

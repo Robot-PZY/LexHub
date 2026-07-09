@@ -54,7 +54,7 @@ function AdminUsersPage() {
       <PageHeader
         icon={Users}
         title="用户与会员管理"
-        subtitle="查看并调整用户会员等级。演示用户库含 8 个预置账号（含开发演示账号 user）。"
+        subtitle="查看并调整用户会员等级。当前用户库含 8 个预置体验账号。"
       />
 
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}

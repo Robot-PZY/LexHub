@@ -8,7 +8,7 @@ type MarketingHeaderProps = {
 
 const navAnchors = [
   { label: '核心能力', href: '/#capabilities' },
-  { label: '执行流程', href: '/#workflow' },
+  { label: '办理流程', href: '/#workflow' },
   { label: '定价方案', href: '/#pricing' },
 ];
 
@@ -19,15 +19,15 @@ function MarketingHeader({ active = 'home' }: MarketingHeaderProps) {
 
   return (
     <header className="marketing-header ds-animate-in">
-      <BrandLogo subtitle="Co-Sight Agents" />
+      <BrandLogo subtitle="Legal Matter Workbench" />
       <nav className="marketing-nav">
         <Link to="/" className={active === 'home' ? 'active' : ''}>首页</Link>
         {navAnchors.map((item) => (
           <Link key={item.href} to={item.href}>{item.label}</Link>
         ))}
-        <Link to={replayPath} className={active === 'replay' ? 'active' : ''}>记录回放</Link>
+        <Link to={replayPath} className={active === 'replay' ? 'active' : ''}>案件归档</Link>
         {!authed && <Link to="/login">登录</Link>}
-        <Link to={workspacePath} className="marketing-nav-cta">进入系统</Link>
+        <Link to={workspacePath} className="marketing-nav-cta">进入事项受理</Link>
       </nav>
     </header>
   );

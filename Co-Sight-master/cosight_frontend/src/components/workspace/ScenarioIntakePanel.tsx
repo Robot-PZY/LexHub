@@ -27,7 +27,7 @@ function ScenarioIntakePanel({ scenarioId, intake, onChange }: ScenarioIntakePan
         <FileText size={18} />
         <div>
           <strong>文书信息（提交前填写）</strong>
-          <p>选定文书类型与关键要素，任务完成后将按场景自动匹配并生成文书。</p>
+          <p>选定文书类型与关键要素，事项完成后将按场景自动匹配并生成文书。</p>
         </div>
       </div>
 

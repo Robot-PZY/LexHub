@@ -20,8 +20,8 @@ function useAdminBreadcrumbs(pathname: string) {
     return [{ path: '/admin', label: '系统概览' }];
   }
 
-  return segments.reduce<Array<{ path: string; label: string }>>((acc, _seg, index) => {
-    const path = `/${segments.slice(0, index + 1).join('/')}`;
+  return segments.reduce<Array<{ path: string; label: string }>>((acc, segment, index) => {
+    const path = `/${segments.slice(0, index).concat(segment).join('/')}`;
     acc.push({ path, label: ADMIN_ROUTE_LABELS[path] || path });
     return acc;
   }, []);

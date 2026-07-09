@@ -13,8 +13,8 @@ function AgentsPage() {
 
   return (
     <AppShell
-      title="智能体调度"
-      subtitle="多智能体协作与动态调度演示"
+      title="协作角色"
+      subtitle="按事项状态组织受理、研究、质检、生成与复核。"
       actions={<button type="button" className="btn btn-secondary" onClick={() => navigate('/review')}>查看审查</button>}
       onLogout={handleLogout}
     >

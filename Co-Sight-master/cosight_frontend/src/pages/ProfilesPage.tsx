@@ -24,7 +24,7 @@ function ProfilesPage() {
   return (
     <AppShell
       title="画像分析"
-      subtitle="从案件、证据、主体和任务目标构建业务画像。"
+      subtitle="从案件、证据、主体和办理目标构建业务画像。"
       badge={<DataSourceBadge source={source} />}
       actions={<button type="button" className="btn btn-secondary" onClick={() => navigate('/agents')}>查看调度</button>}
       onLogout={handleLogout}
@@ -38,7 +38,7 @@ function ProfilesPage() {
       {loading ? <LoadingState label="加载画像数据…" /> : (
         <>
           <section className="feature-stat-grid">
-            <StatCard label="案件类型" value={data.stats.caseType} description="基于任务描述自动识别" />
+            <StatCard label="案件类型" value={data.stats.caseType} description="基于事项描述自动识别" />
             <StatCard label="风险等级" value={data.stats.riskLevel} description="证据缺口影响输出确定性" />
             <StatCard label="材料核验" value={data.stats.entityCheck} description="基于合同与往来材料" />
             <StatCard label="推荐路径" value={data.stats.recommendedPath} description="不建议直接导出正式意见" />

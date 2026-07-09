@@ -10,8 +10,8 @@ import type { DocumentSection, DocumentTemplateId } from '../types/export';
 function normalizeStatus(status: string): string {
   const map: Record<string, string> = {
     completed: '已完成',
-    running: '执行中',
-    in_progress: '执行中',
+    running: '办理中',
+    in_progress: '办理中',
     not_started: '待开始',
     failed: '失败',
     blocked: '阻塞',
@@ -123,7 +123,7 @@ export function buildExecutionSnapshotFromChat(input: {
   return {
     title: typeof plan?.title === 'string' && plan.title.trim()
       ? plan.title
-      : steps[0]?.title || 'Co-Sight 法律任务',
+      : steps[0]?.title || '法律事项办理',
     taskQuery: extractTaskQuery(input.messages),
     steps,
     dependencies,
@@ -156,16 +156,16 @@ export function buildExportSectionsFromSnapshot(
     lawyer_letter_draft: `${snapshot.title} · 律师函初稿`,
     legal_opinion_summary: `${snapshot.title} · 法律意见摘要`,
     evidence_checklist: `${snapshot.title} · 证据清单`,
-    task_summary_report: `${snapshot.title} · 任务总结报告`,
+    task_summary_report: `${snapshot.title} · 事项总结报告`,
   };
 
   const overview = [
-    `任务标题：${snapshot.title}`,
-    `任务描述：${snapshot.taskQuery || '（见工作台提交内容）'}`,
-    `执行状态：${snapshot.statusText || '已记录'}`,
+    `事项标题：${snapshot.title}`,
+    `事项描述：${snapshot.taskQuery || '（见事项受理内容）'}`,
+    `办理状态：${snapshot.statusText || '已记录'}`,
     `阶段进度：${snapshot.progress?.completed ?? snapshot.stats.completedSteps}/${snapshot.progress?.total ?? snapshot.stats.stepCount}`,
-    `DAG 跳数：${snapshot.stats.dagHopCount}`,
-    `工具调用：${snapshot.stats.toolCallCount} 次`,
+    `办理节点：${snapshot.stats.dagHopCount}`,
+    `处理动作：${snapshot.stats.toolCallCount} 次`,
   ];
 
   const stepLines = snapshot.steps.map((step) => {
@@ -176,7 +176,7 @@ export function buildExportSectionsFromSnapshot(
 
   const dependencyLines = snapshot.dependencies
     ? Object.entries(snapshot.dependencies).map(([target, sources]) => `节点 ${target} 依赖：${sources.join(', ')}`)
-    : ['依赖关系由 Co-Sight Plan 动态生成。'];
+    : ['依赖关系由办理路径自动生成。'];
 
   const toolLines = [
     ...snapshot.toolSummary.map((item) => `- ${item.name} × ${item.count}`),
@@ -188,22 +188,22 @@ export function buildExportSectionsFromSnapshot(
     : '请在正式使用前完成人工复核。';
 
   const provenance = [
-    `数据来源：Co-Sight ${snapshot.source === 'live' ? '实时 WebSocket 执行' : 'replay.json 回放'}`,
+    `数据来源：${snapshot.source === 'live' ? '实时办理记录' : '案件归档记录'}`,
     `工作区：${snapshot.workspacePath || '当前会话'}`,
     `事件条数：${snapshot.stats.messageCount}`,
-    '导出策略：真实执行结果优先（参考 AgentScope / AgentReplay 溯源设计）',
+    '导出策略：真实办理结果优先，保留可追溯记录',
   ];
 
   return {
     title: templateTitles[templateId] ?? snapshot.title,
     sections: [
-      { title: '一、任务与执行概览', body: overview.join('\n') },
-      { title: '二、Co-Sight DAG 阶段推进', body: stepLines.join('\n') || '暂无阶段记录。' },
-      { title: '三、DAG 依赖关系', body: dependencyLines.join('\n') },
-      { title: '四、工具链调用证据', body: toolLines.join('\n') || '暂无工具调用记录。' },
+      { title: '一、事项与办理概览', body: overview.join('\n') },
+      { title: '二、办理阶段推进', body: stepLines.join('\n') || '暂无阶段记录。' },
+      { title: '三、路径依赖关系', body: dependencyLines.join('\n') },
+      { title: '四、处理动作证据', body: toolLines.join('\n') || '暂无处理动作记录。' },
       { title: '五、阶段结论与输出', body: snapshot.result || '（尚未产出最终结论文本）' },
       { title: '六、风险与复核建议', body: riskBlock },
-      { title: '附录 · 执行溯源', body: provenance.join('\n') },
+      { title: '附录 · 办理溯源', body: provenance.join('\n') },
     ],
   };
 }
@@ -235,9 +235,9 @@ export function buildCaseFactsFromSnapshot(
   resultInsight?: ResultInsight,
 ): string {
   const parts = [
-    `任务：${snapshot.title}`,
+    `事项：${snapshot.title}`,
     snapshot.taskQuery ? `用户诉求：${snapshot.taskQuery}` : '',
-    snapshot.result ? `执行结论：${snapshot.result}` : '',
+    snapshot.result ? `办理结论：${snapshot.result}` : '',
     snapshot.steps.length > 0
       ? `阶段摘要：\n${snapshot.steps.map((step) => `- [${step.statusLabel}] ${step.title}${step.note ? `：${step.note}` : ''}`).join('\n')}`
       : '',

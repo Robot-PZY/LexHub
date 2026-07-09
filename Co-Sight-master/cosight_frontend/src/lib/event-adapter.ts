@@ -45,7 +45,7 @@ function extractMessagePreview(payload: unknown): string {
   const initData = nestedData.initData;
 
   if (messageType === 'control-status-message') {
-    return '本次处理已完成，可继续查看结果或补充说明。';
+    return '本次办理已完成，可继续查看审查结论或补充说明。';
   }
 
   if (messageType === 'lui-message-manus-step') {
@@ -58,7 +58,7 @@ function extractMessagePreview(payload: unknown): string {
       const completed = Number(progress?.completed ?? 0);
       const total = Number(progress?.total ?? 0);
       if (title && total > 0) {
-        return `DAG 更新：${title}（${completed}/${total}）${statusText ? ` · ${statusText}` : ''}`;
+        return `办理路径更新：${title}（${completed}/${total}）${statusText ? ` · ${statusText}` : ''}`;
       }
       if (typeof plan.result === 'string' && plan.result.trim()) {
         return `阶段结论：${plan.result.trim().slice(0, 100)}`;
@@ -84,18 +84,18 @@ function extractMessagePreview(payload: unknown): string {
         const toolNameZh = (toolEventData as Record<string, unknown>).tool_name_zh;
         const label = typeof toolNameZh === 'string' && toolNameZh.trim() ? toolNameZh : toolName;
         if (eventType === 'tool_start') {
-          return `正在执行「${label}」…`;
+          return `正在处理「${label}」…`;
         }
         if (eventType === 'tool_complete') {
           const processed = (toolEventData as Record<string, unknown>).processed_result;
           const summary = processed && typeof processed === 'object'
             ? String((processed as Record<string, unknown>).summary || '')
             : '';
-          return summary ? `「${label}」完成：${summary.slice(0, 100)}` : `「${label}」执行完成`;
+          return summary ? `「${label}」完成：${summary.slice(0, 100)}` : `「${label}」处理完成`;
         }
         if (eventType === 'tool_error') {
           const err = String((toolEventData as Record<string, unknown>).error || '未知错误');
-          return `「${label}」执行失败：${err.slice(0, 120)}`;
+          return `「${label}」处理失败：${err.slice(0, 120)}`;
         }
       }
     }
@@ -252,7 +252,7 @@ export function deriveToolCalls(messages: ChatMessage[]): ToolCallTrace[] {
   messages
     .filter((message) => message.messageType === 'lui-message-tool-event')
     .forEach((message) => {
-      let toolName = '未知工具';
+      let toolName = '未知处理动作';
       let statusValue: ToolCallTrace['status'] = 'completed';
       const stepIndex = extractStepIndex(message.data);
       let eventKey = message.id;
@@ -285,7 +285,7 @@ export function deriveToolCalls(messages: ChatMessage[]): ToolCallTrace[] {
         const timestampLabel = typeof toolData.timestamp === 'string' ? toolData.timestamp : undefined;
         const errorDetail = typeof toolData.error === 'string' ? toolData.error : undefined;
         const summary = errorDetail
-          ? `执行失败：${errorDetail.slice(0, 160)}`
+          ? `处理失败：${errorDetail.slice(0, 160)}`
           : message.content;
 
         started.set(eventKey, {
@@ -413,7 +413,7 @@ function extractEvidenceReferences(messages: ChatMessage[]): string[] {
 
   if (refs.length === 0) {
     return [
-      '执行过程中未提取到明确引用，可在文书交付区生成正式依据列表。',
+      '办理过程中未提取到明确引用，可在文书交付区生成正式依据列表。',
     ];
   }
 
@@ -429,7 +429,7 @@ export function deriveResultInsight(messages: ChatMessage[]): ResultInsight {
     : [];
   const conclusion = snapshot?.result?.trim()
     || (stepNotes.length > 0 ? stepNotes[stepNotes.length - 1] : '')
-    || (completedMessage ? '任务已完成，请查看执行过程与工具调用详情。' : '')
+    || (completedMessage ? '事项已完成，请查看办理进度与处理动作详情。' : '')
     || latestSystemMessage?.content
     || '提交事项后，系统会在这里归纳当前阶段结论与下一步建议。';
 
@@ -441,11 +441,11 @@ export function deriveResultInsight(messages: ChatMessage[]): ResultInsight {
 
   let risk = '当前仍以过程推进为主，建议继续结合依据与材料进行人工复核。';
   if (toolFailure) {
-    risk = '检测到工具执行异常，当前阶段结果可能不完整，建议优先检查失败步骤。';
+    risk = '检测到处理动作异常，当前阶段结果可能不完整，建议优先检查异常步骤。';
   } else if (hasCompletedSession) {
     risk = '本轮处理已完成，可重点核对结论、引用依据与业务风险项。';
   } else if (hasRunningStep) {
-    risk = '任务仍在推进中，当前结果适合中途查看，不宜直接作为最终结论。';
+    risk = '事项仍在推进中，当前结果适合中途查看，不宜直接作为最终结论。';
   }
 
   const recommendation = hasCompletedSession
@@ -477,11 +477,11 @@ export function deriveResultInsight(messages: ChatMessage[]): ResultInsight {
 
 function buildAgentCards(activeAgent: AgentRole | null, steps: AgentStep[], toolCalls: ToolCallTrace[]): AgentRuntimeCard[] {
   const cards: Omit<AgentRuntimeCard, 'status'>[] = [
-    { id: 'planner', label: '任务理解智能体', description: 'Co-Sight 规划与任务拆解，生成 DAG 执行路径。' },
-    { id: 'retrieval', label: '法规研究智能体', description: '调用搜索/法规库工具，补充引用依据。' },
-    { id: 'analysis', label: '证据质检智能体', description: '解析材料、识别缺口与事实冲突。' },
-    { id: 'generation', label: '文书生成智能体', description: '生成报告、律师函与结构化结论。' },
-    { id: 'review', label: '交叉审查智能体', description: '复核事实、证据、法规与输出风险。' },
+    { id: 'planner', label: '事项受理角色', description: '识别事项类型与目标产出，生成办理路径。' },
+    { id: 'retrieval', label: '法规研究角色', description: '检索法规、案例与知识库，补充引用依据。' },
+    { id: 'analysis', label: '证据质检角色', description: '解析材料、识别缺口与事实冲突。' },
+    { id: 'generation', label: '文书生成角色', description: '生成报告、律师函与结构化结论。' },
+    { id: 'review', label: '结论复核角色', description: '复核事实、证据、法规与输出风险。' },
   ];
 
   return cards.map((card) => {

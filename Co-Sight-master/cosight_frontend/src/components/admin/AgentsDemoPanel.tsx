@@ -9,7 +9,7 @@ import { mockAgentCatalog, mockAgentRouting } from '../../mocks/routing';
 import { deriveAgentInvocations } from '../../lib/dag-utils';
 
 const capabilityLayers = [
-  { icon: BrainCircuit, title: '语言推理', desc: '任务理解、法规研究、文书生成、交叉审查' },
+  { icon: BrainCircuit, title: '专业研判', desc: '事项受理、法规研究、文书生成、结论复核' },
   { icon: Eye, title: '视觉与 OCR', desc: '合同扫描、票据识图、PDF 材料解析' },
   { icon: FileSearch, title: '外部检索', desc: '得理法规案例、联网搜索、本地知识库' },
   { icon: PenLine, title: '交付导出', desc: '报告、律师函、材料包与审计链' },
@@ -47,14 +47,14 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
     <>
       <PageHeader
         icon={Bot}
-        title={isAdmin ? '智能体能力演示' : '智能体调度中心'}
+        title={isAdmin ? '协作角色能力' : '协作角色中心'}
         subtitle={isAdmin
-          ? '展示 Co-Sight 多智能体编排：不仅包含 LLM，还涵盖 OCR、检索 API 与规则审查等异构能力。'
-          : '系统会根据案件类型、材料状态、风险等级和目标产出自动选择智能体，并在必要时返工或进入人工复核。'}
+          ? '展示法律事项办理中的多角色协作：涵盖材料识别、依据检索、规则审查与结论生成等能力。'
+          : '系统会根据案件类型、材料状态、风险等级和目标产出自动选择协作角色，并在必要时返工或进入人工复核。'}
         action={badge ?? <DataSourceBadge source={source} />}
       />
 
-      {loading ? <LoadingState label="加载调度数据…" /> : (
+      {loading ? <LoadingState label="加载协作数据…" /> : (
         <>
           <section className="admin-capability-banner">
             {capabilityLayers.map((item) => {
@@ -72,9 +72,9 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
           </section>
 
           <section className="feature-stat-grid">
-            <StatCard label="可调度智能体" value="5" description="理解、证据、研究、生成、审查" />
+            <StatCard label="协作角色" value="5" description="受理、证据、研究、生成、复核" />
             <StatCard label="当前激活" value={`${routing.activeAgents.filter((a) => a.status === 'active').length}`} description="状态驱动，非固定顺序" />
-            <StatCard label="复核策略" value={routing.reviewRequired ? '强制审查' : '按需审查'} description="高风险输出进入审查智能体" />
+            <StatCard label="复核策略" value={routing.reviewRequired ? '强制审查' : '按需审查'} description="高风险输出进入结论复核" />
             <StatCard label="风险等级" value={routing.metrics.riskLevel === 'high' ? '高' : routing.metrics.riskLevel === 'medium' ? '中' : '低'} description={`材料 ${routing.metrics.materialCompleteness}%`} />
           </section>
 
@@ -83,7 +83,7 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
               <div className="feature-panel-head">
                 <div>
                   <p className="eyebrow">ROUTING MAP</p>
-                  <h2>当前任务的动态调度网络</h2>
+                  <h2>当前事项的动态协作网络</h2>
                 </div>
                 <span className="ds-badge ds-badge-success">可解释</span>
               </div>
@@ -106,7 +106,7 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
               <article className="ds-card feature-panel">
                 <div className="feature-card-title">
                   <BrainCircuit size={18} />
-                  <strong>调度决策</strong>
+                  <strong>协作决策</strong>
                 </div>
                 <div className="feature-check-list">
                   {routing.routingDecisions.map((item) => (
@@ -124,9 +124,9 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
                   <strong>触发信号</strong>
                 </div>
                 <div className="feature-mini-list">
-                  <div><span>材料缺口</span><em>证据质检智能体</em></div>
-                  <div><span>法规缺失</span><em>法规研究智能体</em></div>
-                  <div><span>导出前</span><em>交叉审查智能体</em></div>
+                  <div><span>材料缺口</span><em>证据质检角色</em></div>
+                  <div><span>法规缺失</span><em>法规研究角色</em></div>
+                  <div><span>导出前</span><em>结论复核角色</em></div>
                 </div>
               </article>
             </aside>
@@ -136,7 +136,7 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
             <div className="feature-panel-head">
               <div>
                 <p className="eyebrow">RUNTIME EVIDENCE</p>
-                <h2>智能体参与证据（调度结果）</h2>
+                <h2>协作角色参与记录</h2>
               </div>
             </div>
             <div className="agent-evidence-grid">
@@ -145,7 +145,7 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
                   <strong>{item.label}</strong>
                   <div className="agent-evidence-stats">
                     <span>{item.steps} 个阶段</span>
-                    <span>{item.tools} 次工具</span>
+                    <span>{item.tools} 次处理动作</span>
                   </div>
                   <p>{item.lastAction}</p>
                 </article>
@@ -157,7 +157,7 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
             <div className="feature-panel-head">
               <div>
                 <p className="eyebrow">AGENT OUTPUT</p>
-                <h2>智能体输入与输出</h2>
+                <h2>协作角色输入与输出</h2>
               </div>
               <span className="ds-badge ds-badge-warning">可接真实运行记录</span>
             </div>

@@ -10,7 +10,7 @@ export function parseMarkdownSections(markdown: string): ReportSection[] {
 
   const lines = text.split('\n');
   const sections: ReportSection[] = [];
-  let currentTitle = '执行摘要';
+  let currentTitle = '办理摘要';
   let currentLevel = 2;
   let buffer: string[] = [];
 
@@ -33,7 +33,7 @@ export function parseMarkdownSections(markdown: string): ReportSection[] {
   flush();
 
   if (sections.length === 0) {
-    return [{ title: '执行摘要', body: text, level: 2 }];
+    return [{ title: '办理摘要', body: text, level: 2 }];
   }
   return sections;
 }

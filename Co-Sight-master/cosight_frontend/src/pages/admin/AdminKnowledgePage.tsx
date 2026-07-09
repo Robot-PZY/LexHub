@@ -150,7 +150,7 @@ function AdminKnowledgePage() {
         window.alert('初始化失败，请确认后端已启动。');
         return;
       }
-      showHint(result.imported ? '已导入文书模板与类案演示数据。' : '演示数据已就绪，无需重复导入。');
+      showHint(result.imported ? '已导入文书模板与类案样例数据。' : '样例数据已就绪，无需重复导入。');
       await refreshAll();
     } finally {
       setImporting(false);
@@ -218,7 +218,7 @@ function AdminKnowledgePage() {
             </button>
             <button type="button" className="btn btn-secondary" disabled={importing} onClick={() => void handleBootstrap()}>
               <Sparkles size={16} />
-              初始化演示数据
+              初始化样例数据
             </button>
           </div>
         )}
@@ -319,7 +319,7 @@ function AdminKnowledgePage() {
               collection="knowledge"
               kind="case"
               refreshKey={refreshKey}
-              emptyHint="暂无类案。演示数据包含 2 条类案摘要，请先「初始化演示数据」。"
+              emptyHint="暂无类案。样例数据包含 2 条类案摘要，请先「初始化样例数据」。"
             />
           )}
         </section>
@@ -332,7 +332,7 @@ function AdminKnowledgePage() {
               <Sparkles size={18} />
               <div>
                 <strong>合同文书种子包（推荐）</strong>
-                <p>一键写入合同模板骨架 + 合同类案，可重复执行以更新。直接支撑智能工作台文书生成 RAG。</p>
+                <p>一键写入合同模板骨架与合同类案，可重复执行以更新，直接支撑文书生成与知识增强。</p>
               </div>
               <button type="button" className="btn btn-primary" disabled={importing} onClick={() => void handleContractPack()}>
                 导入合同种子包
@@ -344,11 +344,11 @@ function AdminKnowledgePage() {
             <div className="kb-import-card-head">
               <Download size={18} />
               <div>
-                <strong>全量演示种子包</strong>
+                <strong>全量样例数据包</strong>
                 <p>导入全部模板、类案与审查规则（含非合同类）。审查规则正文请在策略规则页维护展示。</p>
               </div>
               <button type="button" className="btn btn-secondary" disabled={importing} onClick={() => void handleBootstrap()}>
-                初始化演示数据
+                初始化样例数据
               </button>
             </div>
           </article>
@@ -448,7 +448,7 @@ function AdminKnowledgePage() {
             <Settings2 size={18} />
             <div>
               <strong>知识库配置与就绪检查</strong>
-              <p>本地 Chroma 三集合，与能力总览中的「本地知识库 / RAG」及合同文书引擎联动。</p>
+              <p>本地知识库三集合，与能力总览中的本地知识库及合同文书引擎联动。</p>
             </div>
           </div>
 

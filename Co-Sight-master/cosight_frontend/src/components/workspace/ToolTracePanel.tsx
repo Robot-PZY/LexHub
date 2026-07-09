@@ -15,14 +15,14 @@ function ToolTracePanel({ toolCalls }: ToolTracePanelProps) {
   return (
     <section className="records-panel-react workspace-side-panel-react tool-trace-panel-react">
       <div className="records-head-react">
-        <strong>Co-Sight 工具调用轨迹</strong>
+        <strong>处理动作记录</strong>
         <span className="workspace-side-caption-react">最近 {toolCalls.length} 条</span>
       </div>
 
       {visibleCalls.length === 0 ? (
         <article className="workspace-side-empty-react">
-          <strong>尚未触发工具调用</strong>
-          <span>进入检索、材料处理或法规研究阶段后，这里会展示真实工具事件。</span>
+          <strong>暂无处理动作</strong>
+          <span>进入材料整理、依据检索或法规研究阶段后，这里会展示可追溯记录。</span>
         </article>
       ) : (
         <div className="tool-trace-list-react">
@@ -44,7 +44,7 @@ function ToolTracePanel({ toolCalls }: ToolTracePanelProps) {
                   </div>
                   <span className={`tool-status-react ${toolCall.status}`}>
                     {toolCall.status === 'running'
-                      ? '执行中'
+                      ? '办理中'
                       : toolCall.status === 'completed'
                         ? '已完成'
                         : toolCall.status === 'failed'

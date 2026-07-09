@@ -17,14 +17,14 @@ function AgentEvidencePanel({ agents, steps, toolCalls }: AgentEvidencePanelProp
       <div className="agent-evidence-head">
         <Bot size={18} />
         <div>
-          <strong>多智能体运行证据</strong>
-          <span>来自 Co-Sight WebSocket 阶段事件与工具调用记录</span>
+          <strong>专业角色办理证据</strong>
+          <span>来自阶段事件与处理动作记录</span>
         </div>
         <em>{activeCount} 个已参与</em>
       </div>
 
       {invocations.length === 0 ? (
-        <p className="workspace-side-caption-react">任务执行后，这里会展示每个智能体的阶段推进与工具调用证据。</p>
+        <p className="workspace-side-caption-react">事项办理后，这里会展示每个角色的阶段推进与处理动作证据。</p>
       ) : (
         <div className="agent-evidence-grid">
           {invocations.map((item) => (
@@ -32,7 +32,7 @@ function AgentEvidencePanel({ agents, steps, toolCalls }: AgentEvidencePanelProp
               <strong>{item.label}</strong>
               <div className="agent-evidence-stats">
                 <span>{item.steps} 个阶段</span>
-                <span>{item.tools} 次工具</span>
+                <span>{item.tools} 次处理</span>
               </div>
               <p>{item.lastAction}</p>
             </article>

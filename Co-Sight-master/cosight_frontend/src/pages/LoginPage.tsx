@@ -11,6 +11,7 @@ import {
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import BrandLogo from '../components/app/BrandLogo';
+import { Button, TextField } from '../components/ui';
 import {
   ensureDemoSeedVersion,
   isReservedAdminAccount,
@@ -26,7 +27,7 @@ import {
   type AuthRole,
 } from '../lib/storage';
 
-const trustPoints = ['Co-Sight 编排', '多 API 工具位', '过程可回放', '结果可复核'];
+const trustPoints = ['事项受理', '依据检索', '过程归档', '结论复核'];
 
 const roleCards: Array<{
   role: AuthRole;
@@ -36,14 +37,14 @@ const roleCards: Array<{
 }> = [
   {
     role: 'user',
-    title: '用户工作台',
-    desc: '发起法律任务，上传材料，查看智能体协作过程与结果归档。',
+    title: '用户端',
+    desc: '提交法律事项，上传材料，查看办理进度与审查结论。',
     icon: Workflow,
   },
   {
     role: 'admin',
     title: '管理控制台',
-    desc: '维护知识库、模型配置、API Key 与工具链状态。',
+    desc: '维护知识库、模型接入、能力配置与用户权限。',
     icon: Settings2,
   },
 ];
@@ -156,14 +157,14 @@ function LoginPage() {
         </Link>
 
         <div>
-          <BrandLogo subtitle="Co-Sight Legal Workbench" className="auth-brand-react" />
+          <BrandLogo subtitle="Legal Matter Workbench" className="auth-brand-react" />
           <div style={{ marginTop: 32 }}>
             <p className="eyebrow">Welcome</p>
             <h1 style={{ margin: '0 0 12px', fontSize: 36, color: 'var(--color-text-strong)', lineHeight: 1.15 }}>
               选择入口，进入律枢。
             </h1>
             <p style={{ margin: 0, color: 'var(--color-muted)', lineHeight: 1.85, maxWidth: '46ch' }}>
-              用户端负责法律任务处理与结果跟进，管理端负责知识库、模型与 API 工具链配置，共同构成完整工作流。
+              用户端负责法律事项受理、材料提交与结论跟进，管理端负责知识库、模型能力与权限配置，共同构成完整办理闭环。
             </p>
           </div>
         </div>
@@ -178,22 +179,22 @@ function LoginPage() {
           <div className="auth-flow-step">
             <span>1</span>
             <div>
-              <strong>用户端发起任务</strong>
-              <em>LearnWeave 式任务录入：选场景、写描述、上传材料。</em>
+              <strong>用户端提交事项</strong>
+              <em>选择场景、说明事实、上传合同与证据材料。</em>
             </div>
           </div>
           <div className="auth-flow-step">
             <span>2</span>
             <div>
-              <strong>Co-Sight 多智能体协作</strong>
-              <em>LaborAid 风格过程面板：DAG、工具轨迹、阶段结论可追踪。</em>
+              <strong>系统生成办理路径</strong>
+              <em>材料整理、依据检索、风险审查与阶段结论可追踪。</em>
             </div>
           </div>
           <div className="auth-flow-step">
             <span>3</span>
             <div>
-              <strong>归档复核与回放</strong>
-              <em>材料库、结果页与管理端运营视图形成可追溯闭环。</em>
+              <strong>归档复核与交付</strong>
+              <em>材料库、审查结论与管理端运营视图形成可追溯闭环。</em>
             </div>
           </div>
         </div>
@@ -231,10 +232,10 @@ function LoginPage() {
           <p style={{ margin: '6px 0 0', color: 'var(--color-muted)', fontSize: 14 }}>
             当前选择：{activeRole.title}。
             {role === 'admin'
-              ? '用于配置系统能力，不直接处理用户任务。'
+              ? '用于配置系统能力，不直接处理用户事项。'
               : isRegister
-                ? '注册后即可体验版套餐，发起法律任务。'
-                : '用于发起和跟进法律工作流。'}
+                ? '注册后即可获得体验版套餐，发起法律事项。'
+                : '用于发起和跟进法律事项办理。'}
           </p>
         </div>
 
@@ -267,76 +268,62 @@ function LoginPage() {
         )}
 
         {isRegister && (
-          <label>
-            昵称（可选）
-            <input
-              className="ds-input"
-              value={displayName}
-              onChange={(event) => setDisplayName(event.target.value)}
-              placeholder="显示名称"
-            />
-          </label>
+          <TextField
+            label="昵称（可选）"
+            value={displayName}
+            onChange={(event) => setDisplayName(event.target.value)}
+            placeholder="显示名称"
+          />
         )}
 
-        <label>
-          账号
-          <input
-            className="ds-input"
-            value={account}
-            onChange={(event) => setAccount(event.target.value)}
-            placeholder={role === 'admin' ? '管理员账号' : '用户名'}
-          />
-        </label>
+        <TextField
+          label="账号"
+          value={account}
+          onChange={(event) => setAccount(event.target.value)}
+          placeholder={role === 'admin' ? '管理员账号' : '用户名'}
+        />
 
-        <label>
-          密码
-          <input
-            className="ds-input"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="请输入密码"
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                if (isRegister) handleRegister();
-                else handleLogin();
-              }
-            }}
-          />
-        </label>
+        <TextField
+          label="密码"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="请输入密码"
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              if (isRegister) handleRegister();
+              else handleLogin();
+            }
+          }}
+        />
 
         {isRegister && (
-          <label>
-            确认密码
-            <input
-              className="ds-input"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              placeholder="再次输入密码"
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') handleRegister();
-              }}
-            />
-          </label>
+          <TextField
+            label="确认密码"
+            type="password"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            placeholder="再次输入密码"
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') handleRegister();
+            }}
+          />
         )}
 
         {error && <div className="auth-form-error">{error}</div>}
 
-        <button
+        <Button
           type="button"
-          className="btn btn-primary btn-block"
+          fullWidth
+          leadingIcon={<KeyRound size={16} />}
           onClick={isRegister ? handleRegister : handleLogin}
         >
-          <KeyRound size={16} />
-          <span>
-            {role === 'admin'
-              ? '进入管理控制台'
-              : isRegister
-                ? '注册并进入工作台'
-                : '进入用户工作台'}
-          </span>
-        </button>
+          {role === 'admin'
+            ? '进入管理控制台'
+            : isRegister
+              ? '注册并进入事项受理'
+              : '进入事项受理'}
+        </Button>
 
         {role === 'user' && mode === 'login' && (
           <p className="auth-switch-hint">

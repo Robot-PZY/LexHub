@@ -30,13 +30,13 @@ function SessionFeed({ messages, connectionLabel }: SessionFeedProps) {
     <section className="records-panel-react session-feed-react">
       <div className="records-head-react">
         <strong>阶段事件</strong>
-        <span className="workspace-side-caption-react">{connectionLabel} · 工具调用见右下角提示</span>
+        <span className="workspace-side-caption-react">{connectionLabel} · 处理动作见右下角提示</span>
       </div>
       <div className="session-feed-list-react">
         {displayMessages.length === 0 && (
           <article className="session-message-react empty">
-            <strong>尚未启动任务</strong>
-            <span>提交任务后，这里会按时间记录阶段推进、工具调用和系统输出。</span>
+            <strong>尚未启动事项</strong>
+            <span>提交事项后，这里会按时间记录阶段推进、处理动作和系统输出。</span>
           </article>
         )}
         {displayMessages.map((message) => (
@@ -49,7 +49,7 @@ function SessionFeed({ messages, connectionLabel }: SessionFeedProps) {
                 <strong>{feedMessageLabel(message)}</strong>
                 {message.messageType && message.role !== 'human' ? (
                   <span className={`message-type-tag${message.content.includes('失败') ? ' error' : ''}`}>
-                    {message.messageType === 'lui-message-tool-event' ? 'Tool' : 'Plan'}
+                    {message.messageType === 'lui-message-tool-event' ? 'Action' : 'Plan'}
                   </span>
                 ) : null}
               </div>

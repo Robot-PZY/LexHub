@@ -7,7 +7,7 @@ import PageHeader from '../components/ui/PageHeader';
 import StatCard from '../components/ui/StatCard';
 import type { UploadedFileInfo } from '../lib/chat';
 import { clearAuthed } from '../lib/storage';
-import { COSIGHT_SUBTITLE, TOOLCHAIN_CATEGORIES } from '../lib/cosight-narrative';
+import { TOOLCHAIN_CATEGORIES } from '../lib/cosight-narrative';
 
 const evidenceRows = [
   { name: '合作协议.pdf', type: '合同文本', status: '已解析', issue: '违约责任条款需复核' },
@@ -31,7 +31,7 @@ function EvidencePage() {
       name: file.filename,
       type: '本地上传',
       status: '已上传',
-      issue: '等待进入任务工作区解析',
+      issue: '等待进入事项工作区解析',
     }));
     return [...uploaded, ...evidenceRows];
   }, [uploadedFiles]);
@@ -44,20 +44,20 @@ function EvidencePage() {
   return (
     <AppShell
       title="证据质检"
-      subtitle={`${COSIGHT_SUBTITLE} · 证据质检智能体调用文档/OCR 工具。`}
+      subtitle="核验合同、票据、截图与沟通记录，识别证据缺口和材料风险。"
       badge={<span className="ds-badge ds-badge-success">{uploadedFiles.length > 0 ? `已上传 ${uploadedFiles.length} 份` : '支持本地上传'}</span>}
-      actions={<button type="button" className="btn btn-primary" onClick={() => navigate('/workspace')}>带入工作台</button>}
+      actions={<button type="button" className="btn btn-primary" onClick={() => navigate('/workspace')}>带入事项受理</button>}
       onLogout={handleLogout}
     >
       <PageHeader
         icon={FileSearch}
         title="证据质检中心"
-        subtitle="证据质检智能体通过 Co-Sight 调用文档解析、OCR 与材料上传工具，材料会进入任务工作区。"
+        subtitle="通过文档解析、OCR 与材料上传能力核验材料质量，材料会进入事项工作区。"
       />
 
       <section className="feature-stat-grid">
         <StatCard label="本地上传" value={`${uploadedFiles.length}`} description="当前会话已上传材料" />
-        <StatCard label="示例材料" value={`${evidenceRows.length}`} description="演示用材料清单" />
+        <StatCard label="示例材料" value={`${evidenceRows.length}`} description="材料清单样例" />
         <StatCard label="完整度" value="68%" description="签署页与付款凭证待补" />
         <StatCard label="OCR 状态" value="预留" description="可接百度 / 阿里 / PaddleOCR" />
       </section>
@@ -75,7 +75,7 @@ function EvidencePage() {
           <FileUploadZone
             files={uploadedFiles}
             onChange={setUploadedFiles}
-            hint="上传后的材料可在工作台发起任务时一并提交，系统会复制到任务工作区。"
+            hint="上传后的材料可在事项受理时一并提交，系统会复制到事项工作区。"
           />
 
           <div className="ds-table-wrap">
@@ -106,7 +106,7 @@ function EvidencePage() {
           <article className="ds-card feature-panel">
             <div className="feature-card-title">
               <UploadCloud size={18} />
-              <strong>证据工具链</strong>
+              <strong>证据处理能力</strong>
             </div>
             <div className="feature-mini-list">
               {TOOLCHAIN_CATEGORIES.filter((item) => item.id === 'document' || item.id === 'code').map((item) => (
@@ -138,7 +138,7 @@ function EvidencePage() {
             </div>
             <div className="feature-mini-list">
               <div><span>继续上传</span><em>补齐缺口材料</em></div>
-              <div><span>进入工作台</span><em>发起质检任务</em></div>
+              <div><span>进入事项受理</span><em>发起质检事项</em></div>
             </div>
           </article>
         </aside>

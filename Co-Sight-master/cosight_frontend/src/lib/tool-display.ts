@@ -29,13 +29,13 @@ export function cleanToolSummary(summary: string): string {
     .replace(/^正在执行[「"]?/, '')
     .replace(/[」"]?\.\.\.$/, '')
     .replace(/^「[^」]+」完成[:：]\s*/, '')
-    .replace(/Tool系统反馈/g, '工具')
+    .replace(/Tool系统反馈/g, '处理反馈')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
 export function formatToolDisplaySummary(tool: Pick<ToolCallTrace, 'summary' | 'argsPreview' | 'errorDetail' | 'toolLabel' | 'toolName'>): string {
-  if (tool.errorDetail) return `执行失败：${tool.errorDetail}`;
+  if (tool.errorDetail) return `处理失败：${tool.errorDetail}`;
 
   const argsText = formatToolArgsPreview(tool.argsPreview);
   const cleaned = cleanToolSummary(tool.summary || '');
@@ -70,5 +70,5 @@ export function dedupeToolRecords<T extends { toolName: string; argsPreview?: st
 export function extractToolLabelFromMessage(content: string): string {
   const match = content.match(/[「"]([^」"]+)[」"]/);
   if (match) return match[1];
-  return '工具';
+  return '处理动作';
 }

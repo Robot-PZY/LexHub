@@ -29,27 +29,27 @@ export function formatFeedContent(message: ChatMessage): string {
   const raw = message.content.trim();
   if (message.messageType === 'lui-message-tool-event') {
     return raw
-      .replace(/^正在执行[「"]?/, '▶ ')
+      .replace(/^正在执行[「"]?/, '正在处理 ')
       .replace(/[」"]?\.\.\.$/, '')
-      .replace(/Tool系统反馈/g, '工具')
+      .replace(/Tool系统反馈/g, '处理反馈')
       .slice(0, 220);
   }
   if (message.messageType === 'lui-message-manus-step') {
-    return '阶段计划已更新，可在上方 DAG 查看节点状态。';
+    return '办理路径已更新，可在上方查看节点状态。';
   }
   if (message.messageType === 'control-status-message') {
-    return '任务执行完成，可查看结果或导出文书。';
+    return '事项办理完成，可查看审查结论或导出文书。';
   }
   return raw.length > 280 ? `${raw.slice(0, 280)}…` : raw;
 }
 
 export function feedMessageLabel(message: ChatMessage): string {
-  if (message.role === 'human') return '任务输入';
+  if (message.role === 'human') return '事项输入';
   if (message.messageType === 'lui-message-tool-event') {
-    return message.content.includes('失败') ? '工具异常' : '工具调用';
+    return message.content.includes('失败') ? '处理异常' : '处理动作';
   }
   if (message.messageType === 'lui-message-manus-step') return '阶段推进';
-  if (message.messageType === 'control-status-message') return '执行完成';
+  if (message.messageType === 'control-status-message') return '办理完成';
   return '系统反馈';
 }
 

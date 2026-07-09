@@ -117,7 +117,7 @@ export function extractLatestPlanSnapshot(messages: ChatMessage[]): PlanSnapshot
   const humanQuery = messages.find((message) => message.role === 'human')?.content;
 
   return {
-    title: typeof raw.title === 'string' ? raw.title : 'Co-Sight 法律任务',
+    title: typeof raw.title === 'string' ? raw.title : '法律事项办理',
     taskQuery: humanQuery,
     steps,
     stepStatuses: asRecord(raw.step_statuses) as PlanSnapshot['stepStatuses'],
@@ -144,7 +144,7 @@ export function extractPlanSnapshotFromReplayContent(content: unknown): PlanSnap
   if (steps.length === 0) return null;
 
   return {
-    title: typeof raw.title === 'string' ? raw.title : 'Co-Sight 法律任务',
+    title: typeof raw.title === 'string' ? raw.title : '法律事项办理',
     steps,
     stepStatuses: asRecord(raw.step_statuses) as PlanSnapshot['stepStatuses'],
     stepNotes: asRecord(raw.step_notes) as Record<string, string>,
@@ -277,7 +277,7 @@ export function deriveStepsFromSnapshot(params: {
     stepIndex: node.stepIndex,
     title: node.title,
     status: node.status,
-    summary: node.note || (node.status === 'running' ? '当前阶段正在执行。' : '阶段已记录。'),
+    summary: node.note || (node.status === 'running' ? '当前阶段正在办理。' : '阶段已记录。'),
     timestamp: Date.now(),
   }));
 }
@@ -348,14 +348,14 @@ export function buildWorkflowPreviewLayout(workflow: WorkflowConfig, registry: A
   });
 
   const snapshot: PlanSnapshot = {
-    title: '法律任务路径预览',
+    title: '法律事项路径预览',
     steps,
     stepStatuses: Object.fromEntries(steps.map((step, index) => [step, index === 0 ? 'in_progress' : 'not_started'])),
     stepNotes: {},
     dependencies,
     progress: { total: steps.length, completed: 0 },
     result: '',
-    statusText: '提交任务后生成真实 Co-Sight Plan',
+    statusText: '提交事项后生成真实办理路径',
   };
 
   return buildDagGraphLayout({

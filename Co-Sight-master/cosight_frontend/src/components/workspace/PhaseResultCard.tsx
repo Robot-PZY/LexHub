@@ -15,8 +15,8 @@ function PhaseResultCard({ result, completed = false }: PhaseResultCardProps) {
     <article className="ds-card phase-result-card">
       <div className="phase-result-head">
         <p className="eyebrow">FINAL SUMMARY</p>
-        <strong>任务总结</strong>
-        <span>完整报告请前往「任务结果」页查看</span>
+        <strong>结论摘要</strong>
+        <span>完整报告请前往「审查结论」页查看</span>
       </div>
       <div
         className="phase-result-body"

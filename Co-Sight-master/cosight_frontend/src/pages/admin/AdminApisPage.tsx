@@ -7,7 +7,7 @@ import type { ApiIntegrationType, ApiProviderConfig, McpToolConfig } from '../..
 
 const integrationMeta: Record<ApiIntegrationType, { label: string; icon: typeof Search }> = {
   ocr_service: { label: 'OCR 服务', icon: ScanLine },
-  search_api: { label: '检索 API', icon: Search },
+  search_api: { label: '检索服务', icon: Search },
   export_pipeline: { label: '导出管线', icon: FileOutput },
   vector_rag: { label: '向量 RAG', icon: Database },
   rest_api: { label: 'REST 接口', icon: Globe },
@@ -41,21 +41,21 @@ function AdminApisPage() {
   const readyCount = draft.filter((item) => item.enabled && item.apiKey).length;
 
   return (
-    <AdminShell title="API 管理" subtitle="配置 OCR、检索、导出与 RAG 等异构工具链。">
+    <AdminShell title="服务管理" subtitle="配置 OCR、检索、导出与知识增强等外部能力。">
       <PageHeader
         icon={KeyRound}
-        title="API 工具链管理"
-        subtitle="外部能力按类型独立配置：OCR 处理图像材料，检索 API 对接法规库，RAG 接入本地知识库。"
+        title="外部服务管理"
+        subtitle="外部能力按类型独立配置：OCR 处理图像材料，检索服务对接法规库，知识增强接入本地知识库。"
         action={<button type="button" className="btn btn-primary" onClick={() => saveSettings({ apis: draft, mcpTools: mcpDraft })}><Save size={16} />保存配置</button>}
       />
 
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}
-      <p className="admin-form-desc">得理法律检索 API Key 可填 `appid|secret`；联网搜索填 Tavily Key。保存后下一任务生效。</p>
+      <p className="admin-form-desc">得理法律检索服务可填 `appid|secret`；联网搜索填服务商密钥。保存后下一次事项办理生效。</p>
 
       <section className="admin-runtime-banner">
         <article>
           <strong>{readyCount}</strong>
-          <span>工具已就绪</span>
+          <span>服务已就绪</span>
         </article>
         <article>
           <strong>{draft.filter((item) => item.enabled).length}</strong>
@@ -63,7 +63,7 @@ function AdminApisPage() {
         </article>
         <article>
           <strong>{draft.length}</strong>
-          <span>工具位总数</span>
+          <span>服务位总数</span>
         </article>
       </section>
 
@@ -106,7 +106,7 @@ function AdminApisPage() {
 
                   {api.dependsOn && api.dependsOn.length > 0 && (
                     <div className="admin-api-depends">
-                      <span>联动智能体</span>
+                      <span>联动角色</span>
                       {api.dependsOn.map((dep) => (
                         <em key={dep}>{dep}</em>
                       ))}
@@ -114,12 +114,12 @@ function AdminApisPage() {
                   )}
 
                   <label className="admin-field">
-                    <span>API Key</span>
+                    <span>访问密钥</span>
                     <input
                       type="password"
                       value={api.apiKey}
                       onChange={(event) => updateDraft(api.id, { apiKey: event.target.value })}
-                      placeholder="输入服务商 API Key"
+                      placeholder="输入服务商访问密钥"
                     />
                   </label>
 
@@ -141,8 +141,8 @@ function AdminApisPage() {
       <section className="admin-config-section">
         <div className="admin-config-section-head">
           <div>
-            <h3>自定义 MCP 工具</h3>
-            <p>注册 Co-Sight 原生 MCP 技能（需本机可执行的 command）。下一任务创建 Actor 时加载。</p>
+            <h3>自定义扩展能力</h3>
+            <p>注册本地扩展服务能力，保存后下一次事项办理时加载。</p>
           </div>
           <button
             type="button"
@@ -152,8 +152,8 @@ function AdminApisPage() {
               {
                 skill_name: `custom_tool_${current.length + 1}`,
                 skill_type: 'local_mcp',
-                display_name_zh: '自定义 MCP 工具',
-                description_zh: '通过 MCP Server 暴露的外部能力',
+                display_name_zh: '自定义扩展能力',
+                description_zh: '通过本地扩展服务暴露的外部能力',
                 mcp_server_config: { command: 'python', args: ['mcp_server.py'] },
               },
             ]))}
@@ -194,7 +194,7 @@ function AdminApisPage() {
                 />
               </label>
               <label className="admin-field">
-                <span>command</span>
+                <span>启动命令</span>
                 <input
                   value={tool.mcp_server_config.command}
                   onChange={(event) => setMcpDraft((current) => current.map((item, idx) => (
