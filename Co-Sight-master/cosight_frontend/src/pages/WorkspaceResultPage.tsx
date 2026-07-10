@@ -1,4 +1,4 @@
-import { Archive, ArrowRight, Briefcase, ChevronDown, ClipboardList, FileClock, FolderOpen } from 'lucide-react';
+import { Archive, ArrowRight, Briefcase, CheckCircle2, ChevronDown, ClipboardList, FileClock, FileText, FolderOpen, Scale, ShieldCheck } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
@@ -13,6 +13,66 @@ import ToolTracePanel from '../components/workspace/ToolTracePanel';
 import { useWorkspaceSession } from '../hooks/useWorkspaceSession';
 import { getScenarioOutputProfile } from '../lib/scenarios';
 import { clearAuthed, getPendingRequestsRaw } from '../lib/storage';
+import type { ResultInsight } from '../types/chat';
+import type { ExecutionSnapshot } from '../types/execution';
+
+function ResultOverview({
+  primaryLabel,
+  resultInsight,
+  snapshot,
+  statusSummary,
+}: {
+  primaryLabel: string;
+  resultInsight: ResultInsight;
+  snapshot: ExecutionSnapshot | null;
+  statusSummary: string;
+}) {
+  const completedSteps = snapshot?.stats.completedSteps
+    ?? snapshot?.steps.filter((step) => step.status === 'completed').length
+    ?? 0;
+  const totalSteps = snapshot?.stats.stepCount ?? snapshot?.steps.length ?? 0;
+  const evidenceCount = resultInsight.evidenceReferences.length;
+
+  return (
+    <section className="workspace-result-overview" aria-label="审查结论总览">
+      <div className="workspace-result-overview-head">
+        <div>
+          <p className="eyebrow">REVIEW SUMMARY</p>
+          <h2>结论、依据与交付状态已归集。</h2>
+          <span>{statusSummary} · 主交付为「{primaryLabel}」</span>
+        </div>
+        <Badge tone="success" pill icon={<CheckCircle2 size={13} />}>可复核</Badge>
+      </div>
+
+      <div className="workspace-result-overview-grid">
+        <article>
+          <FileText size={18} />
+          <span>主交付</span>
+          <strong>{primaryLabel}</strong>
+          <em>报告与文书按场景呈现</em>
+        </article>
+        <article>
+          <ShieldCheck size={18} />
+          <span>可信度</span>
+          <strong>{resultInsight.credibility.score}</strong>
+          <em>{resultInsight.credibility.reviewLabel}</em>
+        </article>
+        <article>
+          <Scale size={18} />
+          <span>引用依据</span>
+          <strong>{evidenceCount}</strong>
+          <em>条可追溯来源</em>
+        </article>
+        <article>
+          <ClipboardList size={18} />
+          <span>办理记录</span>
+          <strong>{completedSteps}/{totalSteps || '—'}</strong>
+          <em>阶段已沉淀</em>
+        </article>
+      </div>
+    </section>
+  );
+}
 
 function WorkspaceResultPage() {
   const navigate = useNavigate();
@@ -139,6 +199,13 @@ function WorkspaceResultPage() {
               </div>
             </div>
           )}
+
+          <ResultOverview
+            primaryLabel={outputProfile.primaryLabel}
+            resultInsight={resultInsight}
+            snapshot={snapshot}
+            statusSummary={statusSummary}
+          />
 
           {isDocumentPrimary && deliverablePanel}
 

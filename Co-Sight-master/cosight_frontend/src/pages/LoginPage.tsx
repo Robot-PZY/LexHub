@@ -38,13 +38,13 @@ const roleCards: Array<{
   {
     role: 'user',
     title: '用户端',
-    desc: '提交法律事项，上传材料，查看办理进度与审查结论。',
+    desc: '发起法律事项，跟进办理路径、审查结论与文书交付。',
     icon: Workflow,
   },
   {
     role: 'admin',
     title: '管理控制台',
-    desc: '维护知识库、模型接入、能力配置与用户权限。',
+    desc: '配置知识库、模型服务、处理能力和用户权限。',
     icon: Settings2,
   },
 ];
@@ -161,10 +161,10 @@ function LoginPage() {
           <div style={{ marginTop: 32 }}>
             <p className="eyebrow">Welcome</p>
             <h1 style={{ margin: '0 0 12px', fontSize: 36, color: 'var(--color-text-strong)', lineHeight: 1.15 }}>
-              选择入口，进入律枢。
+              进入律枢，继续办理。
             </h1>
             <p style={{ margin: 0, color: 'var(--color-muted)', lineHeight: 1.85, maxWidth: '46ch' }}>
-              用户端负责法律事项受理、材料提交与结论跟进，管理端负责知识库、模型能力与权限配置，共同构成完整办理闭环。
+              用户端处理事项受理、材料提交、办理进度与审查结论；管理端维护知识库、模型接入和权限配置。
             </p>
           </div>
         </div>
@@ -179,23 +179,43 @@ function LoginPage() {
           <div className="auth-flow-step">
             <span>1</span>
             <div>
-              <strong>用户端提交事项</strong>
-              <em>选择场景、说明事实、上传合同与证据材料。</em>
+              <strong>提交事项</strong>
+              <em>选择场景，补充事实与材料。</em>
             </div>
           </div>
           <div className="auth-flow-step">
             <span>2</span>
             <div>
-              <strong>系统生成办理路径</strong>
-              <em>材料整理、依据检索、风险审查与阶段结论可追踪。</em>
+              <strong>生成路径</strong>
+              <em>系统整理材料、依据、风险与阶段结论。</em>
             </div>
           </div>
           <div className="auth-flow-step">
             <span>3</span>
             <div>
-              <strong>归档复核与交付</strong>
-              <em>材料库、审查结论与管理端运营视图形成可追溯闭环。</em>
+              <strong>交付归档</strong>
+              <em>输出审查结论、文书和可追溯办理记录。</em>
             </div>
+          </div>
+        </div>
+
+        <div className="auth-brand-preview" aria-hidden="true">
+          <div className="auth-brand-preview-card">
+            <div className="auth-brand-preview-head">
+              <BrandLogo markOnly compact />
+              <span>LexHub Matter Path</span>
+            </div>
+            <strong>服务合同审查</strong>
+            <div className="auth-brand-preview-grid">
+              <span>证据 82%</span>
+              <span>依据 12</span>
+              <span>风险 3</span>
+            </div>
+          </div>
+          <div className="auth-brand-preview-line">
+            <span>受理</span>
+            <span>路径</span>
+            <span>结论</span>
           </div>
         </div>
       </section>

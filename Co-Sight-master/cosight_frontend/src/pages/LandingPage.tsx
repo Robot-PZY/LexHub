@@ -7,7 +7,6 @@ import {
   Crown,
   FileSearch,
   FolderArchive,
-  GitBranch,
   Scale,
   ShieldCheck,
   Sparkles,
@@ -27,10 +26,10 @@ import { isAuthed } from '../lib/storage';
 import type { DemoOverview, DemoRuntimeStatus } from '../types/demo';
 
 const topNavItems = [
-  { label: '首页', href: '#home' },
-  { label: '能力', href: '#capabilities' },
+  { label: '产品', href: '#home' },
+  { label: '产品能力', href: '#capabilities' },
   { label: '办理流程', href: '#workflow' },
-  { label: '场景', href: '#scenes' },
+  { label: '解决方案', href: '#scenes' },
   { label: '会员方案', href: '#pricing' },
 ];
 
@@ -70,57 +69,68 @@ function ProductPreview() {
     {
       id: 'matter',
       label: '事项总览',
-      title: '合同审查办理',
+      syncTitle: '合同审查 · 已同步',
+      syncMeta: '证据完整度',
+      syncValue: '82%',
+      title: '服务合同审查',
       description: '先核验材料，再补充依据，交付前统一复核。',
       metrics: [
-        ['证据完整度', '82%'],
-        ['引用依据', '12'],
-        ['复核风险', '3'],
-        ['归档记录', 'Ready'],
+        { label: '证据完整度', value: '82%', tone: 'success' },
+        { label: '引用依据', value: '12', tone: 'primary' },
+        { label: '复核风险', value: '3', tone: 'warning' },
+        { label: '归档状态', value: 'Ready', tone: 'success' },
       ],
       nodes: [
-        { hop: 1, label: '事项受理', agent: '事项受理智能体', status: 'completed' },
-        { hop: 2, label: '证据质检', agent: '证据质检智能体', status: 'completed' },
-        { hop: 3, label: '法规研究', agent: '法规研究智能体', status: 'running' },
-        { hop: 4, label: '文书生成', agent: '文书生成智能体', status: 'branch' },
-        { hop: 5, label: '交叉审查', agent: '交叉审查智能体', status: 'branch' },
+        { label: '事项受理', caption: '事实与材料', state: 'done' },
+        { label: '证据质检', caption: '完整度核验', state: 'done' },
+        { label: '法规研究', caption: '依据检索中', state: 'active' },
+        { label: '文书生成', caption: '待交付', state: 'pending' },
       ],
+      alert: { title: '违约责任条款需复核', caption: 'Review Suggested', tone: 'warning' },
     },
     {
       id: 'review',
       label: '审查结论',
+      syncTitle: '审查报告 · 已生成',
+      syncMeta: '可追溯依据',
+      syncValue: '18',
       title: '风险与依据同步呈现',
       description: '结论、风险、引用来源与下一步建议集中输出。',
       metrics: [
-        ['高风险', '1'],
-        ['中风险', '2'],
-        ['可追溯依据', '18'],
-        ['报告状态', 'Done'],
+        { label: '高风险', value: '1', tone: 'warning' },
+        { label: '中风险', value: '2', tone: 'warning' },
+        { label: '可追溯依据', value: '18', tone: 'primary' },
+        { label: '报告状态', value: 'Done', tone: 'success' },
       ],
       nodes: [
-        { hop: 1, label: '事实摘要', agent: '事实整理模块', status: 'completed' },
-        { hop: 2, label: '风险分层', agent: '风险审查模块', status: 'running' },
-        { hop: 3, label: '依据引用', agent: '法规检索模块', status: 'completed' },
-        { hop: 4, label: '复核建议', agent: '结论复核模块', status: 'branch' },
+        { label: '事实摘要', caption: '争议焦点', state: 'done' },
+        { label: '风险分层', caption: '条款识别', state: 'active' },
+        { label: '依据引用', caption: '法条来源', state: 'done' },
+        { label: '复核建议', caption: '律师复核', state: 'pending' },
       ],
+      alert: { title: '管辖条款存在不确定性', caption: 'Evidence Required', tone: 'warning' },
     },
     {
       id: 'delivery',
       label: '文书交付',
+      syncTitle: '文书交付 · 已保存',
+      syncMeta: '生成进度',
+      syncValue: '96%',
       title: '报告与文书按需生成',
       description: '办理记录沉淀为报告、审查意见和归档材料。',
       metrics: [
-        ['交付类型', '4'],
-        ['生成进度', '96%'],
-        ['导出格式', 'DOCX'],
-        ['归档状态', 'Saved'],
+        { label: '交付类型', value: '4', tone: 'primary' },
+        { label: '生成进度', value: '96%', tone: 'success' },
+        { label: '导出格式', value: 'DOCX', tone: 'primary' },
+        { label: '归档状态', value: 'Saved', tone: 'success' },
       ],
       nodes: [
-        { hop: 1, label: '报告生成', agent: '报告交付模块', status: 'completed' },
-        { hop: 2, label: '审查意见', agent: '文书生成模块', status: 'running' },
-        { hop: 3, label: '材料归档', agent: '归档模块', status: 'completed' },
-        { hop: 4, label: '再次复核', agent: '交叉审查模块', status: 'branch' },
+        { label: '报告生成', caption: '审查结论', state: 'done' },
+        { label: '审查意见', caption: '文书草稿', state: 'active' },
+        { label: '材料归档', caption: '记录沉淀', state: 'done' },
+        { label: '再次复核', caption: '交叉检查', state: 'pending' },
       ],
+      alert: { title: '审查意见书已生成', caption: 'Ready to Export', tone: 'success' },
     },
   ];
 
@@ -137,7 +147,7 @@ function ProductPreview() {
 
   return (
     <div
-      className="landing-preview-card landing-preview-carousel"
+      className="landing-preview-card landing-brand-mockup"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -147,43 +157,60 @@ function ProductPreview() {
         <span className="landing-dot green" />
         <span>LexHub · Matter Path</span>
       </div>
-      <div className="landing-preview-body">
+      <div className="landing-preview-body landing-brand-stage">
         <div
-          className="landing-preview-track"
+          className="landing-preview-track landing-brand-track"
           style={{ transform: `translateX(-${activeSlide * 100}%)` }}
         >
           {previewSlides.map((slide) => (
-            <div key={slide.id} className="landing-preview-slide">
-              <div className="landing-preview-panel primary">
+            <div key={slide.id} className="landing-preview-slide landing-brand-slide">
+              <div className="landing-brand-sync-card">
+                <Check size={16} />
                 <div>
+                  <strong>{slide.syncTitle}</strong>
+                  <span>{slide.syncMeta}</span>
+                </div>
+                <em>{slide.syncValue}</em>
+              </div>
+
+              <article className="landing-brand-main-card">
+                <div className="landing-brand-card-head">
+                  <BrandLogo markOnly compact />
+                  <span>LexHub Matter Path</span>
+                </div>
+                <div className="landing-brand-card-copy">
                   <span>{slide.label}</span>
                   <strong>{slide.title}</strong>
+                  <p>{slide.description}</p>
                 </div>
-                <p>{slide.description}</p>
-              </div>
-              <div className="landing-preview-grid">
-                {slide.metrics.map(([item, value]) => (
-                  <div key={item} className="landing-preview-mini">
-                    <span>{item}</span>
-                    <strong>{value}</strong>
-                  </div>
-                ))}
-              </div>
-              <div className="landing-preview-dag">
+                <div className="landing-brand-metrics">
+                  {slide.metrics.map((item) => (
+                    <div key={item.label} className={`landing-brand-metric ${item.tone}`}>
+                      <span>{item.label}</span>
+                      <strong>{item.value}</strong>
+                    </div>
+                  ))}
+                </div>
+              </article>
+
+              <div className="landing-brand-path" aria-label={`${slide.label}办理路径`}>
                 {slide.nodes.map((node, index) => (
-                  <div key={node.label} className="landing-preview-dag-row">
-                    <article className={`landing-preview-dag-node ${node.status}`}>
-                      <span className="dag-hop">H{node.hop}</span>
-                      <div>
-                        <strong>{node.label}</strong>
-                        <em>{node.agent}</em>
-                      </div>
-                    </article>
-                    {index < slide.nodes.length - 1 && (
-                      <GitBranch size={12} className="landing-preview-dag-connector" aria-hidden="true" />
-                    )}
+                  <div key={node.label} className={`landing-brand-node ${node.state}`}>
+                    <span>H{index + 1}</span>
+                    <div>
+                      <strong>{node.label}</strong>
+                      <em>{node.caption}</em>
+                    </div>
                   </div>
                 ))}
+              </div>
+
+              <div className={`landing-brand-alert ${slide.alert.tone}`}>
+                <ShieldCheck size={15} />
+                <div>
+                  <strong>{slide.alert.title}</strong>
+                  <span>{slide.alert.caption}</span>
+                </div>
               </div>
             </div>
           ))}
@@ -254,7 +281,7 @@ function LandingPage() {
         <div className="landing-top-actions">
           {!authed && <Link className="btn btn-ghost" to="/login">登录</Link>}
           <Link className="btn btn-primary" to={workspacePath}>
-            {authed ? '进入事项受理' : '免费体验'}
+            {authed ? '进入事项受理' : '发起事项'}
             <ArrowRight size={16} />
           </Link>
         </div>
@@ -272,15 +299,14 @@ function LandingPage() {
             </div>
             <div className="landing-kicker">
               <Sparkles size={14} />
-              <span>可研判，可审查，可归档</span>
+              <span>法律事项办理工作台</span>
             </div>
             <h1 className="landing-hero-title">
               <span className="landing-title-line-primary">让法律事项</span>
-              <span className="landing-title-line-middle">进入</span>
-              <span className="landing-title-line-accent">智能办理链路</span>
+              <span className="landing-title-line-accent">沿路径办理。</span>
             </h1>
             <p>
-              从事实材料到依据检索、风险审查与文书交付，系统按事项状态推进办理，让每一步都有依据、有记录、可复核。
+              从材料受理到依据检索、风险复核与文书交付，LexHub 把每一步沉淀为可追溯的办理记录。
             </p>
             <div className="landing-minimal-actions">
               <Link className="btn btn-primary" to={workspacePath}>

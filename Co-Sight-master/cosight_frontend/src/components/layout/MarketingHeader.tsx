@@ -7,9 +7,10 @@ type MarketingHeaderProps = {
 };
 
 const navAnchors = [
-  { label: '核心能力', href: '/#capabilities' },
+  { label: '产品能力', href: '/#capabilities' },
   { label: '办理流程', href: '/#workflow' },
-  { label: '定价方案', href: '/#pricing' },
+  { label: '解决方案', href: '/#scenes' },
+  { label: '会员方案', href: '/#pricing' },
 ];
 
 function MarketingHeader({ active = 'home' }: MarketingHeaderProps) {
@@ -27,7 +28,7 @@ function MarketingHeader({ active = 'home' }: MarketingHeaderProps) {
         ))}
         <Link to={replayPath} className={active === 'replay' ? 'active' : ''}>案件归档</Link>
         {!authed && <Link to="/login">登录</Link>}
-        <Link to={workspacePath} className="marketing-nav-cta">进入事项受理</Link>
+        <Link to={workspacePath} className="marketing-nav-cta">发起事项</Link>
       </nav>
     </header>
   );

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Database, FileOutput, Globe, KeyRound, Plus, Save, ScanLine, Search, Trash2 } from 'lucide-react';
+import { CheckCircle2, Database, FileOutput, Globe, KeyRound, Plus, Save, ScanLine, Search, Trash2 } from 'lucide-react';
 import { AdminShell } from '../../components/layout/AdminShell';
 import PageHeader from '../../components/ui/PageHeader';
+import { Badge } from '../../components/ui';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
-import type { ApiIntegrationType, ApiProviderConfig, McpToolConfig } from '../../types/admin-config';
+import { API_CONFIG_GUIDANCE, type ApiIntegrationType, type ApiProviderConfig, type McpToolConfig } from '../../types/admin-config';
 
 const integrationMeta: Record<ApiIntegrationType, { label: string; icon: typeof Search }> = {
   ocr_service: { label: 'OCR 服务', icon: ScanLine },
@@ -14,6 +15,52 @@ const integrationMeta: Record<ApiIntegrationType, { label: string; icon: typeof 
 };
 
 const categoryOrder = ['材料处理', '法律研究', '公开资料', '结果交付', '知识增强'];
+
+const apiProviderPresets: Record<string, Array<{ id: string; label: string; endpoint: string }>> = {
+  ocr: [
+    { id: 'manual', label: '手动填写', endpoint: '' },
+    { id: 'paddle-local', label: 'PaddleOCR 本地服务', endpoint: 'http://127.0.0.1:8866/ocr' },
+    { id: 'baidu-ocr', label: '百度智能云 OCR', endpoint: 'https://aip.baidubce.com' },
+    { id: 'aliyun-ocr', label: '阿里云 OCR', endpoint: 'https://ocr-api.cn-hangzhou.aliyuncs.com' },
+  ],
+  legal_search: [
+    { id: 'delilegal', label: '得理法律开放平台（推荐）', endpoint: 'https://openapi.delilegal.com' },
+    { id: 'law-db', label: '自建法规检索 API', endpoint: '' },
+  ],
+  web_search: [
+    { id: 'manual', label: '手动填写', endpoint: '' },
+    { id: 'tavily', label: 'Tavily Search', endpoint: '' },
+    { id: 'serpapi', label: 'SerpAPI', endpoint: 'https://serpapi.com/search' },
+  ],
+  export: [
+    { id: 'local-docx', label: '本地 DOCX/PDF 导出', endpoint: '' },
+    { id: 'external-export', label: '第三方导出流水线', endpoint: '' },
+  ],
+  vector_rag: [
+    { id: 'chroma-local', label: '本地 Chroma 知识库（推荐）', endpoint: './chroma_lexhub' },
+    { id: 'external-vector', label: '外部向量库', endpoint: '' },
+  ],
+  contract_review_external: [
+    { id: 'baidu-textreview', label: '百度 TextReview', endpoint: 'https://aip.baidubce.com' },
+    { id: 'external-review', label: '第三方合同审查 API', endpoint: '' },
+  ],
+  contract_documents: [
+    { id: 'internal-llm', label: '内置 LLM + 模板 RAG（推荐）', endpoint: '' },
+    { id: 'explinks', label: '幂简合同生成 API', endpoint: 'https://openapi.explinks.com' },
+  ],
+  clause_library: [
+    { id: 'internal-clause', label: '内部条款库', endpoint: '' },
+    { id: 'external-clause', label: '第三方条款库', endpoint: '' },
+  ],
+  contract_compare: [
+    { id: 'internal-compare', label: '内部版本比对', endpoint: '' },
+    { id: 'external-compare', label: '第三方比对 API', endpoint: '' },
+  ],
+  compliance_screen: [
+    { id: 'internal-compliance', label: '内部合规规则', endpoint: '' },
+    { id: 'external-compliance', label: '第三方合规引擎', endpoint: '' },
+  ],
+};
 
 function AdminApisPage() {
   const { settings, saveSettings, savedHint } = useAdminSettings();
@@ -29,6 +76,15 @@ function AdminApisPage() {
     setDraft((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
   };
 
+  const applyApiPreset = (id: string, presetId: string) => {
+    const preset = (apiProviderPresets[id] ?? []).find((item) => item.id === presetId);
+    if (!preset) return;
+    updateDraft(id, {
+      providerId: preset.id,
+      ...(preset.endpoint ? { endpoint: preset.endpoint } : {}),
+    });
+  };
+
   const grouped = useMemo(() => (
     categoryOrder
       .map((category) => ({
@@ -39,6 +95,8 @@ function AdminApisPage() {
   ), [draft]);
 
   const readyCount = draft.filter((item) => item.enabled && item.apiKey).length;
+  const enabledCount = draft.filter((item) => item.enabled).length;
+  const mcpCount = mcpDraft.length;
 
   return (
     <AdminShell title="服务管理" subtitle="配置 OCR、检索、导出与知识增强等外部能力。">
@@ -52,13 +110,49 @@ function AdminApisPage() {
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}
       <p className="admin-form-desc">得理法律检索服务可填 `appid|secret`；联网搜索填服务商密钥。保存后下一次事项办理生效。</p>
 
+      <section className="admin-config-hero admin-apis-hero" aria-label="服务接入台">
+        <div className="admin-config-hero-copy">
+          <p className="eyebrow">SERVICE ROUTING</p>
+          <h2>把外部能力接入法律事项办理链路。</h2>
+          <p>
+            OCR、法律检索、知识增强和导出服务分别支撑材料处理、依据检索、风险复核与文书交付；本页只维护接入位和扩展能力。
+          </p>
+          <div className="admin-config-hero-badges">
+            <Badge tone="primary" icon={<KeyRound size={13} />}>服务接入</Badge>
+            <Badge tone="success" icon={<CheckCircle2 size={13} />}>{readyCount}/{draft.length} 已就绪</Badge>
+          </div>
+        </div>
+        <div className="admin-config-hero-metrics">
+          <article>
+            <span>就绪服务</span>
+            <strong>{readyCount}</strong>
+            <em>已启用且配置密钥</em>
+          </article>
+          <article>
+            <span>启用能力</span>
+            <strong>{enabledCount}</strong>
+            <em>参与办理链路</em>
+          </article>
+          <article>
+            <span>服务位</span>
+            <strong>{draft.length}</strong>
+            <em>OCR · 检索 · 导出</em>
+          </article>
+          <article>
+            <span>扩展能力</span>
+            <strong>{mcpCount}</strong>
+            <em>本地 MCP 工具</em>
+          </article>
+        </div>
+      </section>
+
       <section className="admin-runtime-banner">
         <article>
           <strong>{readyCount}</strong>
           <span>服务已就绪</span>
         </article>
         <article>
-          <strong>{draft.filter((item) => item.enabled).length}</strong>
+          <strong>{enabledCount}</strong>
           <span>已启用能力</span>
         </article>
         <article>
@@ -80,6 +174,8 @@ function AdminApisPage() {
             {group.items.map((api) => {
               const meta = integrationMeta[api.integrationType];
               const Icon = meta.icon;
+              const guidance = API_CONFIG_GUIDANCE[api.id];
+              const presets = apiProviderPresets[api.id] ?? [];
               return (
                 <article key={api.id} className="ds-card admin-api-tool-card">
                   <div className="admin-api-tool-head">
@@ -113,13 +209,34 @@ function AdminApisPage() {
                     </div>
                   )}
 
+                  {presets.length > 0 && (
+                    <label className="admin-field">
+                      <span>服务商 / 预设</span>
+                      <select
+                        value={api.providerId || presets[0].id}
+                        onChange={(event) => applyApiPreset(api.id, event.target.value)}
+                      >
+                        {presets.map((preset) => (
+                          <option key={preset.id} value={preset.id}>{preset.label}</option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
+
+                  {guidance && (
+                    <div className="admin-config-guidance">
+                      <strong>配置提示</strong>
+                      <span>{guidance.hint}</span>
+                    </div>
+                  )}
+
                   <label className="admin-field">
                     <span>访问密钥</span>
                     <input
                       type="password"
                       value={api.apiKey}
                       onChange={(event) => updateDraft(api.id, { apiKey: event.target.value })}
-                      placeholder="输入服务商访问密钥"
+                      placeholder={guidance?.keyPlaceholder ?? '输入服务商访问密钥'}
                     />
                   </label>
 
@@ -128,7 +245,7 @@ function AdminApisPage() {
                     <input
                       value={api.endpoint}
                       onChange={(event) => updateDraft(api.id, { endpoint: event.target.value })}
-                      placeholder="https://api.provider.com/v1/..."
+                      placeholder={guidance?.endpointPlaceholder ?? 'https://api.provider.com/v1/...'}
                     />
                   </label>
                 </article>

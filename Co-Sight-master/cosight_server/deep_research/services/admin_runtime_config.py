@@ -79,6 +79,7 @@ def _preserve_masked_secrets(
 def _normalize_model_entry(item: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": str(item.get("id") or "").strip(),
+        "providerId": str(item.get("providerId") or "").strip(),
         "label": str(item.get("label") or "").strip(),
         "agentName": str(item.get("agentName") or "").strip(),
         "description": str(item.get("description") or "").strip(),
@@ -96,6 +97,7 @@ def _normalize_model_entry(item: dict[str, Any]) -> dict[str, Any]:
 def _normalize_api_entry(item: dict[str, Any]) -> dict[str, Any]:
     return {
         "id": str(item.get("id") or "").strip(),
+        "providerId": str(item.get("providerId") or "").strip(),
         "name": str(item.get("name") or "").strip(),
         "category": str(item.get("category") or "").strip(),
         "purpose": str(item.get("purpose") or "").strip(),

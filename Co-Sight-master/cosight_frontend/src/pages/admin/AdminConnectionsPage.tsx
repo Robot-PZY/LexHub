@@ -1,8 +1,9 @@
 import { useSearchParams } from 'react-router-dom';
-import { Bot, KeyRound, Layers3, RefreshCw, SlidersHorizontal } from 'lucide-react';
+import { Bot, CheckCircle2, KeyRound, Layers3, RefreshCw, ServerCog, SlidersHorizontal } from 'lucide-react';
 import AdminStackOverview, { type StackTab } from '../../components/admin/AdminStackOverview';
 import { AdminShell } from '../../components/layout/AdminShell';
 import PageHeader from '../../components/ui/PageHeader';
+import { Badge } from '../../components/ui';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 
 const TABS: Array<{ id: StackTab; label: string; icon: typeof SlidersHorizontal }> = [
@@ -43,6 +44,44 @@ function AdminConnectionsPage() {
         title="系统能力栈"
         subtitle="整合模型能力、外部服务与本地处理能力；本页用于总览，密钥与运行配置请在对应管理页维护。"
       />
+
+      <section className="admin-connections-hero" aria-label="系统能力矩阵">
+        <div className="admin-connections-hero-copy">
+          <p className="eyebrow">SYSTEM CAPABILITY MATRIX</p>
+          <h2>法律 AI 办理能力集中编排。</h2>
+          <p>
+            能力总览用于检查模型、外部服务、处理工具和运行状态是否形成闭环；正式配置仍在模型配置、服务管理和知识库页面维护。
+          </p>
+          <div className="admin-connections-hero-badges">
+            <Badge tone="primary" icon={<ServerCog size={13} />}>LexHub Runtime</Badge>
+            <Badge tone={syncState === 'synced' ? 'success' : 'neutral'} icon={<CheckCircle2 size={13} />}>
+              {syncState === 'synced' ? '配置已同步' : '本地配置'}
+            </Badge>
+          </div>
+        </div>
+        <div className="admin-connections-matrix">
+          <article>
+            <span>模型能力</span>
+            <strong>{readyModelCount}/{settings.models.length}</strong>
+            <em>Plan · Vision · Review</em>
+          </article>
+          <article>
+            <span>外部服务</span>
+            <strong>{readyApiCount}/{settings.apis.length}</strong>
+            <em>OCR · 检索 · 导出</em>
+          </article>
+          <article>
+            <span>处理能力</span>
+            <strong>{settings.mcpTools?.length ?? 0}</strong>
+            <em>扩展工具位</em>
+          </article>
+          <article>
+            <span>运行状态</span>
+            <strong>{syncState === 'synced' ? 'Ready' : 'Local'}</strong>
+            <em>{runtimeInfo ?? '等待运行信息'}</em>
+          </article>
+        </div>
+      </section>
 
       <div className="admin-tab-bar">
         {TABS.map((item) => {

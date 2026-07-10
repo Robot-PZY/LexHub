@@ -23,13 +23,13 @@ export type NavGroup = {
 
 export const APP_NAV_GROUPS: NavGroup[] = [
   {
-    label: '我的工作',
+    label: '事项办理',
     items: [
       { id: 'workspace', label: '事项受理', to: '/workspace', icon: Home, end: true },
       { id: 'workspace-run', label: '办理进度', to: '/workspace/run', icon: GitBranch },
       { id: 'workspace-result', label: '审查结论', to: '/workspace/result', icon: ShieldCheck },
-      { id: 'replay', label: '案件归档', to: '/replay', icon: History },
       { id: 'materials', label: '材料库', to: '/materials', icon: FolderOpen },
+      { id: 'replay', label: '案件归档', to: '/replay', icon: History },
     ],
   },
 ];

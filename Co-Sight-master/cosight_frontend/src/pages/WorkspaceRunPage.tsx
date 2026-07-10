@@ -2,6 +2,11 @@ import {
   ArrowLeft,
   ArrowRight,
   Briefcase,
+  CheckCircle2,
+  FileSearch,
+  FileText,
+  Loader2,
+  Scale,
   Sparkles,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -22,7 +27,90 @@ import {
   getPendingRequestsRaw,
   storePendingWorkspaceTask,
 } from '../lib/storage';
+import type { AgentStep, ToolCallTrace } from '../types/chat';
 import type { AgentRegistry } from '../types/agent-registry';
+
+const runStages = [
+  { id: 'facts', label: '事实整理', desc: '提炼诉求与材料线索', icon: FileSearch },
+  { id: 'law', label: '依据检索', desc: '匹配法规、案例与规则', icon: Scale },
+  { id: 'review', label: '风险复核', desc: '审查争议点与不确定性', icon: Briefcase },
+  { id: 'delivery', label: '结论交付', desc: '汇总报告与文书输出', icon: FileText },
+] as const;
+
+function getStageState(index: number, completedCount: number, runningIndex: number, isCompleted: boolean) {
+  if (isCompleted || index < completedCount) return 'completed';
+  if (index === runningIndex) return 'running';
+  return 'pending';
+}
+
+function RunPathOverview({
+  steps,
+  toolCalls,
+  isCompleted,
+  statusSummary,
+}: {
+  steps: AgentStep[];
+  toolCalls: ToolCallTrace[];
+  isCompleted: boolean;
+  statusSummary: string;
+}) {
+  const completedCount = steps.filter((step) => step.status === 'completed').length;
+  const runningStep = steps.find((step) => step.status === 'running');
+  const failedStep = steps.find((step) => step.status === 'failed');
+  const effectiveTotal = Math.max(steps.length, runStages.length);
+  const progressPercent = isCompleted
+    ? 100
+    : Math.min(96, Math.round((completedCount / effectiveTotal) * 100));
+  const runningIndex = isCompleted
+    ? runStages.length
+    : Math.min(runStages.length - 1, Math.max(0, runningStep?.stepIndex ?? completedCount));
+  const activeTool = toolCalls.find((tool) => tool.status === 'running') ?? toolCalls[0];
+  const activeCopy = failedStep
+    ? `${failedStep.title} 需要关注`
+    : runningStep?.title ?? (isCompleted ? '办理路径已完成' : '正在生成办理路径');
+
+  return (
+    <section className="workspace-run-overview" aria-label="办理路径概览">
+      <div className="workspace-run-overview-head">
+        <div>
+          <p className="eyebrow">MATTER PATH</p>
+          <h2>{activeCopy}</h2>
+          <span>{statusSummary} · 已完成 {completedCount} 个阶段动作 · 调用 {toolCalls.length} 次处理能力</span>
+        </div>
+        <div className="workspace-run-progress-meter" aria-label={`当前进度 ${progressPercent}%`}>
+          <strong>{progressPercent}%</strong>
+          <em>路径进度</em>
+        </div>
+      </div>
+
+      <div className="workspace-run-progress-track" aria-hidden="true">
+        <span style={{ width: `${progressPercent}%` }} />
+      </div>
+
+      <div className="workspace-run-stage-grid">
+        {runStages.map((stage, index) => {
+          const Icon = stage.icon;
+          const state = getStageState(index, completedCount, runningIndex, isCompleted);
+          return (
+            <article key={stage.id} className={`workspace-run-stage-card ${state}`}>
+              <div className="workspace-run-stage-icon">
+                {state === 'completed' ? <CheckCircle2 size={18} /> : state === 'running' ? <Loader2 size={18} className="dag-graph-spin" /> : <Icon size={18} />}
+              </div>
+              <strong>{stage.label}</strong>
+              <p>{stage.desc}</p>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="workspace-run-live-action">
+        <span>{activeTool?.status === 'running' ? '正在调用' : isCompleted ? '最近完成' : '等待动作'}</span>
+        <strong>{activeTool?.toolLabel ?? activeTool?.toolName ?? '法律事项处理能力'}</strong>
+        <em>{activeTool?.summary || '系统会在生成路径后同步展示处理动作。'}</em>
+      </div>
+    </section>
+  );
+}
 
 function WorkspaceRunPage() {
   const navigate = useNavigate();
@@ -167,6 +255,13 @@ function WorkspaceRunPage() {
           title={taskTitle}
           subtitle={isCompleted ? '办理已完成，可前往审查结论页查看完整报告。' : '系统正在整理办理路径；点击节点可查看阶段结论与依据来源。'}
           badge={<Badge tone="primary">{connectionText}</Badge>}
+        />
+
+        <RunPathOverview
+          steps={steps}
+          toolCalls={toolCalls}
+          isCompleted={isCompleted}
+          statusSummary={statusSummary}
         />
 
         {isCompleted && (

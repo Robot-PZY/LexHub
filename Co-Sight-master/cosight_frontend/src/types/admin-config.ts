@@ -2,6 +2,7 @@ export type ModelCapabilityType = 'text_llm' | 'vision_ocr' | 'multimodal' | 'em
 
 export type ModelProviderConfig = {
   id: string;
+  providerId?: string;
   label: string;
   agentName: string;
   description: string;
@@ -19,6 +20,7 @@ export type ApiIntegrationType = 'rest_api' | 'ocr_service' | 'search_api' | 'ex
 
 export type ApiProviderConfig = {
   id: string;
+  providerId?: string;
   name: string;
   category: string;
   purpose: string;

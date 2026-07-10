@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, GitBranch, LayoutDashboard, PlugZap, RefreshCw, RotateCcw, Users, Zap } from 'lucide-react';
+import { BookOpen, GitBranch, LayoutDashboard, PlugZap, RefreshCw, RotateCcw, ShieldCheck, Users, Zap } from 'lucide-react';
 import AdminOpsCharts from '../../components/admin/AdminOpsCharts';
 import { AdminShell } from '../../components/layout/AdminShell';
 import { Badge, Button, PageHeader, Panel, StatCard } from '../../components/ui';
@@ -29,6 +29,17 @@ function AdminOverviewPage() {
   const [testError, setTestError] = useState<string | null>(null);
   const [testOpen, setTestOpen] = useState(false);
   const [resetHint, setResetHint] = useState('');
+
+  const readiness = useMemo(() => {
+    const modelTotal = Math.max(settings.models.length, 1);
+    const apiTotal = Math.max(settings.apis.length, 1);
+    const toolTotal = Math.max(toolchain?.summary.total ?? 0, 1);
+    return {
+      model: Math.round((readyModelCount / modelTotal) * 100),
+      api: Math.round((readyApiCount / apiTotal) * 100),
+      tool: Math.round(((toolchain?.summary.ready ?? 0) / toolTotal) * 100),
+    };
+  }, [readyModelCount, readyApiCount, settings.models.length, settings.apis.length, toolchain]);
 
   const load = async () => {
     const [runtimeData, toolchainResult] = await Promise.all([
@@ -102,6 +113,39 @@ function AdminOverviewPage() {
         title="律枢管理控制台"
         subtitle="配置、运营与用户一屏掌握；下方图表基于本地数据，完成事项后可沉淀为归档统计。"
       />
+
+      <section className="admin-dashboard-hero" aria-label="管理控制台总览">
+        <div className="admin-dashboard-hero-main">
+          <p className="eyebrow">LEGAL AI SUITE</p>
+          <h2>能力、数据与事项运行状态集中监控。</h2>
+          <p>
+            管理端用于维护模型、服务、知识库、策略与用户权限；当前配置会影响事项受理、办理进度和审查结论交付。
+          </p>
+          <div className="admin-dashboard-status-row">
+            <Badge tone="primary" icon={<ShieldCheck size={13} />}>
+              {syncState === 'synced' ? '配置已同步' : '配置待检查'}
+            </Badge>
+            <span>{runtime?.summary ?? '等待运行状态同步'}</span>
+          </div>
+        </div>
+        <div className="admin-dashboard-readiness">
+          <article>
+            <span>模型能力</span>
+            <strong>{readiness.model}%</strong>
+            <em>{readyModelCount}/{settings.models.length} 就绪</em>
+          </article>
+          <article>
+            <span>外部服务</span>
+            <strong>{readiness.api}%</strong>
+            <em>{readyApiCount}/{settings.apis.length} 就绪</em>
+          </article>
+          <article>
+            <span>处理链路</span>
+            <strong>{readiness.tool}%</strong>
+            <em>{toolchain?.summary.ready ?? 0}/{toolchain?.summary.total ?? 0} 就绪</em>
+          </article>
+        </div>
+      </section>
 
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}
       {resetHint && <div className="admin-save-hint">{resetHint}</div>}

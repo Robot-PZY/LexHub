@@ -40,6 +40,8 @@ LexHub 采用混合式设计体系：
    - [05 实施记录](./phase-05-implementation-log.md)
 7. [06 核心业务页迁移](./phase-06-core-pages.md)
    - [06 页面迁移矩阵](./phase-06-migration-matrix.md)
+   - [06 Landing Brand Hero 方案 C](./phase-06-landing-brand-hero.md)
+   - [06 导航 / 登录 / 首页统一优化方案](./phase-06-nav-login-home-copy.md)
 8. [07 管理后台迁移](./phase-07-admin-console.md)
    - [07 管理端迁移矩阵](./phase-07-admin-migration-matrix.md)
 9. [08 验收、打磨与回归](./phase-08-qa-polish.md)
