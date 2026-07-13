@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronDown, FileText, Wrench } from 'lucide-react';
+import { Braces, ChevronDown, ExternalLink, FileText, Network, Wrench } from 'lucide-react';
 import type { StepToolDetail } from '../../types/plan-graph';
 import { buildStepNextHint, sanitizePhaseNote } from '../../lib/phase-note';
 import { renderMarkdownHtml } from '../../lib/report-parser';
@@ -16,6 +16,20 @@ function statusText(status: string) {
   if (status === 'completed') return '已完成';
   if (status === 'failed') return '失败';
   return '等待';
+}
+
+function compactJson(value: unknown): string {
+  if (value == null) return '';
+  if (typeof value === 'string') return value;
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value);
+  }
+}
+
+function recordLabel(record: Record<string, unknown>, fallback: string): string {
+  return String(record.title || record.name || record.label || record.fileName || record.url || record.path || fallback);
 }
 
 function StepToolDetailPanel({ detail, stepCount = 1, allCompleted = false }: StepToolDetailPanelProps) {
@@ -62,6 +76,14 @@ function StepToolDetailPanel({ detail, stepCount = 1, allCompleted = false }: St
         <span className="step-capability-chip">{detail.capabilityLabel}</span>
         <span className="step-agent-chip">{detail.agentLabel}</span>
       </div>
+
+      {(detail.parallelGroup || detail.expectedArtifact || detail.condition) && (
+        <section className="step-routing-context" aria-label="规划上下文">
+          {detail.parallelGroup ? <span><Network size={13} />并行组：{detail.parallelGroup}</span> : null}
+          {detail.expectedArtifact ? <span><FileText size={13} />预期产物：{detail.expectedArtifact}</span> : null}
+          {detail.condition ? <p>执行条件：{detail.condition}</p> : null}
+        </section>
+      )}
 
       {phaseHtml ? (
         <section className="step-phase-result">
@@ -121,6 +143,42 @@ function StepToolDetailPanel({ detail, stepCount = 1, allCompleted = false }: St
                   <span>{formatToolDisplaySummary(tool)}</span>
                 </div>
                 {tool.duration !== undefined ? <em>{tool.duration}s</em> : null}
+                {(tool.capabilityId || tool.resultType || tool.sources?.length || tool.artifacts?.length || tool.resultData != null) ? (
+                  <details className="tool-structured-result">
+                    <summary>
+                      <Braces size={13} />
+                      结构化结果
+                      {tool.resultType ? <span>{tool.resultType}</span> : null}
+                    </summary>
+                    <div className="tool-result-meta">
+                      {tool.runtimeAgentId ? <span>智能体：{tool.runtimeAgentId}</span> : null}
+                      {tool.capabilityId ? <span>能力：{tool.capabilityId}</span> : null}
+                      {tool.apiLabel ? <span>实现：{tool.apiLabel}</span> : null}
+                    </div>
+                    {tool.sources?.length ? (
+                      <div className="tool-result-links">
+                        <strong>依据来源</strong>
+                        {tool.sources.slice(0, 6).map((source, index) => {
+                          const url = typeof source.url === 'string' ? source.url : undefined;
+                          return url ? (
+                            <a key={`${url}-${index}`} href={url} target="_blank" rel="noreferrer">
+                              {recordLabel(source, `来源 ${index + 1}`)}<ExternalLink size={12} />
+                            </a>
+                          ) : <span key={index}>{recordLabel(source, `来源 ${index + 1}`)}</span>;
+                        })}
+                      </div>
+                    ) : null}
+                    {tool.artifacts?.length ? (
+                      <div className="tool-result-links">
+                        <strong>生成产物</strong>
+                        {tool.artifacts.slice(0, 6).map((artifact, index) => (
+                          <span key={index}>{recordLabel(artifact, `产物 ${index + 1}`)}</span>
+                        ))}
+                      </div>
+                    ) : null}
+                    {tool.resultData != null ? <pre>{compactJson(tool.resultData).slice(0, 4000)}</pre> : null}
+                  </details>
+                ) : null}
               </div>
             ))
           )}

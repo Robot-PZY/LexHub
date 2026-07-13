@@ -135,9 +135,9 @@ export const DEFAULT_API_CONFIGS: ApiProviderConfig[] = [
   { id: 'ocr', name: 'OCR / 文档解析', category: '材料处理', purpose: '识别合同、扫描件与 PDF 材料。', integrationType: 'ocr_service', dependsOn: ['vision'], apiKey: '', endpoint: '', enabled: true },
   { id: 'legal_search', name: '得理法律检索', category: '法律研究', purpose: '检索法规、司法解释与裁判案例。', integrationType: 'search_api', dependsOn: ['research'], apiKey: '', endpoint: 'https://openapi.delilegal.com', enabled: true },
   { id: 'contract_documents', name: '合同文书引擎', category: '合同文书', purpose: 'LLM + 法规/模板检索：审查报告、商业合同起草、条款修改备忘，支持 DOCX/PDF 导出。', integrationType: 'rest_api', dependsOn: ['drafting', 'research'], apiKey: '', endpoint: '', enabled: true },
-  { id: 'contract_review_external', name: '第三方合同审查（可选）', category: '合同文书', purpose: '百度 TextReview 等外部 SaaS；需公网文件与额外密钥，演示可不启用。', integrationType: 'rest_api', dependsOn: ['review'], apiKey: '', endpoint: 'https://aip.baidubce.com', enabled: false },
+  { id: 'contract_review_external', name: '第三方审查文档交付（可选）', category: '合同文书', purpose: '百度 TextReview 等异步生成批注版合同与审查报告下载链接，不作为对话式分析结论。', integrationType: 'rest_api', dependsOn: ['review'], apiKey: '', endpoint: 'https://aip.baidubce.com', enabled: false },
   { id: 'clause_library', name: '标准条款库', category: '合同审查', purpose: '对照 NDA、采购、劳动等标准条款模板，标记偏离与建议改写。', integrationType: 'search_api', dependsOn: ['review'], apiKey: '', endpoint: '', enabled: false },
-  { id: 'contract_compare', name: '合同版本比对', category: '合同审查', purpose: '多版本合同 diff、修订痕迹与红线批注，适合续签与谈判场景。', integrationType: 'rest_api', dependsOn: ['review'], apiKey: '', endpoint: '', enabled: false },
+  { id: 'contract_compare', name: '合同版本比对（本地）', category: '合同审查', purpose: '多版本合同 diff、增删改统计与修订痕迹，适合续签与谈判场景，无需外部 Key。', integrationType: 'rest_api', dependsOn: ['review'], apiKey: '', endpoint: '/api/demo/contract/compare', enabled: true },
   { id: 'compliance_screen', name: '合规红线筛查', category: '合同审查', purpose: '反商业贿赂、数据出境、劳动用工、关联交易等合规风险扫描。', integrationType: 'rest_api', dependsOn: ['compliance', 'review'], apiKey: '', endpoint: '', enabled: false },
   { id: 'web_search', name: '联网搜索', category: '公开资料', purpose: '补充公开资料与行业背景。', integrationType: 'search_api', apiKey: '', endpoint: '', enabled: false },
   { id: 'export', name: '文书导出', category: '结果交付', purpose: '导出 PDF / DOCX / 材料包。', integrationType: 'export_pipeline', dependsOn: ['drafting'], apiKey: '', endpoint: '', enabled: false },
@@ -152,9 +152,9 @@ export type ApiConfigGuidance = {
 
 export const API_CONFIG_GUIDANCE: Record<string, ApiConfigGuidance> = {
   ocr: {
-    keyPlaceholder: '视觉模型 Key 或百度/阿里云 OCR Key',
-    endpointPlaceholder: 'OCR 服务地址（可留空，走模型页「证据质检」）',
-    hint: '演示可先在「模型」页配置证据质检模型的 API Key；生产环境可在 .env 填写 BAIDU_OCR_API_KEY 或 VISION_API_KEY。',
+    keyPlaceholder: 'BAIDU_OCR_API_KEY|BAIDU_OCR_SECRET_KEY',
+    endpointPlaceholder: 'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic',
+    hint: '在百度智能云创建文字识别应用后，将 API Key 与 Secret Key 用竖线连接后保存；也可分别写入 .env。',
   },
   legal_search: {
     keyPlaceholder: '得理 App Secret 或 LEGAL_SEARCH_API_KEY',

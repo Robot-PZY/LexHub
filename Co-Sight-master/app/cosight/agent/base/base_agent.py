@@ -15,7 +15,9 @@
 
 import inspect
 import json
+import os
 import sys
+import threading
 import time
 from typing import List, Dict, Any
 
@@ -36,6 +38,8 @@ from config.config import get_turbo_mode
 class BaseAgent:
     def __init__(self, agent_instance: AgentInstance, llm: ChatLLM, functions: {}, plan_id: str = None):
         self.agent_instance = agent_instance
+        business_type = getattr(agent_instance.template, "business_type", {}) or {}
+        self.agent_id = business_type.get("agent_id", "actor") if isinstance(business_type, dict) else "actor"
         self.llm = llm
         self.tools = []
         self.mcp_tools = []
@@ -48,6 +52,12 @@ class BaseAgent:
         self.plan_id = plan_id
         self._tool_event_sequence = 0  # 工具事件序列号
         self._file_saver_call_count = {}  # 记录每个步骤的file_saver调用次数
+        self._tool_budget_lock = threading.Lock()
+        self._tool_event_lock = threading.Lock()
+        self._reported_tool_errors: set[tuple[str, int | None, str]] = set()
+        self._tool_call_counts: Dict[tuple[int, str], int] = {}
+        self._step_tool_call_counts: Dict[int, int] = {}
+        self._step_external_search_counts: Dict[int, int] = {}
         # Only set plan to None if it hasn't been set by subclass
         if not hasattr(self, 'plan'):
             self.plan = None  # Will be set by subclasses that have access to Plan
@@ -177,8 +187,16 @@ class BaseAgent:
                 logger.debug(f"跳过MCP工具事件发送到前端: {event_type} for {tool_name}")
                 return
             
-            # 增加序列号确保事件顺序
-            self._tool_event_sequence += 1
+            with self._tool_event_lock:
+                if event_type == "tool_error" and error:
+                    error_key = (tool_name, step_index, error)
+                    if error_key in self._reported_tool_errors:
+                        logger.debug("Skip duplicated tool error event: %s", error_key)
+                        return
+                    self._reported_tool_errors.add(error_key)
+                # 增加序列号确保并发事件仍具有唯一顺序
+                self._tool_event_sequence += 1
+                event_sequence = self._tool_event_sequence
             
             # 构建事件数据
             event_data = {
@@ -188,14 +206,32 @@ class BaseAgent:
                 "tool_args": tool_args,
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "step_index": step_index,
-                "sequence": self._tool_event_sequence  # 添加序列号
+                "sequence": event_sequence
             }
+            event_data["agent_id"] = self.agent_id
+
+            from cosight_server.deep_research.services.capabilities.executor import normalize_legacy_tool_result
+            from cosight_server.deep_research.services.capabilities.registry import get_capability_registry
+
+            capability = get_capability_registry().resolve_legacy_tool(tool_name)
+            if capability:
+                event_data["capability_id"] = capability.id
+                event_data["result_type"] = capability.resultType
             
             if duration is not None:
                 event_data["duration"] = round(duration, 2)
             
             if error:
                 event_data["error"] = error
+                capability_result = normalize_legacy_tool_result(
+                    tool_name,
+                    None,
+                    invocation_id=f"{self.plan_id}:{step_index}:{event_sequence}",
+                    duration_ms=round(duration * 1000) if duration is not None else None,
+                    error=error,
+                )
+                if capability_result:
+                    event_data["capability_result"] = capability_result
             elif tool_result:
                 # 处理工具结果
                 task_title = self.plan.title if self.plan else ""
@@ -205,6 +241,15 @@ class BaseAgent:
                 
                 # 注入验证信息，包含URL
                 self._inject_verification_info(event_data, tool_name, processed_result)
+                capability_result = normalize_legacy_tool_result(
+                    tool_name,
+                    tool_result,
+                    invocation_id=f"{self.plan_id}:{step_index}:{event_sequence}",
+                    duration_ms=round(duration * 1000) if duration is not None else None,
+                )
+                if capability_result:
+                    capability_result["summary"] = str(processed_result.get("summary") or capability_result["summary"])
+                    event_data["capability_result"] = capability_result
             
             # 携带路由键（plan_id）发布事件
             plan_report_event_manager.publish("tool_event", self.plan_id, event_data)
@@ -383,6 +428,10 @@ class BaseAgent:
         return []
 
     def execute(self, messages: List[Dict[str, Any]], step_index=None, max_iteration=10):  #调试修改的10
+        configured_iterations = max(1, int(os.environ.get("MAX_AGENT_ITERATIONS", "6")))
+        max_iteration = min(max_iteration, configured_iterations)
+        step_timeout = max(10.0, float(os.environ.get("MAX_AGENT_STEP_SECONDS", "45")))
+        deadline = time.monotonic() + step_timeout
         # 急速模式：减少迭代次数
         turbo_mode = get_turbo_mode()
         if turbo_mode:
@@ -390,6 +439,9 @@ class BaseAgent:
             logger.info(f"Turbo mode enabled: max_iteration reduced to {max_iteration}")
         
         for i in range(max_iteration):
+            if time.monotonic() >= deadline:
+                logger.warning("Agent step deadline reached: step=%s, timeout=%ss", step_index, step_timeout)
+                return self._build_forced_completion(messages, "step time budget exhausted")
             # 为了避免日志过大，这里不再打印完整 messages，只记录关键元信息
             logger.info(f"act agent call with tools start: iter={i}, step_index={step_index}, "
                         f"msg_count={len(messages)}, tools_count={len(self.tools)}")
@@ -475,19 +527,71 @@ class BaseAgent:
         return results
 
     def _handle_max_iteration(self, messages, step_index):
-        messages.append({"role": "user", "content": "Summarize the above conversation, use mark_step to mark the step"})
-        mark_step_tools = [tool for tool in self.tools if tool['function']['name'] == 'mark_step']
-        response = self.llm.create_with_tools(messages, mark_step_tools)
+        logger.warning("Agent iteration budget exhausted: step=%s", step_index)
+        return self._build_forced_completion(messages, "iteration budget exhausted")
 
-        result = self._process_response(response, messages, step_index)
-        if result:
-            return result
+    @staticmethod
+    def _build_forced_completion(messages, reason: str) -> str:
+        """Return a bounded evidence summary without making one more LLM call.
 
-        return messages[-1].get("content")
+        TaskActorAgent will persist this result and mark the step completed. This avoids
+        the former failure mode where the final `mark_step` LLM call started another
+        slow request after the execution budget had already been exhausted.
+        """
+        evidence: list[str] = []
+        for message in reversed(messages):
+            if message.get("role") not in {"assistant", "tool"}:
+                continue
+            content = str(message.get("content") or "").strip()
+            if not content:
+                continue
+            compact = " ".join(content.split())
+            if compact not in evidence:
+                evidence.append(compact[:1200])
+            if len(evidence) >= 3:
+                break
+        evidence.reverse()
+        body = "\n".join(f"- {item}" for item in evidence) if evidence else "- No usable tool evidence was returned."
+        return f"Step completed with bounded execution ({reason}).\nAvailable evidence:\n{body}"
+
+    def _reserve_tool_budget(self, function_name: str, step_index: int | None) -> str | None:
+        if function_name in {"mark_step", "terminate"}:
+            return None
+        step_key = int(step_index) if step_index is not None else -1
+        max_step_calls = max(1, int(os.environ.get("MAX_TOOL_CALLS_PER_STEP", "12")))
+        max_same_tool = max(1, int(os.environ.get("MAX_SAME_TOOL_CALLS_PER_STEP", "3")))
+        max_external_search = max(0, int(os.environ.get("MAX_EXTERNAL_SEARCH_CALLS_PER_STEP", "3")))
+        external_tools = {"search_google", "search_wiki", "tavily_search", "fetch_website_content"}
+
+        with self._tool_budget_lock:
+            total = self._step_tool_call_counts.get(step_key, 0)
+            same_key = (step_key, function_name)
+            same = self._tool_call_counts.get(same_key, 0)
+            external = self._step_external_search_counts.get(step_key, 0)
+            if total >= max_step_calls:
+                return f"Tool budget exhausted for step {step_key}: max {max_step_calls} calls. Do not retry; summarize available evidence and mark the step."
+            if same >= max_same_tool:
+                return f"Tool retry budget exhausted for {function_name} in step {step_key}: max {max_same_tool} calls. Do not retry this tool."
+            if function_name in external_tools and external >= max_external_search:
+                return f"External search budget exhausted for step {step_key}: max {max_external_search} calls. Use local/legal evidence and finish the step."
+            self._step_tool_call_counts[step_key] = total + 1
+            self._tool_call_counts[same_key] = same + 1
+            if function_name in external_tools:
+                self._step_external_search_counts[step_key] = external + 1
+        return None
 
     @time_record
     def _execute_tool_call(self, function_name="", function_args="", tool_call_id="", step_index=None):
         start_time = time.time()
+        budget_error = self._reserve_tool_budget(function_name, step_index)
+        if budget_error:
+            self._push_tool_event("tool_error", function_name, function_args, step_index=step_index, error=budget_error)
+            return {
+                "role": "tool",
+                "name": function_name,
+                "content": budget_error,
+                "tool_call_id": tool_call_id,
+            }
         
         # 推送工具开始执行事件
         self._push_tool_event("tool_start", function_name, function_args, step_index=step_index)

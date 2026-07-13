@@ -1,35 +1,37 @@
+import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import ProtectedRoute from './components/app/ProtectedRoute';
-import AdminLayout from './components/layout/AdminShell';
-import LandingPage from './pages/LandingPage';
-import BoardPage from './pages/BoardPage';
-import LoginPage from './pages/LoginPage';
-import WorkspacePage from './pages/WorkspacePage';
-import WorkspaceRunPage from './pages/WorkspaceRunPage';
-import WorkspaceResultPage from './pages/WorkspaceResultPage';
-import MaterialsPage from './pages/MaterialsPage';
-import MembershipPage from './pages/MembershipPage';
-import ReplayPage from './pages/ReplayPage';
-import CasesPage from './pages/CasesPage';
-import EvidencePage from './pages/EvidencePage';
-import ResearchPage from './pages/ResearchPage';
-import DocumentsPage from './pages/DocumentsPage';
-import AgentsPage from './pages/AgentsPage';
-import ReviewPage from './pages/ReviewPage';
-import ReportsPage from './pages/ReportsPage';
-import ProfilesPage from './pages/ProfilesPage';
-import AnalyticsPage from './pages/AnalyticsPage';
-import AdminOverviewPage from './pages/admin/AdminOverviewPage';
-import AdminConnectionsPage from './pages/admin/AdminConnectionsPage';
-import AdminKnowledgePage from './pages/admin/AdminKnowledgePage';
-import AdminPoliciesPage from './pages/admin/AdminPoliciesPage';
-import AdminUsersPage from './pages/admin/AdminUsersPage';
+
+const AdminLayout = lazy(() => import('./components/layout/AdminShell'));
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const BoardPage = lazy(() => import('./pages/BoardPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const WorkspacePage = lazy(() => import('./pages/WorkspacePage'));
+const WorkspaceRunPage = lazy(() => import('./pages/WorkspaceRunPage'));
+const WorkspaceResultPage = lazy(() => import('./pages/WorkspaceResultPage'));
+const MaterialsPage = lazy(() => import('./pages/MaterialsPage'));
+const MembershipPage = lazy(() => import('./pages/MembershipPage'));
+const ReplayPage = lazy(() => import('./pages/ReplayPage'));
+const CasesPage = lazy(() => import('./pages/CasesPage'));
+const EvidencePage = lazy(() => import('./pages/EvidencePage'));
+const ResearchPage = lazy(() => import('./pages/ResearchPage'));
+const DocumentsPage = lazy(() => import('./pages/DocumentsPage'));
+const AgentsPage = lazy(() => import('./pages/AgentsPage'));
+const ReportsPage = lazy(() => import('./pages/ReportsPage'));
+const ProfilesPage = lazy(() => import('./pages/ProfilesPage'));
+const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage'));
+const AdminOverviewPage = lazy(() => import('./pages/admin/AdminOverviewPage'));
+const AdminConnectionsPage = lazy(() => import('./pages/admin/AdminConnectionsPage'));
+const AdminKnowledgePage = lazy(() => import('./pages/admin/AdminKnowledgePage'));
+const AdminPoliciesPage = lazy(() => import('./pages/admin/AdminPoliciesPage'));
+const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage'));
 
 function App() {
   const location = useLocation();
 
   return (
     <div className="page-transition-stage" key={`${location.pathname}${location.search}`}>
+      <Suspense fallback={<div className="route-loading" role="status">正在加载工作台…</div>}>
       <Routes location={location}>
       <Route path="/" element={<LandingPage />} />
       <Route path="/board" element={<BoardPage />} />
@@ -110,7 +112,7 @@ function App() {
         path="/review"
         element={(
           <ProtectedRoute role="user">
-            <ReviewPage />
+            <Navigate to="/workspace/result" replace />
           </ProtectedRoute>
         )}
       />
@@ -176,6 +178,7 @@ function App() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      </Suspense>
     </div>
   );
 }

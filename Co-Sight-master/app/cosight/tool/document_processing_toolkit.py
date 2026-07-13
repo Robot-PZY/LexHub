@@ -88,6 +88,22 @@ class DocumentProcessingToolkit:
             content = extract_excel_content(document_path)
             return content
 
+        if any(document_path.lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.bmp', '.tif', '.tiff', '.webp']):
+            try:
+                from cosight_server.deep_research.services.baidu_ocr import get_baidu_ocr_client
+
+                client = get_baidu_ocr_client()
+                if client.enabled:
+                    parsed_url = urlparse(document_path)
+                    ocr_path = self._download_file(document_path) if all([parsed_url.scheme, parsed_url.netloc]) else document_path
+                    if not ocr_path:
+                        return "OCR image download failed."
+                    return client.recognize_file(ocr_path)
+                return "OCR is not configured. Set BAIDU_OCR_API_KEY and BAIDU_OCR_SECRET_KEY."
+            except Exception as ex:
+                logger.error('OCR image parse error: %s', ex, exc_info=True)
+                return f"OCR failed: {ex}"
+
         if any(document_path.endswith(ext) for ext in ['xml']):
             data = None
             with open(document_path, 'r', encoding='utf-8') as f:
@@ -146,9 +162,37 @@ class DocumentProcessingToolkit:
                         for page in reader.pages:
                             extracted_text += page.extract_text()
 
+                    min_chars = max(0, int(os.environ.get("OCR_FALLBACK_MIN_TEXT_CHARS", "80")))
+                    if len(extracted_text.strip()) >= min_chars:
+                        return extracted_text
+                    from cosight_server.deep_research.services.baidu_document_parser import get_baidu_document_parser_client
+
+                    parser = get_baidu_document_parser_client()
+                    if parser.configured:
+                        try:
+                            logger.info("PDF text is sparse; trying Baidu document parser: %s", os.path.basename(document_path))
+                            parsed_content = parser.parse_file(document_path)
+                            if parsed_content.strip():
+                                return parsed_content
+                        except Exception as parser_ex:
+                            logger.warning("Baidu document parser fallback failed: %s", parser_ex)
+                    from cosight_server.deep_research.services.baidu_ocr import get_baidu_ocr_client
+
+                    client = get_baidu_ocr_client()
+                    if client.enabled:
+                        logger.info("PDF text is sparse; falling back to Baidu OCR: %s", os.path.basename(document_path))
+                        return client.recognize_file(document_path)
                     return extracted_text
                 except Exception as ex:
                     logger.error(f'parse document error : {str(ex)}', exc_info=True)
+                    try:
+                        from cosight_server.deep_research.services.baidu_ocr import get_baidu_ocr_client
+
+                        client = get_baidu_ocr_client()
+                        if client.enabled:
+                            return client.recognize_file(document_path)
+                    except Exception as ocr_ex:
+                        logger.error('OCR PDF fallback failed: %s', ocr_ex, exc_info=True)
             return ""
 
     def _is_webpage(self, url: str) -> bool:
@@ -183,10 +227,11 @@ class DocumentProcessingToolkit:
     def _download_file(self, url: str):
         r"""Download a file from a URL and save it to the cache directory."""
         try:
-            response = requests.get(url, stream=True, proxies=self.proxies)
+            response = requests.get(url, stream=True, proxies=self.proxies, timeout=30)
             response.raise_for_status()
-            file_name = url.split("/")[-1]
+            file_name = os.path.basename(urlparse(url).path) or f"download-{self._get_formatted_time()}"
 
+            os.makedirs(self.cache_dir, exist_ok=True)
             file_path = os.path.join(self.cache_dir, file_name)
 
             with open(file_path, 'wb') as file:

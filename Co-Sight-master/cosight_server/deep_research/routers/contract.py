@@ -15,6 +15,7 @@ from cosight_server.deep_research.services.contract_documents import (
     CONTRACT_DOCUMENT_CATALOG,
     generate_contract_document,
 )
+from cosight_server.deep_research.services.contract_compare import compare_contract_texts
 from cosight_server.deep_research.services.document_export import build_export_file
 from cosight_server.deep_research.services.explinks_contract import ExplinksContractClient
 from cosight_server.deep_research.services.upload_public_url import (
@@ -70,6 +71,11 @@ class BaiduReviewRunRequest(BaiduReviewSubmitRequest):
     startDelaySeconds: int = 30
     pollIntervalSeconds: int = 7
     maxWaitSeconds: int = 300
+
+
+class ContractCompareRequest(BaseModel):
+    originalText: str = Field(min_length=1)
+    revisedText: str = Field(min_length=1)
 
 
 def _resolve_source_url(payload: BaiduReviewSubmitRequest) -> tuple[str | None, str | None]:
@@ -183,7 +189,13 @@ async def contract_health():
     )
 
 
-# ----- 以下为可选外部 API（legacy），默认不推荐使用 -----
+@contractRouter.post("/demo/contract/compare")
+async def compare_contract_versions(payload: ContractCompareRequest):
+    result = await asyncio.to_thread(compare_contract_texts, payload.originalText, payload.revisedText)
+    return json_result(0, "success", result)
+
+
+# ----- 以下为可选外部文档交付 API（legacy），返回报告/批注文档链接 -----
 
 
 @contractRouter.post("/demo/contract/legacy/explinks/generate")

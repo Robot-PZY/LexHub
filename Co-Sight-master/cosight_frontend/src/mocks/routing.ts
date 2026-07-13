@@ -22,7 +22,7 @@ export const mockAgentRouting: AgentRoutingState = {
     '法规引用不足，调度法规研究智能体补充依据。',
     '存在高风险或输出需求，强制进入交叉审查智能体。',
   ],
-  nextSuggestion: '导出前完成交叉审查，并保留人工复核记录。',
+  nextSuggestion: '导出前完成自动交叉审查，并保留可追溯校验记录。',
   reviewRequired: true,
 };
 
@@ -31,5 +31,5 @@ export const mockAgentCatalog = [
   { name: '证据质检智能体', trigger: '材料完整度不足或存在矛盾', output: '缺口清单、OCR 解析、证据支撑度', status: '条件触发' },
   { name: '法规研究智能体', trigger: '法律依据缺失或争议焦点复杂', output: '法规引用、案例线索、研究结论', status: '条件触发' },
   { name: '文书生成智能体', trigger: '用户目标包含报告、律师函、意见书', output: '结构化草稿、导出字段、归档摘要', status: '目标触发' },
-  { name: '交叉审查智能体', trigger: '高风险、低置信度或即将导出', output: '事实一致性、引用匹配、幻觉风险、人工复核项', status: '强制复核' },
+  { name: '交叉审查智能体', trigger: '高风险、低置信度或即将导出', output: '事实一致性、引用匹配、幻觉风险、自动校验项', status: '强制校验' },
 ];

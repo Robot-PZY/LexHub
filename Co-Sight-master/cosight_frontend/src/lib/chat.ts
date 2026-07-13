@@ -20,6 +20,7 @@ export function buildOutgoingMessage(
   topic: string,
   uploadIds: string[] = [],
   scenario?: string,
+  matter?: { id: string; title: string },
 ) {
   const planId = ensurePlanIdForTopic(topic);
   const fromBackEnd: Record<string, unknown> = {
@@ -32,6 +33,11 @@ export function buildOutgoingMessage(
 
   if (uploadIds.length > 0) {
     fromBackEnd.uploadedFiles = uploadIds;
+  }
+
+  if (matter) {
+    fromBackEnd.matterId = matter.id;
+    fromBackEnd.matterTitle = matter.title;
   }
 
   return {
@@ -51,7 +57,7 @@ export function buildOutgoingMessage(
   };
 }
 
-export function buildReplayMessage(workspacePath: string, planId: string) {
+export function buildReplayMessage(workspacePath: string, planId: string, matter?: { id: string; title: string }) {
   return {
     uuid: crypto.randomUUID(),
     type: 'multi-modal',
@@ -69,6 +75,8 @@ export function buildReplayMessage(workspacePath: string, planId: string) {
         replay: true,
         replayWorkspace: workspacePath,
         replayPlanId: planId,
+        matterId: matter?.id,
+        matterTitle: matter?.title,
       },
     },
     sessionInfo: {

@@ -4,14 +4,26 @@ export type ExecutionStep = {
   status: string;
   statusLabel: string;
   note?: string;
+  agentId?: string;
+  parallelGroup?: string;
+  condition?: string;
+  expectedArtifact?: string;
 };
 
 export type ExecutionToolRecord = {
   toolName: string;
   stepIndex: number | null;
   summary: string;
+  status?: 'running' | 'completed' | 'failed';
   timestamp?: string;
   duration?: number;
+  capabilityId?: string;
+  resultType?: string;
+  runtimeAgentId?: string;
+  resultData?: unknown;
+  sources?: Array<Record<string, unknown>>;
+  artifacts?: Array<Record<string, unknown>>;
+  metrics?: Record<string, unknown>;
 };
 
 export type ExecutionSnapshot = {
@@ -19,6 +31,15 @@ export type ExecutionSnapshot = {
   taskQuery?: string;
   steps: ExecutionStep[];
   dependencies?: Record<string, number[]>;
+  stepAgentIds?: Record<string, string>;
+  stepParallelGroups?: Record<string, string>;
+  stepConditions?: Record<string, string>;
+  stepExpectedArtifacts?: Record<string, string>;
+  selectedAgents?: string[];
+  skippedAgents?: Array<{ agentId: string; reason: string }>;
+  scenario?: string;
+  targetOutput?: string;
+  riskLevel?: string;
   progress?: {
     total?: number;
     completed?: number;

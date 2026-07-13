@@ -13,7 +13,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 from datetime import datetime
-from app.cosight.agent.actor.instance.actor_agent_instance import create_actor_instance
+from app.cosight.agent.actor.instance.specialist_actor_instance import (
+    create_specialist_actor_instance,
+    resolve_step_agent_id,
+)
 from llm import llm_for_plan, llm_for_act, llm_for_tool, llm_for_vision
 from app.cosight.task.plan_report_manager import plan_report_event_manager
 
@@ -85,17 +88,24 @@ class CoSight:
             if hasattr(llm, 'current_metadata'):
                 llm.current_metadata.update(task_metadata)
         
-        create_task = question
-        retry_count = 0
-        while not self.plan.get_ready_steps() and retry_count < 3:
-            create_result = self.task_planner_agent.create_plan(create_task, output_format)
-            create_task += f"\nThe plan creation result is: {create_result}\nCreation failed, please carefully review the plan creation rules and select the create_plan tool to create the plan"
-            retry_count += 1
+        planning_thread = Thread(target=self.task_planner_agent.create_plan, args=(question, output_format), daemon=True)
+        planning_thread.start()
+        planning_thread.join(max(10.0, float(os.environ.get("MAX_PLANNER_SECONDS", "30"))))
+        if not self.plan.steps:
+            logger.warning("Planner did not create a plan within budget; using dynamic local fallback")
+            self._create_fallback_plan(question)
+        self.plan.lock_planning()
+        task_deadline = time.monotonic() + max(30.0, float(os.environ.get("MAX_TASK_EXECUTION_SECONDS", "135")))
         
         # 使用持续监控的方式，而不是等待所有步骤完成
         active_threads = {}  # 存储活跃的线程 {step_index: thread}
         
         while True:
+            if time.monotonic() >= task_deadline:
+                logger.warning("Task execution deadline reached for plan %s", self.plan_id)
+                self.plan.settle_unfinished_steps("task execution budget exhausted; available evidence was preserved")
+                plan_report_event_manager.publish("plan_process", self.plan)
+                break
             # 检查是否有新的可执行步骤
             ready_steps = self.plan.get_ready_steps()
             
@@ -125,18 +135,59 @@ class CoSight:
                 break
             
             # 短暂休眠，避免CPU占用过高
-            import time
             time.sleep(0.1)
         
         return self.task_planner_agent.finalize_plan(question, output_format)
+
+    def _create_fallback_plan(self, question: str) -> None:
+        text = str(question or "")
+        has_material = any(token in text.lower() for token in ("upload", "材料", "合同", "文件", "证据"))
+        needs_calculation = any(token in text for token in ("金额", "利息", "违约金", "赔偿计算", "期限计算"))
+        needs_drafting = any(token in text for token in ("起草", "生成文书", "律师函", "诉状", "报告"))
+        steps, agents, artifacts = [], [], []
+        if has_material:
+            steps.append("材料解析与证据核验"); agents.append("evidence"); artifacts.append("材料核验结果")
+        steps.append("法律依据检索"); agents.append("research"); artifacts.append("可追溯法律依据")
+        if "合同" in text or has_material:
+            steps.append("条款风险与责任分析"); agents.append("clause_risk"); artifacts.append("风险分析要点")
+        else:
+            steps.append("法律争点分析"); agents.append("issue_spotter"); artifacts.append("争点分析结论")
+        if needs_calculation:
+            steps.append("金额与期限计算"); agents.append("calculation"); artifacts.append("计算明细")
+        if needs_drafting:
+            steps.append("法律文书生成"); agents.append("drafting"); artifacts.append("交付文书")
+        steps.append("结果自动校验"); agents.append("verification"); artifacts.append("最终校验报告")
+        research_index = agents.index("research")
+        dependencies = {}
+        analysis_index = agents.index("clause_risk") if "clause_risk" in agents else agents.index("issue_spotter")
+        dependencies[analysis_index] = ([0, research_index] if has_material else [research_index])
+        for index in range(analysis_index + 1, len(steps)):
+            dependencies[index] = [index - 1]
+        parallel_groups = {0: "材料与法规并行", research_index: "材料与法规并行"} if has_material else {}
+        self.plan.update(
+            title="法律事项智能分析",
+            steps=steps,
+            dependencies=dependencies,
+            agent_ids=agents,
+            parallel_groups=parallel_groups,
+            expected_artifacts=artifacts,
+            selected_agents=list(dict.fromkeys(agents)),
+            skipped_agents=[],
+            scenario="local_dynamic_fallback",
+            target_output=text[:500],
+            risk_level="medium",
+        )
+        plan_report_event_manager.publish("plan_created", self.plan)
 
     def _execute_single_step(self, question, step_index):
         """执行单个步骤"""
         try:
             logger.info(f"Starting execution of step {step_index}")
             # 每个线程创建独立的TaskActorAgent实例
+            agent_id = resolve_step_agent_id(self.plan, step_index)
+            logger.info("Dispatching step %s to specialist agent %s", step_index, agent_id)
             task_actor_agent = TaskActorAgent(
-                create_actor_instance(f"actor_for_step_{step_index}", self.work_space_path),
+                create_specialist_actor_instance(agent_id, f"step_{step_index}", self.work_space_path),
                 self.act_llm,
                 self.vision_llm,
                 self.tool_llm,
@@ -147,6 +198,13 @@ class CoSight:
             logger.info(f"Completed execution of step {step_index} with result: {result}")
         except Exception as e:
             logger.error(f"Error executing step {step_index}: {e}", exc_info=True)
+            try:
+                step = self.plan.steps[step_index]
+                if self.plan.step_statuses.get(step) in {"not_started", "in_progress"}:
+                    self.plan.mark_step(step_index, step_status="blocked", step_notes=str(e))
+                    plan_report_event_manager.publish("plan_process", self.plan)
+            except Exception:
+                logger.exception("Failed to settle crashed step %s", step_index)
 
     def execute_steps(self, question, ready_steps):
         from threading import Thread, Semaphore
@@ -161,8 +219,10 @@ class CoSight:
             try:
                 logger.info(f"Starting execution of step {step_index}")
                 # 每个线程创建独立的TaskActorAgent实例
+                agent_id = resolve_step_agent_id(self.plan, step_index)
+                logger.info("Dispatching step %s to specialist agent %s", step_index, agent_id)
                 task_actor_agent = TaskActorAgent(
-                    create_actor_instance(f"actor_for_step_{step_index}", self.work_space_path),
+                    create_specialist_actor_instance(agent_id, f"step_{step_index}", self.work_space_path),
                     self.act_llm,
                     self.vision_llm,
                     self.tool_llm,

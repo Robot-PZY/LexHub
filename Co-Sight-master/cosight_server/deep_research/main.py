@@ -152,6 +152,7 @@ from cosight_server.deep_research.routers.chat_manager import chatRouter
 from cosight_server.deep_research.routers.feedback import feedbackRouter
 from cosight_server.deep_research.routers.knowledge import knowledgeRouter
 from cosight_server.deep_research.routers.contract import contractRouter
+from cosight_server.deep_research.routers.capability import capabilityRouter
 
 from contextlib import asynccontextmanager
 
@@ -245,6 +246,7 @@ app.include_router(wsRouter, prefix=str(custom_config.get("base_chatbot_api_url"
 app.include_router(commonRouter, prefix=str(custom_config.get("base_api_url")))
 app.include_router(knowledgeRouter, prefix=str(custom_config.get("base_api_url")))
 app.include_router(contractRouter, prefix=str(custom_config.get("base_api_url")))
+app.include_router(capabilityRouter, prefix=str(custom_config.get("base_api_url")))
 app.include_router(chatRouter, prefix=str(custom_config.get("base_chatbot_api_url")))
 app.include_router(feedbackRouter, prefix=str(custom_config.get("base_chatbot_api_url")))
 
@@ -274,5 +276,3 @@ if __name__ == '__main__':
 
     # 提高WebSocket最大消息大小（默认16MB），这里设置为256MB
     uvicorn.run(app=app, host="0.0.0.0", port=int(args.port), ws_max_size=256 * 1024 * 1024)
-
-

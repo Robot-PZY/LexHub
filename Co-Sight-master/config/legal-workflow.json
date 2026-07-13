@@ -6,28 +6,38 @@
   "agents": [
     { "id": "planner", "name": "任务理解智能体", "modelEnv": "PLAN_MODEL_NAME", "trigger": "任务提交" },
     { "id": "evidence", "name": "证据质检智能体", "modelEnv": "VISION_MODEL_NAME", "trigger": "材料完整度不足" },
-    { "id": "research", "name": "法规研究智能体", "modelEnv": "TOOL_MODEL_NAME", "trigger": "法规引用缺失" },
+    { "id": "issue_spotter", "name": "法律争点智能体", "modelEnv": "ACT_MODEL_NAME", "trigger": "需要法律判断" },
+    { "id": "research", "name": "法规研究智能体", "modelEnv": "TOOL_MODEL_NAME", "trigger": "需要法律依据" },
+    { "id": "clause_risk", "name": "条款风险智能体", "modelEnv": "ACT_MODEL_NAME", "trigger": "合同审查或起草" },
+    { "id": "calculation", "name": "时效计算智能体", "modelEnv": "ACT_MODEL_NAME", "trigger": "期限、利息或赔偿计算" },
     { "id": "drafting", "name": "文书生成智能体", "modelEnv": "ACT_MODEL_NAME", "trigger": "目标产出明确" },
-    { "id": "review", "name": "交叉审查智能体", "modelEnv": "REVIEW_MODEL_NAME", "trigger": "高风险或导出前" },
-    { "id": "compliance", "name": "合规监测智能体", "modelEnv": "COMPLIANCE_MODEL_NAME", "trigger": "导出前或合规关键词" }
+    { "id": "verification", "name": "质量校验智能体", "modelEnv": "ACT_MODEL_NAME", "trigger": "最终结果生成" }
   ],
   "dag": {
     "nodes": [
       { "id": "intake", "label": "任务理解", "agent": "planner" },
       { "id": "evidence", "label": "证据质检", "agent": "evidence", "condition": "materialCompleteness < 70" },
+      { "id": "issue", "label": "法律争点", "agent": "issue_spotter" },
       { "id": "research", "label": "法规研究", "agent": "research", "condition": "citationCoverage < 55" },
+      { "id": "clause", "label": "条款风险", "agent": "clause_risk", "condition": "scenario == contract_review || scenario == contract_drafting" },
+      { "id": "calculation", "label": "时效计算", "agent": "calculation", "condition": "requiresCalculation == true" },
       { "id": "drafting", "label": "文书生成", "agent": "drafting", "condition": "wantsOutput == true" },
-      { "id": "review", "label": "交叉审查", "agent": "review", "condition": "riskLevel == high || exportReady" },
-      { "id": "compliance", "label": "合规监测", "agent": "compliance", "condition": "exportReady == true" }
+      { "id": "verification", "label": "质量校验", "agent": "verification" },
+      { "id": "archive", "label": "结果归档", "agent": "verification", "condition": "verificationPassed" }
     ],
     "edges": [
-      { "from": "intake", "to": "evidence", "type": "conditional" },
-      { "from": "intake", "to": "research", "type": "conditional" },
-      { "from": "evidence", "to": "research", "type": "sequential" },
+      { "from": "intake", "to": "evidence", "type": "conditional", "parallelGroup": "assessment" },
+      { "from": "intake", "to": "issue", "type": "mandatory" },
+      { "from": "evidence", "to": "issue", "type": "sequential" },
+      { "from": "issue", "to": "research", "type": "conditional", "parallelGroup": "analysis" },
+      { "from": "issue", "to": "clause", "type": "conditional", "parallelGroup": "analysis" },
+      { "from": "issue", "to": "calculation", "type": "conditional", "parallelGroup": "analysis" },
       { "from": "research", "to": "drafting", "type": "conditional" },
-      { "from": "drafting", "to": "review", "type": "mandatory" },
-      { "from": "review", "to": "compliance", "type": "mandatory" },
-      { "from": "compliance", "to": "archive", "type": "sequential" }
+      { "from": "clause", "to": "drafting", "type": "conditional" },
+      { "from": "calculation", "to": "drafting", "type": "conditional" },
+      { "from": "drafting", "to": "verification", "type": "mandatory" },
+      { "from": "verification", "to": "research", "type": "loop", "condition": "citationCoverage < 55" },
+      { "from": "verification", "to": "archive", "type": "sequential", "condition": "verificationPassed" }
     ]
   },
   "tools": [
@@ -42,7 +52,7 @@
     "材料完整度低于 70%，优先调度证据质检智能体",
     "法规引用缺失，调度法规研究智能体",
     "目标产出为报告/律师函，调度文书生成智能体",
-    "高风险或导出前，强制调度交叉审查智能体",
-    "导出前强制调度合规监测智能体，生成审计链"
+    "合同场景按需调度条款风险智能体，期限或金额问题按需调度时效计算智能体",
+    "最终结果由质量校验智能体自动检查后直接交付"
   ]
 }

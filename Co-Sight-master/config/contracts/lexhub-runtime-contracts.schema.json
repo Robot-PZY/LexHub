@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lexhub.local/schemas/runtime-contracts.json",
+  "title": "LexHub runtime contracts",
+  "$defs": {
+    "agentDefinition": {
+      "type": "object",
+      "required": ["id", "name", "role", "capabilities", "allowedCapabilityIds", "inputArtifactTypes", "outputArtifactTypes"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "role": {"enum": ["orchestrator", "worker", "reviewer"]},
+        "modelEnv": {"type": "string"},
+        "capabilities": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "allowedCapabilityIds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "inputArtifactTypes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "outputArtifactTypes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "maxIterations": {"type": "integer", "minimum": 1},
+        "maxStepSeconds": {"type": "integer", "minimum": 10}
+      },
+      "additionalProperties": false
+    },
+    "capabilityDefinition": {
+      "type": "object",
+      "required": ["id", "name", "category", "provider", "description", "allowedAgents", "resultType", "timeoutSeconds", "maxRetries"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "category": {"enum": ["builtin_tool", "external_api", "local_service", "knowledge_tool", "document_tool", "calculation_tool", "trust_tool"]},
+        "provider": {"type": "string", "minLength": 1},
+        "description": {"type": "string", "minLength": 1},
+        "allowedAgents": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+        "resultType": {"enum": ["text", "structured_data", "structured_document", "search_results", "legal_citations", "calculation", "diff", "file", "image", "report", "verification"]},
+        "timeoutSeconds": {"type": "integer", "minimum": 1},
+        "maxRetries": {"type": "integer", "minimum": 0},
+        "fallbackCapabilityId": {"type": ["string", "null"]},
+        "sensitiveFields": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "legacyToolNames": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "enabled": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "artifactEnvelope": {
+      "type": "object",
+      "required": ["artifactId", "artifactType", "planId", "stepId", "agentId", "createdAt", "summary", "confidence", "sources", "data"],
+      "properties": {
+        "artifactId": {"type": "string", "minLength": 1},
+        "artifactType": {"enum": ["evidence_report", "legal_issues", "legal_research", "clause_risk_report", "calculation_report", "draft_document", "verification_decision", "final_result"]},
+        "planId": {"type": "string", "minLength": 1},
+        "stepId": {"type": "string", "minLength": 1},
+        "agentId": {"type": "string", "minLength": 1},
+        "createdAt": {"type": "string", "format": "date-time"},
+        "summary": {"type": "string"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "sources": {"type": "array", "items": {"type": "object"}},
+        "data": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "capabilityResult": {
+      "type": "object",
+      "required": ["invocationId", "capabilityId", "status", "summary", "resultType", "data", "artifacts", "sources", "metrics", "error", "fallback"],
+      "properties": {
+        "invocationId": {"type": "string", "minLength": 1},
+        "capabilityId": {"type": "string", "minLength": 1},
+        "status": {"enum": ["running", "success", "failed", "degraded"]},
+        "summary": {"type": "string"},
+        "resultType": {"type": "string"},
+        "data": {},
+        "artifacts": {"type": "array", "items": {"type": "object"}},
+        "sources": {"type": "array", "items": {"type": "object"}},
+        "metrics": {"type": "object"},
+        "error": {"type": ["object", "null"]},
+        "fallback": {"type": ["object", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "planStep": {
+      "type": "object",
+      "required": ["id", "title", "agentId", "dependsOn", "expectedArtifact"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "agentId": {"type": "string", "minLength": 1},
+        "dependsOn": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "parallelGroup": {"type": ["string", "null"]},
+        "condition": {"type": ["string", "null"]},
+        "expectedArtifact": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "executionPlan": {
+      "type": "object",
+      "required": ["planId", "scenario", "targetOutput", "riskLevel", "selectedAgents", "skippedAgents", "steps"],
+      "properties": {
+        "planId": {"type": "string", "minLength": 1},
+        "scenario": {"type": "string", "minLength": 1},
+        "targetOutput": {"type": "string", "minLength": 1},
+        "riskLevel": {"enum": ["low", "medium", "high"]},
+        "selectedAgents": {"type": "array", "items": {"type": "string"}, "minItems": 2, "uniqueItems": true},
+        "skippedAgents": {"type": "array", "items": {"type": "object", "required": ["agentId", "reason"], "properties": {"agentId": {"type": "string"}, "reason": {"type": "string"}}, "additionalProperties": false}},
+        "steps": {"type": "array", "items": {"$ref": "#/$defs/planStep"}, "minItems": 2}
+      },
+      "additionalProperties": false
+    },
+    "eventEnvelope": {
+      "type": "object",
+      "required": ["eventId", "type", "planId", "sequence", "timestamp", "payload"],
+      "properties": {
+        "eventId": {"type": "string", "minLength": 1},
+        "type": {"enum": ["plan_created", "agents_selected", "stage_started", "agent_assigned", "capability_started", "capability_completed", "capability_failed", "capability_fallback", "artifact_created", "stage_completed", "verification_rejected", "stage_reopened", "verification_passed", "task_completed"]},
+        "planId": {"type": "string", "minLength": 1},
+        "stepId": {"type": ["string", "null"]},
+        "agentId": {"type": ["string", "null"]},
+        "sequence": {"type": "integer", "minimum": 1},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "payload": {"type": "object"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

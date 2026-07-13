@@ -267,9 +267,21 @@ def _apply_api_overlay(apis: list[dict[str, Any]]) -> int:
         elif api_id == "vector_rag" and endpoint:
             _set_env_if_value("CHROMA_PERSIST_DIR", endpoint)
             applied += 1
-        elif api_id == "ocr" and endpoint:
-            _set_env_if_value("PADDLE_OCR_ENDPOINT", endpoint)
-            applied += 1
+        elif api_id == "ocr":
+            if "|" in api_key:
+                baidu_key, baidu_secret = api_key.split("|", 1)
+                _set_env_if_value("BAIDU_OCR_API_KEY", baidu_key.strip())
+                _set_env_if_value("BAIDU_OCR_SECRET_KEY", baidu_secret.strip())
+                applied += 1
+            elif api_key:
+                _set_env_if_value("BAIDU_OCR_API_KEY", api_key)
+                applied += 1
+            if endpoint:
+                if "aip.baidubce.com" in endpoint:
+                    _set_env_if_value("BAIDU_OCR_ENDPOINT", endpoint)
+                else:
+                    _set_env_if_value("PADDLE_OCR_ENDPOINT", endpoint)
+                applied += 1
         elif api_id == "export" and endpoint:
             _set_env_if_value("DOCX_EXPORT_BASE_URL", endpoint)
             applied += 1

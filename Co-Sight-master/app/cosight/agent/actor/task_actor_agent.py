@@ -40,6 +40,7 @@ from app.cosight.tool.audio_toolkit import AudioTool
 from app.cosight.tool.video_analysis_toolkit import VideoTool
 from app.cosight.tool.html_visualization_toolkit import HtmlVisualizationToolkit
 from app.cosight.tool.legal_search_toolkit import legal_search
+from cosight_server.deep_research.services.contract_compare import compare_contract_texts
 from config.config import get_tavily_config
 from app.common.logger_util import logger
 
@@ -102,6 +103,7 @@ class TaskActorAgent(BaseAgent):
                          "search_google": search_toolkit.search_google,
                          "search_wiki": search_toolkit.search_wiki,
                          "legal_search": legal_search,
+                         "contract_compare": compare_contract_texts,
                          "tavily_search": search_toolkit.tavily_search,
                         #  "image_search": tavily_search.search,
                          "audio_recognition": audio_toolkit.speech_to_text,
@@ -138,6 +140,10 @@ class TaskActorAgent(BaseAgent):
             sys_prompt = actor_system_prompt_zh(self.work_space_path)
         else:
             sys_prompt = actor_system_prompt(self.work_space_path)
+        business_type = getattr(self.agent_instance.template, "business_type", {}) or {}
+        specialist_prompt = business_type.get("specialist_prompt_zh") if isinstance(business_type, dict) else None
+        if specialist_prompt:
+            sys_prompt = f"{sys_prompt}\n\n# LexHub 专业角色边界\n{specialist_prompt}\n只调用当前模板实际提供的工具。完成本阶段后立即调用 mark_step。"
         self.history.append({"role": "system", "content": sys_prompt})
 
     @time_record

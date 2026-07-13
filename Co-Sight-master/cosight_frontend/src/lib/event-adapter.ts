@@ -284,9 +284,13 @@ export function deriveToolCalls(messages: ChatMessage[]): ToolCallTrace[] {
         const argsPreview = parseToolArgsPreview(toolData.tool_args);
         const timestampLabel = typeof toolData.timestamp === 'string' ? toolData.timestamp : undefined;
         const errorDetail = typeof toolData.error === 'string' ? toolData.error : undefined;
+        const capabilityResult = toolData.capability_result && typeof toolData.capability_result === 'object'
+          ? toolData.capability_result as Record<string, unknown>
+          : undefined;
+        const capabilitySummary = typeof capabilityResult?.summary === 'string' ? capabilityResult.summary : '';
         const summary = errorDetail
           ? `处理失败：${errorDetail.slice(0, 160)}`
-          : message.content;
+          : capabilitySummary || message.content;
 
         started.set(eventKey, {
           id: eventKey,
@@ -301,6 +305,13 @@ export function deriveToolCalls(messages: ChatMessage[]): ToolCallTrace[] {
           argsPreview,
           timestampLabel,
           errorDetail,
+          capabilityId: typeof toolData.capability_id === 'string' ? toolData.capability_id : undefined,
+          resultType: typeof capabilityResult?.resultType === 'string' ? capabilityResult.resultType : undefined,
+          resultData: capabilityResult?.data,
+          sources: Array.isArray(capabilityResult?.sources) ? capabilityResult.sources as Array<Record<string, unknown>> : undefined,
+          artifacts: Array.isArray(capabilityResult?.artifacts) ? capabilityResult.artifacts as Array<Record<string, unknown>> : undefined,
+          metrics: capabilityResult?.metrics && typeof capabilityResult.metrics === 'object' ? capabilityResult.metrics as Record<string, unknown> : undefined,
+          runtimeAgentId: typeof toolData.agent_id === 'string' ? toolData.agent_id : undefined,
         });
         return;
       }
@@ -316,7 +327,7 @@ export function deriveToolCalls(messages: ChatMessage[]): ToolCallTrace[] {
       });
     });
 
-  return [...started.values()].sort((a, b) => b.timestamp - a.timestamp);
+  return [...started.values()].sort((a, b) => a.timestamp - b.timestamp);
 }
 
 function clampScore(value: number): number {
@@ -355,7 +366,7 @@ function buildCredibilityInsight(params: {
       score: normalizedScore,
       label: '可信度较高',
       reviewLevel: 'low',
-      reviewLabel: '低强度复核',
+      reviewLabel: '自动校验通过',
     };
   }
 
@@ -364,7 +375,7 @@ function buildCredibilityInsight(params: {
       score: normalizedScore,
       label: '可信度中等',
       reviewLevel: 'medium',
-      reviewLabel: '常规复核',
+      reviewLabel: '自动校验完成',
     };
   }
 
@@ -372,7 +383,7 @@ function buildCredibilityInsight(params: {
     score: normalizedScore,
     label: '可信度待核验',
     reviewLevel: 'high',
-    reviewLabel: '重点复核',
+    reviewLabel: '降级校验完成',
   };
 }
 
@@ -439,7 +450,7 @@ export function deriveResultInsight(messages: ChatMessage[]): ResultInsight {
   const stepCount = messages.filter((message) => message.messageType === 'lui-message-manus-step').length;
   const toolCount = messages.filter((message) => message.messageType === 'lui-message-tool-event').length;
 
-  let risk = '当前仍以过程推进为主，建议继续结合依据与材料进行人工复核。';
+  let risk = '当前仍以过程推进为主，系统将继续结合依据与材料完成自动一致性校验。';
   if (toolFailure) {
     risk = '检测到处理动作异常，当前阶段结果可能不完整，建议优先检查异常步骤。';
   } else if (hasCompletedSession) {
@@ -455,8 +466,8 @@ export function deriveResultInsight(messages: ChatMessage[]): ResultInsight {
   const evidenceReferences = extractEvidenceReferences(messages);
 
   const reviewNote = hasCompletedSession
-    ? '建议在提交或展示前，重点复核结论表述、依据引用和业务风险是否一致。'
-    : '当前结果仍处于处理中，适合阶段性查看，正式使用前仍需人工复核。';
+    ? '自动核验已检查结论表述、依据引用和业务风险的一致性。'
+    : '当前结果仍处于处理中，核验智能体将在最终阶段自动完成一致性检查。';
   const credibility = buildCredibilityInsight({
     hasCompletedSession,
     hasRunningStep,

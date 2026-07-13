@@ -73,18 +73,21 @@ function buildToolsFromMessages(messages: ChatMessage[], toolCalls: ToolCallTrac
     .forEach((message) => {
       if (!message.data || typeof message.data !== 'object') return;
       const data = message.data as Record<string, unknown>;
-      if (data.event_type !== 'tool_complete') return;
+      const eventType = String(data.event_type || 'tool_complete');
       const processed = data.processed_result;
       let summary = '';
       if (processed && typeof processed === 'object') {
         summary = String((processed as Record<string, unknown>).summary || '');
       }
+      if (!summary && eventType === 'tool_error') summary = String(data.error || '工具调用失败');
+      if (!summary && eventType === 'tool_start') summary = '正在执行该处理动作';
       records.push({
         toolName: String(data.tool_name || data.tool_name_zh || 'unknown'),
         stepIndex: typeof data.step_index === 'number' ? data.step_index : null,
         summary,
         timestamp: typeof data.timestamp === 'string' ? data.timestamp : undefined,
         duration: typeof data.duration === 'number' ? data.duration : undefined,
+        status: eventType === 'tool_start' ? 'running' : eventType === 'tool_error' ? 'failed' : 'completed',
       });
     });
 
@@ -94,6 +97,7 @@ function buildToolsFromMessages(messages: ChatMessage[], toolCalls: ToolCallTrac
     toolName: tool.toolName,
     stepIndex: tool.stepIndex,
     summary: tool.summary,
+    status: tool.status === 'running' ? 'running' : tool.status === 'failed' ? 'failed' : 'completed',
   }));
 }
 
@@ -184,11 +188,11 @@ export function buildExportSectionsFromSnapshot(
   ];
 
   const riskBlock = resultInsight
-    ? `风险提示：${resultInsight.risk}\n下一步建议：${resultInsight.recommendation}\n复核提示：${resultInsight.reviewNote}`
-    : '请在正式使用前完成人工复核。';
+    ? `风险提示：${resultInsight.risk}\n下一步建议：${resultInsight.recommendation}\n自动校验：${resultInsight.reviewNote}`
+    : '系统已基于执行终态、依据来源和交付产物完成自动质量校验。';
 
   const provenance = [
-    `数据来源：${snapshot.source === 'live' ? '实时办理记录' : '案件归档记录'}`,
+    `数据来源：${snapshot.source === 'live' ? '实时办理记录' : '历史回放记录'}`,
     `工作区：${snapshot.workspacePath || '当前会话'}`,
     `事件条数：${snapshot.stats.messageCount}`,
     '导出策略：真实办理结果优先，保留可追溯记录',
@@ -202,7 +206,7 @@ export function buildExportSectionsFromSnapshot(
       { title: '三、路径依赖关系', body: dependencyLines.join('\n') },
       { title: '四、处理动作证据', body: toolLines.join('\n') || '暂无处理动作记录。' },
       { title: '五、阶段结论与输出', body: snapshot.result || '（尚未产出最终结论文本）' },
-      { title: '六、风险与复核建议', body: riskBlock },
+      { title: '六、风险与自动校验', body: riskBlock },
       { title: '附录 · 办理溯源', body: provenance.join('\n') },
     ],
   };

@@ -8,6 +8,8 @@ import {
   Loader2,
   Scale,
   Sparkles,
+  Wrench,
+  XCircle,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -24,24 +26,27 @@ import {
   clearAuthed,
   consumePendingWorkspaceTask,
   getLastManusStepRaw,
+  getMatter,
   getPendingRequestsRaw,
   storePendingWorkspaceTask,
 } from '../lib/storage';
 import type { AgentStep, ToolCallTrace } from '../types/chat';
 import type { AgentRegistry } from '../types/agent-registry';
 
-const runStages = [
+const fallbackStages = [
   { id: 'facts', label: '事实整理', desc: '提炼诉求与材料线索', icon: FileSearch },
   { id: 'law', label: '依据检索', desc: '匹配法规、案例与规则', icon: Scale },
   { id: 'review', label: '风险复核', desc: '审查争议点与不确定性', icon: Briefcase },
   { id: 'delivery', label: '结论交付', desc: '汇总报告与文书输出', icon: FileText },
 ] as const;
 
-function getStageState(index: number, completedCount: number, runningIndex: number, isCompleted: boolean) {
-  if (isCompleted || index < completedCount) return 'completed';
-  if (index === runningIndex) return 'running';
-  return 'pending';
-}
+const agentLabels = {
+  planner: '规划智能体',
+  retrieval: '法规检索智能体',
+  analysis: '事实分析智能体',
+  generation: '文书生成智能体',
+  review: '交叉审查智能体',
+} as const;
 
 function RunPathOverview({
   steps,
@@ -57,17 +62,24 @@ function RunPathOverview({
   const completedCount = steps.filter((step) => step.status === 'completed').length;
   const runningStep = steps.find((step) => step.status === 'running');
   const failedStep = steps.find((step) => step.status === 'failed');
-  const effectiveTotal = Math.max(steps.length, runStages.length);
+  const effectiveTotal = Math.max(steps.length, 1);
   const progressPercent = isCompleted
     ? 100
     : Math.min(96, Math.round((completedCount / effectiveTotal) * 100));
-  const runningIndex = isCompleted
-    ? runStages.length
-    : Math.min(runStages.length - 1, Math.max(0, runningStep?.stepIndex ?? completedCount));
-  const activeTool = toolCalls.find((tool) => tool.status === 'running') ?? toolCalls[0];
+  const activeTool = [...toolCalls].reverse().find((tool) => tool.status === 'running') ?? toolCalls[toolCalls.length - 1];
   const activeCopy = failedStep
     ? `${failedStep.title} 需要关注`
     : runningStep?.title ?? (isCompleted ? '办理路径已完成' : '正在生成办理路径');
+  const stageCards = steps.length > 0
+    ? steps.map((step, index) => ({
+      id: `step-${step.stepIndex ?? index}`,
+      label: step.title,
+      desc: `${agentLabels[step.agent]} · ${step.summary || `${toolCalls.filter((tool) => tool.stepIndex === (step.stepIndex ?? index)).length} 次工具调用`}`,
+      icon: fallbackStages[index % fallbackStages.length].icon,
+      state: step.status === 'completed' ? 'completed' : step.status === 'running' ? 'running' : step.status === 'failed' ? 'failed' : 'pending',
+      stepIndex: step.stepIndex ?? index,
+    }))
+    : fallbackStages.map((stage, index) => ({ ...stage, state: index === 0 ? 'running' : 'pending', stepIndex: index }));
 
   return (
     <section className="workspace-run-overview" aria-label="办理路径概览">
@@ -75,7 +87,7 @@ function RunPathOverview({
         <div>
           <p className="eyebrow">MATTER PATH</p>
           <h2>{activeCopy}</h2>
-          <span>{statusSummary} · 已完成 {completedCount} 个阶段动作 · 调用 {toolCalls.length} 次处理能力</span>
+          <span>{statusSummary} · Co-Sight 动态编排 {steps.length || '—'} 个 DAG 步骤 · 已完成 {completedCount} 个 · 调用 {toolCalls.length} 次工具</span>
         </div>
         <div className="workspace-run-progress-meter" aria-label={`当前进度 ${progressPercent}%`}>
           <strong>{progressPercent}%</strong>
@@ -88,15 +100,15 @@ function RunPathOverview({
       </div>
 
       <div className="workspace-run-stage-grid">
-        {runStages.map((stage, index) => {
+        {stageCards.map((stage) => {
           const Icon = stage.icon;
-          const state = getStageState(index, completedCount, runningIndex, isCompleted);
+          const state = isCompleted ? 'completed' : stage.state;
           return (
             <article key={stage.id} className={`workspace-run-stage-card ${state}`}>
               <div className="workspace-run-stage-icon">
-                {state === 'completed' ? <CheckCircle2 size={18} /> : state === 'running' ? <Loader2 size={18} className="dag-graph-spin" /> : <Icon size={18} />}
+                {state === 'completed' ? <CheckCircle2 size={18} /> : state === 'running' ? <Loader2 size={18} className="dag-graph-spin" /> : state === 'failed' ? <XCircle size={18} /> : <Icon size={18} />}
               </div>
-              <strong>{stage.label}</strong>
+              <strong><span>步骤 {stage.stepIndex + 1}</span>{stage.label}</strong>
               <p>{stage.desc}</p>
             </article>
           );
@@ -108,6 +120,63 @@ function RunPathOverview({
         <strong>{activeTool?.toolLabel ?? activeTool?.toolName ?? '法律事项处理能力'}</strong>
         <em>{activeTool?.summary || '系统会在生成路径后同步展示处理动作。'}</em>
       </div>
+    </section>
+  );
+}
+
+function RunActionFeed({ toolCalls, isCompleted, isReplay }: {
+  toolCalls: ToolCallTrace[];
+  isCompleted: boolean;
+  isReplay: boolean;
+}) {
+  const visibleCalls = toolCalls.slice(-8);
+
+  return (
+    <section className="workspace-run-action-feed" aria-label="处理动作记录">
+      <div className="workspace-run-action-feed-head">
+        <div>
+          <p className="eyebrow">EXECUTION TRACE</p>
+          <h2>{isReplay ? '历史运行记录' : '运行记录'}</h2>
+        </div>
+        <span>{toolCalls.length} 次工具调用</span>
+      </div>
+
+      {visibleCalls.length > 0 ? (
+        <div className="workspace-run-action-list">
+          {visibleCalls.map((tool) => {
+            const isRunning = tool.status === 'running';
+            const isFailed = tool.status === 'failed';
+            return (
+              <article key={tool.id} className={`workspace-run-action-item ${tool.status}`}>
+                <span className="workspace-run-action-icon" aria-hidden>
+                  {isRunning ? <Loader2 size={16} className="dag-graph-spin" /> : isFailed ? <XCircle size={16} /> : <CheckCircle2 size={16} />}
+                </span>
+                <div>
+                  <strong>{tool.toolLabel ?? tool.toolName}</strong>
+                  <p>{tool.summary || '正在处理本阶段任务。'}</p>
+                  {tool.capabilityId ? (
+                    <small>
+                      {tool.runtimeAgentId ? `智能体 · ${tool.runtimeAgentId} · ` : ''}Capability · {tool.capabilityId}
+                      {tool.resultType ? ` · ${tool.resultType}` : ''}
+                      {tool.sources?.length ? ` · ${tool.sources.length} 个来源` : ''}
+                      {tool.artifacts?.length ? ` · ${tool.artifacts.length} 个产物` : ''}
+                    </small>
+                  ) : null}
+                </div>
+                <span className="workspace-run-action-meta">
+                  <Wrench size={13} />
+                  {tool.stepIndex == null ? '全局动作' : `步骤 ${tool.stepIndex + 1}`}
+                </span>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="workspace-run-action-empty">
+          <Wrench size={18} />
+          <span>{isCompleted ? '本次事项未返回可展示的工具调用记录。' : '路径生成后，系统将在这里持续记录工具调用与阶段动作。'}</span>
+        </div>
+      )}
     </section>
   );
 }
@@ -130,6 +199,8 @@ function WorkspaceRunPage() {
 
   const replayWorkspace = searchParams.get('workspace') ?? undefined;
   const isReplay = searchParams.get('replay') === 'true';
+  const activeMatter = getMatter(searchParams.get('matter')) ?? getMatter();
+  const activeMatterId = activeMatter?.id;
   const planGraph = useMemo(() => derivePlanGraph(messages, agentRegistry), [messages, agentRegistry]);
 
   useEffect(() => {
@@ -150,7 +221,14 @@ function WorkspaceRunPage() {
 
     if (isReplay && replayWorkspace) {
       taskStartedRef.current = true;
-      sendReplay(replayWorkspace);
+      sendReplay(replayWorkspace, undefined, activeMatter ? {
+        matterId: activeMatter.id,
+        taskId: activeMatter.id,
+        taskTitle: activeMatter.title,
+        uploadIds: activeMatter.uploadIds,
+        scenario: activeMatter.scenario,
+        documentIntake: activeMatter.documentIntake,
+      } : undefined);
       return;
     }
 
@@ -164,6 +242,7 @@ function WorkspaceRunPage() {
         pending.taskId
           ? {
             taskId: pending.taskId,
+            matterId: pending.matterId ?? pending.taskId,
             taskTitle: pending.taskTitle ?? pending.content.slice(0, 48),
             uploadIds: pending.uploadIds ?? [],
             scenario: pending.scenario,
@@ -226,8 +305,8 @@ function WorkspaceRunPage() {
 
   return (
     <AppShell
-      title="办理进度"
-      subtitle="查看事实整理、材料审查、依据检索与结论复核的推进情况"
+      title="办理运行"
+      subtitle="查看路径规划、阶段执行与工具调用，跟进本次事项的完整办理过程"
       badge={(
         <Badge tone="warning" icon={<Sparkles size={12} />}>
           {statusSummary}
@@ -237,11 +316,11 @@ function WorkspaceRunPage() {
         <>
           <Link className="lex-button lex-button-secondary lex-button-md" to="/workspace">
             <ArrowLeft size={16} />
-            <span>新建事项</span>
+            <span>发起事项</span>
           </Link>
           {canViewResult ? (
-            <Link className="lex-button lex-button-primary lex-button-md" to="/workspace/result">
-              查看结论
+            <Link className="lex-button lex-button-primary lex-button-md" to={activeMatterId ? `/workspace/result?matter=${encodeURIComponent(activeMatterId)}` : '/workspace/result'}>
+              查看总结报告
               <ArrowRight size={16} />
             </Link>
           ) : null}
@@ -253,7 +332,7 @@ function WorkspaceRunPage() {
         <PageHeader
           icon={Briefcase}
           title={taskTitle}
-          subtitle={isCompleted ? '办理已完成，可前往审查结论页查看完整报告。' : '系统正在整理办理路径；点击节点可查看阶段结论与依据来源。'}
+          subtitle={isCompleted ? '办理已完成，可前往结论与交付页查看本次总结报告。' : '系统正在规划并执行办理路径；点击节点可查看阶段结论与依据来源。'}
           badge={<Badge tone="primary">{connectionText}</Badge>}
         />
 
@@ -267,8 +346,8 @@ function WorkspaceRunPage() {
         {isCompleted && (
           <div className="workspace-success-banner workspace-run-complete-banner">
             <strong>事项办理完成</strong>
-            <span>阶段结论已汇总；完整报告与文书交付请前往审查结论页。</span>
-            <Link className="lex-button lex-button-primary lex-button-md" to="/workspace/result">查看审查结论</Link>
+            <span>阶段结论已汇总；总结报告与文书交付已进入结论与交付页。</span>
+            <Link className="lex-button lex-button-primary lex-button-md" to={activeMatterId ? `/workspace/result?matter=${encodeURIComponent(activeMatterId)}` : '/workspace/result'}>查看总结报告</Link>
           </div>
         )}
 
@@ -279,6 +358,8 @@ function WorkspaceRunPage() {
           processing={!isCompleted}
           readOnly={isReplay}
         />
+
+        <RunActionFeed toolCalls={toolCalls} isCompleted={isCompleted} isReplay={isReplay} />
 
         <ToolCallToast toolCalls={toolCalls} processing={!isCompleted} />
 

@@ -15,6 +15,8 @@
 
 import shlex
 import subprocess
+import os
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any, ClassVar, Dict, List
@@ -106,7 +108,7 @@ class SubprocessInterpreter(BaseInterpreter):
 
             import astor
 
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding='utf-8') as f:
                 source = f.read()
 
             # Parse the source code
@@ -156,7 +158,7 @@ class SubprocessInterpreter(BaseInterpreter):
                     modified_source = astor.to_source(tree)
                     # Create a temporary file with the modified source
                     temp_file = self._create_temp_file(modified_source, "py")
-                    cmd = shlex.split(f"python {temp_file!s}")
+                    cmd = [sys.executable, str(temp_file)]
             except SyntaxError:
                 # If parsing fails, run the original file
                 cmd = shlex.split(
@@ -172,8 +174,17 @@ class SubprocessInterpreter(BaseInterpreter):
                 )
             )
 
+        env = os.environ.copy()
+        env.setdefault('PYTHONIOENCODING', 'utf-8')
+        env.setdefault('PYTHONUTF8', '1')
         proc = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding='utf-8',
+            errors='replace',
+            env=env,
         )
         stdout, stderr = proc.communicate()
         return_code = proc.returncode
@@ -258,7 +269,7 @@ class SubprocessInterpreter(BaseInterpreter):
 
     def _create_temp_file(self, code: str, extension: str) -> Path:
         with tempfile.NamedTemporaryFile(
-            mode="w", delete=False, suffix=f".{extension}"
+            mode="w", encoding='utf-8', delete=False, suffix=f".{extension}"
         ) as f:
             f.write(code)
             name = f.name

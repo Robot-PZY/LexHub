@@ -10,7 +10,7 @@ export const mockProfileAnalysis: ProfileAnalysis = {
     { label: '材料完整度', value: '68%', tone: 'warning' },
     { label: '法规引用度', value: '42%', tone: 'warning' },
     { label: '输出可用度', value: '草稿', tone: 'primary' },
-    { label: '人工复核需求', value: '较高', tone: 'warning' },
+    { label: '自动校验等级', value: '增强', tone: 'warning' },
   ],
   externalData: [
     { label: '得理法规检索', status: '可接入' },

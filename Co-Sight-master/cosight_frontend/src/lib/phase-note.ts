@@ -34,7 +34,7 @@ export function sanitizePhaseNote(note: string, context: SanitizePhaseNoteContex
   text = text.replace(/\n{3,}/g, '\n\n').trim();
 
   if (!text && context.completed) {
-    return `本步「${context.stepTitle}」已完成，详细内容已写入案件归档。`;
+    return `本步「${context.stepTitle}」已完成，详细内容已写入历史回放。`;
   }
 
   return text;

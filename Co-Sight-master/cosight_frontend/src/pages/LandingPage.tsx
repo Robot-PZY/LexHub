@@ -9,7 +9,6 @@ import {
   FolderArchive,
   Scale,
   ShieldCheck,
-  Sparkles,
   Workflow,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -52,8 +51,6 @@ const scenes = [
   { title: '公司事务', desc: '股权、章程、决议与治理材料', icon: Building2 },
   { title: '争议解决', desc: '事实时间线、证据清单、策略建议', icon: Scale },
 ];
-
-const heroPillars = ['路径研判', '证据质检', '法规研究', '结论复核'];
 
 const logicNodes = [
   { label: '输入', meta: '事实 / 材料', tone: 'paper' },
@@ -276,11 +273,11 @@ function LandingPage() {
           {topNavItems.map(({ label, href }) => (
             <a key={label} href={href}>{label}</a>
           ))}
-          <a href={replayPath}>案件归档</a>
+          <a href={replayPath}>历史回放</a>
         </nav>
         <div className="landing-top-actions">
           {!authed && <Link className="btn btn-ghost" to="/login">登录</Link>}
-          <Link className="btn btn-primary" to={workspacePath}>
+          <Link className="btn btn-primary neo-glow-button" to={workspacePath}>
             {authed ? '进入事项受理' : '发起事项'}
             <ArrowRight size={16} />
           </Link>
@@ -288,37 +285,19 @@ function LandingPage() {
       </header>
 
       <main className="landing-hub-main">
-        <section className="landing-hero-showcase ds-animate-in" id="home">
+        <section className="landing-hero-showcase neo-title-card ds-animate-in" id="home">
           <div className="landing-hero-copy-block">
-            <div className="landing-hero-brand-lockup">
-              <BrandLogo markOnly compact />
+            <div className="landing-hero-brand-panel">
+              <BrandLogo markOnly className="landing-hero-large-mark" />
               <div>
                 <strong>律枢 LexHub</strong>
-                <span>Legal Intelligence Workbench</span>
               </div>
             </div>
-            <div className="landing-kicker">
-              <Sparkles size={14} />
-              <span>法律事项办理工作台</span>
-            </div>
-            <h1 className="landing-hero-title">
-              <span className="landing-title-line-primary">让法律事项</span>
-              <span className="landing-title-line-accent">沿路径办理。</span>
-            </h1>
-            <p>
-              从材料受理到依据检索、风险复核与文书交付，LexHub 把每一步沉淀为可追溯的办理记录。
-            </p>
-            <div className="landing-minimal-actions">
-              <Link className="btn btn-primary" to={workspacePath}>
-                发起事项
-                <ArrowRight size={16} />
-              </Link>
-              <a className="btn btn-secondary" href="#workflow">查看办理流程</a>
-            </div>
-            <div className="landing-hero-tags">
-              {heroPillars.map((tag) => (
-                <span key={tag}>{tag}</span>
-              ))}
+            <div className="landing-hero-statement">
+              <h1 className="landing-hero-title">
+                <span className="landing-title-line-primary">让法律事项</span>
+                <span className="landing-title-line-accent">沿路径办理。</span>
+              </h1>
             </div>
           </div>
           <ProductPreview />
@@ -333,7 +312,7 @@ function LandingPage() {
 
         <section className="landing-quick-grid" id="capabilities">
           {capabilityItems.map(({ title, desc, icon: Icon }) => (
-            <article key={title} className="landing-quick-card">
+            <article key={title} className="landing-quick-card neo-spotlight-card">
               <Icon size={18} />
               <div>
                 <strong>{title}</strong>
@@ -385,14 +364,14 @@ function LandingPage() {
             <strong>最近办理</strong>
           </div>
             <p>{runtimeStatus?.summary ?? '系统已准备好接收新的法律事项。'}</p>
-            <Link className="text-button" to={replayPath}>查看案件归档</Link>
+            <Link className="text-button" to={replayPath}>查看历史回放</Link>
           </div>
         </section>
 
         <section className="landing-logic-art" id="architecture" aria-label="处理逻辑视觉图">
           <div className="landing-section-head">
-            <p className="eyebrow">办理逻辑</p>
-            <h2>事实进入系统，路径自动成形。</h2>
+            <h2>办理逻辑</h2>
+            <p className="landing-section-caption">事实进入系统，路径自动成形。</p>
           </div>
           <div className="landing-logic-canvas">
             <div className="landing-logic-track" aria-hidden="true" />
@@ -412,14 +391,14 @@ function LandingPage() {
 
         <section className="landing-pricing-section" id="pricing">
           <div className="landing-section-head">
-            <p className="eyebrow">会员方案</p>
-            <h2>按事项规模选择合适的办理能力。</h2>
+            <h2>会员方案</h2>
+            <p className="landing-section-caption">按事项规模选择合适的办理能力。</p>
           </div>
           <div className="landing-pricing-grid">
             {MEMBERSHIP_PLANS.map((plan) => (
               <article
                 key={plan.id}
-                className={`ds-card landing-pricing-card ${plan.id === 'pro' ? 'highlighted' : ''}`}
+                className={`ds-card landing-pricing-card neo-reflective-card ${plan.id === 'pro' ? 'highlighted' : ''}`}
               >
                 <div className="landing-pricing-top">
                   <strong>{plan.label}</strong>
@@ -458,7 +437,7 @@ function LandingPage() {
             <h2>开始一次智能办理。</h2>
           </div>
           <div className="landing-cta-actions">
-            <Link className="btn btn-primary" to={workspacePath}>
+            <Link className="btn btn-primary neo-glow-button" to={workspacePath}>
               <span>进入事项受理</span>
               <ArrowRight size={16} />
             </Link>

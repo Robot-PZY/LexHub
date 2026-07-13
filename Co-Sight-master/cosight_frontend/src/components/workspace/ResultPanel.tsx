@@ -58,7 +58,7 @@ function ResultPanel({ resultSummary, resultInsight, statusSummary }: ResultPane
           </div>
         </article>
         <article className="result-summary-card-react muted">
-          <strong>复核提示</strong>
+          <strong>自动校验</strong>
           <p>{resultInsight.reviewNote}</p>
         </article>
       </div>

@@ -6,7 +6,6 @@ import type { AnalyticsOverview, ToolchainStatus } from '../types/analytics';
 import type { AgentRegistry } from '../types/agent-registry';
 import type { ProfileAnalysis } from '../types/profile';
 import type { ReportSummary } from '../types/report';
-import type { ReviewResult } from '../types/review';
 import type { AgentRoutingState, AgentRoutingApiResponse } from '../types/routing';
 import type { MaterialLibrary, MaterialTaskRegistration } from '../types/material';
 import type { ExecutionSnapshot } from '../types/execution';
@@ -22,7 +21,6 @@ const DEMO_RUNTIME_STATUS_API_PATH = '/api/nae-deep-research/v1/demo/runtime-sta
 const LEGAL_TOOLKIT_API_PATH = '/api/nae-deep-research/v1/demo/legal-capabilities';
 const LEGAL_TASK_BLUEPRINT_API_PATH = '/api/nae-deep-research/v1/demo/task-blueprint';
 const AGENT_ROUTING_API_PATH = '/api/nae-deep-research/v1/demo/agent-routing';
-const REVIEW_RESULT_API_PATH = '/api/nae-deep-research/v1/demo/review-result';
 const REPORT_SUMMARY_API_PATH = '/api/nae-deep-research/v1/demo/report-summary';
 const PROFILE_ANALYSIS_API_PATH = '/api/nae-deep-research/v1/demo/profile-analysis';
 const TOOLCHAIN_STATUS_API_PATH = '/api/nae-deep-research/v1/demo/toolchain-status';
@@ -246,11 +244,6 @@ export async function fetchAgentRouting(payload: {
   const data = (await response.json()) as AgentRoutingApiResponse;
   if (data.code !== 0 || !data.data) return null;
   return data.data;
-}
-
-export async function fetchReviewResult(workspace?: string): Promise<ReviewResult | null> {
-  const query = workspace ? `?workspace=${encodeURIComponent(workspace)}` : '';
-  return fetchDemoJson<ReviewResult>(`${REVIEW_RESULT_API_PATH}${query}`);
 }
 
 export async function fetchAuditLog(workspace?: string): Promise<AuditLog | null> {

@@ -1,4 +1,4 @@
-import { resolveStepAssignment, resolveToolLabel } from './agent-registry';
+import { getAgentById, resolveStepAssignment, resolveToolLabel } from './agent-registry';
 import type { AgentRegistry } from '../types/agent-registry';
 import type { WorkflowConfig } from '../types/workflow';
 import type { AgentStep, AgentStepStatus, ChatMessage, ToolCallTrace } from '../types/chat';
@@ -126,6 +126,15 @@ export function extractLatestPlanSnapshot(messages: ChatMessage[]): PlanSnapshot
       acc[key] = Array.isArray(value) ? value.map((item) => Number(item)).filter(Number.isFinite) : [];
       return acc;
     }, {}),
+    stepAgentIds: asRecord(raw.step_agent_ids) as Record<string, string>,
+    stepParallelGroups: asRecord(raw.step_parallel_groups) as Record<string, string>,
+    stepConditions: asRecord(raw.step_conditions) as Record<string, string>,
+    stepExpectedArtifacts: asRecord(raw.step_expected_artifacts) as Record<string, string>,
+    selectedAgents: Array.isArray(raw.selected_agents) ? raw.selected_agents.filter((item): item is string => typeof item === 'string') : [],
+    skippedAgents: Array.isArray(raw.skipped_agents) ? raw.skipped_agents.filter((item): item is { agentId: string; reason: string } => Boolean(item && typeof item === 'object' && typeof (item as { agentId?: unknown }).agentId === 'string' && typeof (item as { reason?: unknown }).reason === 'string')) : [],
+    scenario: typeof raw.scenario === 'string' ? raw.scenario : '',
+    targetOutput: typeof raw.target_output === 'string' ? raw.target_output : '',
+    riskLevel: typeof raw.risk_level === 'string' ? raw.risk_level : 'medium',
     progress: {
       total: Number(asRecord(raw.progress).total ?? steps.length),
       completed: Number(asRecord(raw.progress).completed ?? 0),
@@ -152,6 +161,15 @@ export function extractPlanSnapshotFromReplayContent(content: unknown): PlanSnap
       acc[key] = Array.isArray(value) ? value.map((item) => Number(item)).filter(Number.isFinite) : [];
       return acc;
     }, {}),
+    stepAgentIds: asRecord(raw.step_agent_ids) as Record<string, string>,
+    stepParallelGroups: asRecord(raw.step_parallel_groups) as Record<string, string>,
+    stepConditions: asRecord(raw.step_conditions) as Record<string, string>,
+    stepExpectedArtifacts: asRecord(raw.step_expected_artifacts) as Record<string, string>,
+    selectedAgents: Array.isArray(raw.selected_agents) ? raw.selected_agents.filter((item): item is string => typeof item === 'string') : [],
+    skippedAgents: Array.isArray(raw.skipped_agents) ? raw.skipped_agents.filter((item): item is { agentId: string; reason: string } => Boolean(item && typeof item === 'object' && typeof (item as { agentId?: unknown }).agentId === 'string' && typeof (item as { reason?: unknown }).reason === 'string')) : [],
+    scenario: typeof raw.scenario === 'string' ? raw.scenario : '',
+    targetOutput: typeof raw.target_output === 'string' ? raw.target_output : '',
+    riskLevel: typeof raw.risk_level === 'string' ? raw.risk_level : 'medium',
     progress: {
       total: Number(asRecord(raw.progress).total ?? steps.length),
       completed: Number(asRecord(raw.progress).completed ?? 0),
@@ -190,6 +208,7 @@ export function buildDagGraphLayout(params: {
       stepCount: snapshot.steps.length,
       toolCalls,
     });
+    const explicitAgent = getAgentById(registry, snapshot.stepAgentIds[String(index)] ?? '');
     const pos = positions.get(nodeId) ?? { x: 40, y: 30 + index * 110, level: index };
 
     let status = normalizePlanStatus(rawStatus, hasCompletedSession, isLastRunning);
@@ -204,12 +223,15 @@ export function buildDagGraphLayout(params: {
       status,
       rawStatus: hasToolFailure ? 'failed' : rawStatus,
       note: snapshot.stepNotes[title] ?? '',
-      agentId: assignment.agent.id,
-      agentLabel: assignment.agent.name,
+      agentId: explicitAgent?.id ?? assignment.agent.id,
+      agentLabel: explicitAgent?.name ?? assignment.agent.name,
       capabilityId: assignment.capabilityId,
       capabilityLabel: assignment.capabilityLabel,
       modelLabel: assignment.agent.modelLabel,
       toolCount: stepTools.length,
+      parallelGroup: snapshot.stepParallelGroups[String(index)] || undefined,
+      condition: snapshot.stepConditions[String(index)] || undefined,
+      expectedArtifact: snapshot.stepExpectedArtifacts[String(index)] || undefined,
       level: pos.level,
       x: pos.x,
       y: pos.y,
@@ -246,6 +268,13 @@ export function buildStepToolDetail(params: {
         duration: tool.duration,
         argsPreview: tool.argsPreview,
         timestamp: tool.timestampLabel,
+        capabilityId: tool.capabilityId,
+        resultType: tool.resultType,
+        resultData: tool.resultData,
+        sources: tool.sources,
+        artifacts: tool.artifacts,
+        metrics: tool.metrics,
+        runtimeAgentId: tool.runtimeAgentId,
       };
     });
 
@@ -257,6 +286,9 @@ export function buildStepToolDetail(params: {
     capabilityId: node.capabilityId,
     capabilityLabel: node.capabilityLabel,
     modelLabel: node.modelLabel,
+    parallelGroup: node.parallelGroup,
+    condition: node.condition,
+    expectedArtifact: node.expectedArtifact,
     note: node.note,
     status: node.status,
     tools,
@@ -299,6 +331,15 @@ export function executionSnapshotToPlanSnapshot(snapshot: ExecutionSnapshot): Pl
     stepStatuses,
     stepNotes,
     dependencies: snapshot.dependencies ?? {},
+    stepAgentIds: snapshot.stepAgentIds ?? {},
+    stepParallelGroups: snapshot.stepParallelGroups ?? {},
+    stepConditions: snapshot.stepConditions ?? {},
+    stepExpectedArtifacts: snapshot.stepExpectedArtifacts ?? {},
+    selectedAgents: snapshot.selectedAgents ?? [],
+    skippedAgents: snapshot.skippedAgents ?? [],
+    scenario: snapshot.scenario ?? '',
+    targetOutput: snapshot.targetOutput ?? '',
+    riskLevel: snapshot.riskLevel ?? 'medium',
     progress: {
       total: snapshot.progress?.total ?? snapshot.steps.length,
       completed: snapshot.progress?.completed ?? snapshot.stats.completedSteps,
@@ -313,12 +354,19 @@ export function executionToolsToToolCalls(tools: ExecutionSnapshot['tools']): To
     id: `${tool.toolName}-${index}`,
     stepIndex: tool.stepIndex,
     toolName: tool.toolName,
-    status: 'completed' as AgentStepStatus,
+    status: (tool.status ?? 'completed') as AgentStepStatus,
     summary: tool.summary,
     timestamp: Date.now() - index,
     agent: 'analysis',
     duration: tool.duration,
     timestampLabel: tool.timestamp,
+    capabilityId: tool.capabilityId,
+    resultType: tool.resultType,
+    runtimeAgentId: tool.runtimeAgentId,
+    resultData: tool.resultData,
+    sources: tool.sources,
+    artifacts: tool.artifacts,
+    metrics: tool.metrics,
   }));
 }
 
@@ -353,6 +401,15 @@ export function buildWorkflowPreviewLayout(workflow: WorkflowConfig, registry: A
     stepStatuses: Object.fromEntries(steps.map((step, index) => [step, index === 0 ? 'in_progress' : 'not_started'])),
     stepNotes: {},
     dependencies,
+    stepAgentIds: Object.fromEntries(dagNodes.map((node, index) => [String(index), node.agent ?? ''])),
+    stepParallelGroups: {},
+    stepConditions: Object.fromEntries(dagNodes.map((node, index) => [String(index), node.condition ?? '']).filter(([, value]) => value)),
+    stepExpectedArtifacts: {},
+    selectedAgents: [...new Set(dagNodes.map((node) => node.agent).filter((value): value is string => Boolean(value)))],
+    skippedAgents: [],
+    scenario: '',
+    targetOutput: '',
+    riskLevel: 'medium',
     progress: { total: steps.length, completed: 0 },
     result: '',
     statusText: '提交事项后生成真实办理路径',

@@ -60,10 +60,7 @@ cd LexHub
 
 1. 克隆或解压项目到本地
 2. Windows 双击根目录 **`start-lexhub.bat`**；macOS/Linux 执行 `bash start-lexhub.sh`
-3. 首次运行会自动：
-   - 从 `Co-Sight-master/.env_template` 复制生成 `.env`
-   - 检测并安装 Python / 前端依赖（已有环境不会重复安装）
-   - 分别启动后端与前端，并打开浏览器
+3. Windows 启动器会检查 `.env`、Python 后端依赖、npm 与前端依赖，分别启动前后端，等待健康检查通过后打开浏览器；若环境缺失，会给出需要执行的安装命令。
 
 | 入口 | 地址 |
 |------|------|
@@ -71,9 +68,11 @@ cd LexHub
 | 管理端 | http://127.0.0.1:5174/admin |
 | 后端 API | http://127.0.0.1:7788 |
 
-Windows 下关闭弹出的 **LexHub Backend** / **LexHub Frontend** 命令行窗口即可停止服务；macOS/Linux 下在启动终端按 `Ctrl+C` 停止服务。
+Windows 下双击根目录 **`stop-lexhub.bat`** 即可停止本次启动的前后端；macOS/Linux 下在启动终端按 `Ctrl+C` 停止服务。
 
-脚本支持常用环境变量，方便在不同电脑上复用：
+Windows 可先执行 `start-lexhub.bat --check` 做环境检查，或执行 `start-lexhub.bat --no-browser` 禁止自动打开浏览器。
+
+macOS/Linux 脚本支持以下环境变量：
 
 ```bash
 BACKEND_PORT=7788

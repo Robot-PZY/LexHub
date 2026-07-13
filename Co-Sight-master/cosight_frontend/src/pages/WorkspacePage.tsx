@@ -16,6 +16,7 @@ import {
   saveWorkspaceDraft,
   storePendingWorkspaceTask,
   loadDemoUser,
+  createMatter,
 } from '../lib/storage';
 import {
   buildIntakeContextBlock,
@@ -53,6 +54,7 @@ function WorkspacePage() {
   const [toolkit, setToolkit] = useState<LegalToolkitProfile | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [documentIntake, setDocumentIntake] = useState<DocumentIntake>({ ...EMPTY_DOCUMENT_INTAKE });
+  const [taskTitle, setTaskTitle] = useState('');
   const [intakeError, setIntakeError] = useState<string | null>(null);
   const taskIdRef = useRef(crypto.randomUUID());
   const taskId = taskIdRef.current;
@@ -62,7 +64,7 @@ function WorkspacePage() {
   const effectiveScenarioId = selectedScenario ?? GENERAL_SCENARIO_ID;
   const activeScenario = scenarios.find((item) => item.id === effectiveScenarioId) ?? scenarios[0];
   const activeDefinition = findScenario(effectiveScenarioId);
-  const needsIntake = Boolean(activeDefinition?.outputProfile.showDeliverable);
+  const needsIntake = Boolean(selectedScenario && activeDefinition?.outputProfile.autoGenerate);
 
   const intakeValid = useMemo(() => {
     if (!needsIntake) return true;
@@ -126,17 +128,30 @@ function WorkspacePage() {
 
     const intakeBlock = needsIntake ? buildIntakeContextBlock(documentIntake) : '';
     const message = [baseMessage, intakeBlock].filter(Boolean).join('\n\n');
+    const resolvedTitle = taskTitle.trim() || baseMessage.slice(0, 48) || documentIntake.templateLabel || '未命名事项';
+
+    createMatter({
+      id: taskId,
+      title: resolvedTitle,
+      query: message,
+      scenario: effectiveScenarioId,
+      documentIntake: needsIntake ? documentIntake : undefined,
+      uploadIds,
+      status: 'draft',
+    });
 
     storePendingWorkspaceTask({
+      matterId: taskId,
       content: message,
       uploadIds,
       scenario: effectiveScenarioId,
       taskId,
-      taskTitle: baseMessage.slice(0, 48) || documentIntake.templateLabel || '未命名事项',
+      taskTitle: resolvedTitle,
       documentIntake: needsIntake ? documentIntake : undefined,
     });
     clearWorkspaceDraft();
     setDraft('');
+    setTaskTitle('');
     setIntakeError(null);
     navigate('/workspace/run');
   };
@@ -154,9 +169,6 @@ function WorkspacePage() {
     setIntakeError(null);
     if (nextSelected && definition) {
       setDocumentIntake(createIntakeForScenario(nextSelected));
-      if (!draft.trim()) {
-        setDraft(definition.examples[0] || `${definition.title}：请根据现有材料完成分析，并给出可复核建议。`);
-      }
     } else {
       setDocumentIntake({ ...EMPTY_DOCUMENT_INTAKE });
     }
@@ -166,8 +178,8 @@ function WorkspacePage() {
 
   return (
     <AppShell
-      title="事项受理"
-      subtitle="选择场景、补充要素、上传材料，形成可追踪的办理路径"
+      title="发起事项"
+      subtitle="说明诉求、选择场景并补充材料，系统将为本次事项生成办理路径"
       badge={(
         <Badge tone="primary" icon={<Sparkles size={12} />}>
           {statusSummary}
@@ -207,8 +219,8 @@ function WorkspacePage() {
                 <div className="workspace-scenario-board" aria-label="场景类型">
                   <div className="workspace-scenario-board-head">
                     <div>
-                      <span className="workspace-scenario-board-title">业务场景</span>
-                      <em>可选 · 不选则按通用法律分析处理</em>
+                      <span className="workspace-scenario-board-title">选择办理类型</span>
+                      <em>用于确定规划路径与最终交付；不选则按通用分析处理</em>
                     </div>
                     {selectedScenario ? (
                       <Button
@@ -243,6 +255,17 @@ function WorkspacePage() {
                       );
                     })}
                   </div>
+
+                  {selectedScenario && activeDefinition ? (
+                    <div className="workspace-scenario-output" aria-live="polite">
+                      <div>
+                        <span>本次将交付</span>
+                        <strong>{activeDefinition.outputProfile.primaryLabel}</strong>
+                        <p>{activeDefinition.outputProfile.primaryHint}</p>
+                      </div>
+                      <em>{needsIntake ? '需补充交付信息' : '直接描述事项即可'}</em>
+                    </div>
+                  ) : null}
                 </div>
 
                 {needsIntake && selectedScenario && (
@@ -254,6 +277,16 @@ function WorkspacePage() {
                 )}
 
                 {intakeError && <div className="admin-save-hint admin-save-hint-error">{intakeError}</div>}
+
+                <label className="workspace-task-title-field">
+                  <span>事项名称 <em>可选</em></span>
+                  <input
+                    className="ds-input"
+                    value={taskTitle}
+                    onChange={(event) => setTaskTitle(event.target.value)}
+                    placeholder="例如：服务合同付款条款审查"
+                  />
+                </label>
 
                 <ComposerPanel
                   draft={draft}
@@ -267,7 +300,7 @@ function WorkspacePage() {
                   uploadMeta={{
                     userAccount: demoUser?.account ?? 'user',
                     taskId,
-                    taskTitle: draft.trim().slice(0, 48) || documentIntake.templateLabel || '未命名事项',
+                    taskTitle: taskTitle.trim() || draft.trim().slice(0, 48) || documentIntake.templateLabel || '未命名事项',
                   }}
                 />
               </div>
@@ -282,7 +315,7 @@ function WorkspacePage() {
             <span className="workspace-intake-foot-sep">·</span>
             <Link className="text-button" to="/workspace/result">查看结论</Link>
             <span className="workspace-intake-foot-sep">·</span>
-            <Link className="text-button" to="/replay">案件归档</Link>
+            <Link className="text-button" to="/replay">历史回放</Link>
           </div>
         )}
       </div>

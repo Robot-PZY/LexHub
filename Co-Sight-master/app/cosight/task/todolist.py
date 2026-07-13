@@ -46,10 +46,29 @@ class Plan:
         else:
             self.dependencies = {i: [i - 1] for i in range(1, len(self.steps))} if len(self.steps) > 1 else {}
         self.result = ""
+        self.step_agent_ids: Dict[int, str] = {}
+        self.step_parallel_groups: Dict[int, str] = {}
+        self.step_conditions: Dict[int, str] = {}
+        self.step_expected_artifacts: Dict[int, str] = {}
+        self.selected_agents: List[str] = []
+        self.skipped_agents: List[dict] = []
+        self.scenario = ""
+        self.target_output = ""
+        self.risk_level = "medium"
+        self.verification_result: Dict = {}
+        self.planning_locked = False
         self.work_space_path = work_space_path if work_space_path else os.environ.get("WORKSPACE_PATH") or os.getcwd()
 
     def set_plan_result(self, plan_result):
         self.result = plan_result
+
+    def settle_unfinished_steps(self, reason: str = "execution ended before the step reported completion") -> None:
+        """Convert non-terminal states to blocked so a degraded result can still be delivered."""
+        for step in self.steps:
+            if self.step_statuses.get(step) in {"not_started", "in_progress"}:
+                self.step_statuses[step] = "blocked"
+                if not self.step_notes.get(step):
+                    self.step_notes[step] = reason
 
     def get_plan_result(self):
         return self.result
@@ -67,7 +86,7 @@ class Plan:
             dependencies = self.dependencies.get(step_index, [])
 
             # 检查所有依赖是否都已完成
-            if all(self.step_statuses.get(self.steps[int(dep)]) not  in["not_started","in_progress"]  for dep in dependencies):
+            if all(self.step_statuses.get(self.steps[int(dep)]) == "completed" for dep in dependencies):
                 # 检查步骤本身是否未开始
                 if self.step_statuses.get(self.steps[step_index]) == "not_started":
                     ready_steps.append(step_index)
@@ -75,8 +94,15 @@ class Plan:
         return ready_steps
 
     def update(self, title: Optional[str] = None, steps: Optional[List[str]] = None,
-               dependencies: Optional[Dict[int, List[int]]] = None) -> None:
+               dependencies: Optional[Dict[int, List[int]]] = None, *,
+               agent_ids: Optional[List[str]] = None, parallel_groups: Optional[Dict[int, str]] = None,
+               conditions: Optional[Dict[int, str]] = None, expected_artifacts: Optional[List[str]] = None,
+               selected_agents: Optional[List[str]] = None, skipped_agents: Optional[List[dict]] = None,
+               scenario: Optional[str] = None, target_output: Optional[str] = None,
+               risk_level: Optional[str] = None) -> None:
         """Update the plan with new title, steps, or dependencies while preserving completed steps."""
+        if self.planning_locked:
+            raise RuntimeError("plan is locked for execution")
         if title:
             self.title = title
         if type(steps) == str:
@@ -125,8 +151,99 @@ class Plan:
             dependencies = self._normalize_dependencies(dependencies)
             self.dependencies.update(dependencies)
         else:
-            self.dependencies = {i: [i - 1] for i in range(1, len(steps))} if len(steps) > 1 else {}
+            self.dependencies = {i: [i - 1] for i in range(1, len(self.steps))} if len(self.steps) > 1 else {}
+        self._validate_dag()
+        allowed_agents = {"evidence", "issue_spotter", "research", "clause_risk", "calculation", "drafting", "verification"}
+        if agent_ids is not None:
+            if len(agent_ids) != len(self.steps):
+                raise ValueError("agent_ids must have the same length as steps")
+            invalid_agents = sorted(set(agent_ids) - allowed_agents)
+            if invalid_agents:
+                raise ValueError(f"Unknown specialist agent ids: {invalid_agents}")
+            self.step_agent_ids = {index: agent_id for index, agent_id in enumerate(agent_ids)}
+        if expected_artifacts is not None:
+            if len(expected_artifacts) != len(self.steps):
+                raise ValueError("expected_artifacts must have the same length as steps")
+            self.step_expected_artifacts = {index: value for index, value in enumerate(expected_artifacts)}
+        if parallel_groups is not None:
+            self.step_parallel_groups = {int(index): str(value) for index, value in parallel_groups.items() if str(value)}
+            if not self.step_parallel_groups:
+                self.step_parallel_groups = self._infer_parallel_groups()
+        elif not self.step_parallel_groups:
+            self.step_parallel_groups = self._infer_parallel_groups()
+        if conditions is not None:
+            self.step_conditions = {int(index): str(value) for index, value in conditions.items() if str(value)}
+        if selected_agents is not None:
+            invalid_selected = sorted(set(selected_agents) - allowed_agents)
+            if invalid_selected:
+                raise ValueError(f"Unknown selected agent ids: {invalid_selected}")
+            self.selected_agents = list(dict.fromkeys(selected_agents))
+        elif agent_ids is not None:
+            self.selected_agents = list(dict.fromkeys(agent_ids))
+        if skipped_agents is not None:
+            self.skipped_agents = [item for item in skipped_agents if isinstance(item, dict) and item.get("agentId") and item.get("reason")]
+        if scenario is not None:
+            self.scenario = scenario
+        if target_output is not None:
+            self.target_output = target_output
+        if risk_level is not None:
+            if risk_level not in {"low", "medium", "high"}:
+                raise ValueError("risk_level must be low, medium or high")
+            self.risk_level = risk_level
         logger.info(f"after update dependencies: {self.dependencies}")
+
+    def lock_planning(self) -> None:
+        self.planning_locked = True
+
+    def _validate_dag(self) -> None:
+        node_count = len(self.steps)
+        for node, deps in self.dependencies.items():
+            if node < 0 or node >= node_count:
+                raise ValueError(f"Dependency node index out of range: {node}")
+            for dep in deps:
+                if dep < 0 or dep >= node_count:
+                    raise ValueError(f"Dependency index out of range: {dep}")
+                if dep == node:
+                    raise ValueError(f"Step {node} cannot depend on itself")
+        visiting: set[int] = set()
+        visited: set[int] = set()
+
+        def visit(node: int) -> None:
+            if node in visiting:
+                raise ValueError("Plan dependencies must form an acyclic graph")
+            if node in visited:
+                return
+            visiting.add(node)
+            for dependency in self.dependencies.get(node, []):
+                visit(dependency)
+            visiting.remove(node)
+            visited.add(node)
+
+        for node in range(node_count):
+            visit(node)
+
+    def _infer_parallel_groups(self) -> Dict[int, str]:
+        """Derive stable parallel groups from DAG levels when the planner omits them."""
+        depths: Dict[int, int] = {}
+
+        def depth(node: int) -> int:
+            if node in depths:
+                return depths[node]
+            dependencies = self.dependencies.get(node, [])
+            depths[node] = 0 if not dependencies else max(depth(dep) for dep in dependencies) + 1
+            return depths[node]
+
+        level_nodes: Dict[int, List[int]] = {}
+        for node in range(len(self.steps)):
+            level_nodes.setdefault(depth(node), []).append(node)
+
+        inferred: Dict[int, str] = {}
+        for level, nodes in level_nodes.items():
+            if len(nodes) < 2:
+                continue
+            group_name = f"auto-level-{level}"
+            inferred.update({node: group_name for node in nodes})
+        return inferred
 
     def mark_step(self, step_index: int, step_status: Optional[str] = None, step_notes: Optional[str] = None) -> None:
         """Mark a single step with specific statuses, notes, and details.
@@ -272,7 +389,9 @@ class Plan:
             # 显示依赖关系
             deps = self.dependencies.get(i, [])
             dep_str = f" (depends on: {', '.join(map(str, deps))})" if deps else ""
-            output += f"Step{i} :{status_symbol} {step}{dep_str}\n"
+            agent_str = f" [agent: {self.step_agent_ids.get(i)}]" if self.step_agent_ids.get(i) else ""
+            parallel_str = f" [parallel: {self.step_parallel_groups.get(i)}]" if self.step_parallel_groups.get(i) else ""
+            output += f"Step{i} :{status_symbol} {step}{agent_str}{parallel_str}{dep_str}\n"
             if self.step_notes.get(step):
                 output += f"   Notes: {self.step_notes.get(step)}\nDetails: {self.step_details.get(step)}\n" if with_detail else f"   Notes: {self.step_notes.get(step)}\n"
 
@@ -364,7 +483,9 @@ def extract_and_replace_paths(text: str, folder_name: str, workspace_path: str) 
                     })
 
             # 遍历工作空间目录下的所有子目录
+            ignored_dirs = {".git", ".venv", "node_modules", "dist", "__pycache__", "chroma_lexhub"}
             for root, dirs, files in os.walk(workspace_path):
+                dirs[:] = [item for item in dirs if item not in ignored_dirs]
                 logger.info(f"root:{root}")
                 if root != workspace_path:  # 跳过根目录，因为已经在上面处理过了
                     # 获取相对路径
@@ -395,5 +516,14 @@ def extract_and_replace_paths(text: str, folder_name: str, workspace_path: str) 
 
 
 def process_text_with_workspace(text: str, work_space_path: str) -> Tuple[str, List[Dict[str, str]]]:
+    # Most phase notes are plain conclusions. Avoid an expensive recursive workspace scan
+    # unless the model output actually contains a local file reference.
+    local_file_hint = re.search(
+        r"(?:[A-Za-z]:[\\/]|(?:^|[\s`'\"(])(?:\.?\.?[\\/])?[\w .-]+\.(?:md|txt|docx?|pdf|html?|xlsx?|csv|json|png|jpe?g)(?:[\s`'\")]|$))",
+        str(text or ""),
+        re.IGNORECASE | re.MULTILINE,
+    )
+    if not local_file_hint:
+        return str(text or ""), []
     folder_name = get_last_folder_name(work_space_path)
     return extract_and_replace_paths(text, folder_name, work_space_path)

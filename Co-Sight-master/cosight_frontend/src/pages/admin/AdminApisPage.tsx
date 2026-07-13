@@ -20,7 +20,7 @@ const apiProviderPresets: Record<string, Array<{ id: string; label: string; endp
   ocr: [
     { id: 'manual', label: '手动填写', endpoint: '' },
     { id: 'paddle-local', label: 'PaddleOCR 本地服务', endpoint: 'http://127.0.0.1:8866/ocr' },
-    { id: 'baidu-ocr', label: '百度智能云 OCR', endpoint: 'https://aip.baidubce.com' },
+    { id: 'baidu-ocr', label: '百度智能云 OCR', endpoint: 'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic' },
     { id: 'aliyun-ocr', label: '阿里云 OCR', endpoint: 'https://ocr-api.cn-hangzhou.aliyuncs.com' },
   ],
   legal_search: [

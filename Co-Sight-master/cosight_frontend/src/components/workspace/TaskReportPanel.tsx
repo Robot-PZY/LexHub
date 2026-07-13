@@ -178,7 +178,7 @@ function TaskReportPanel({
           </article>
 
           <article className="task-report-side-card muted">
-            <strong><ShieldCheck size={14} /> 复核提示</strong>
+            <strong><ShieldCheck size={14} /> 自动校验</strong>
             <p>{resultInsight.reviewNote}</p>
           </article>
         </aside>

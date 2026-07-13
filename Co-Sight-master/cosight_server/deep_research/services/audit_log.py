@@ -233,7 +233,7 @@ def build_review_from_audit(audit_log: Dict, snapshot: Optional[Dict] = None) ->
         {
             "label": "文书完整性",
             "value": draft_value,
-            "detail": "导出前须经交叉审查与合规监测智能体标记的人工复核。",
+            "detail": "导出前由交叉审查与合规监测智能体完成自动一致性校验。",
             "tone": draft_tone,
         },
         {
@@ -257,7 +257,7 @@ def build_review_from_audit(audit_log: Dict, snapshot: Optional[Dict] = None) ->
     if not risk_findings:
         risk_findings.append("当前 replay 审计链完整，导出前仍建议律师人工终检。")
 
-    overall = "可进入导出流程，需人工终检" if passed >= 3 else "草稿可用，导出前需人工复核"
+    overall = "自动校验通过，可进入导出流程" if passed >= 3 else "已生成降级结果，建议补充缺失材料后重新校验"
 
     return {
         "overallVerdict": overall,

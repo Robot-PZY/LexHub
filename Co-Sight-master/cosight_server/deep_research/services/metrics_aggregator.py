@@ -174,7 +174,9 @@ def aggregate_replay_metrics(workspace_root: str) -> Dict:
     avg_tools = sum(item["toolCallCount"] for item in sessions) / replay_count
     avg_hops = sum(item["dagHopCount"] for item in sessions) / replay_count
     citation_samples = [item["citationRate"] for item in sessions if item["searchToolCalls"] > 0]
-    avg_citation = sum(citation_samples) / len(citation_samples) if citation_samples else 88
+    # Do not turn an absence of search evidence into an apparently measured
+    # 88% citation rate.  The presentation must distinguish unavailable data.
+    avg_citation = round(sum(citation_samples) / len(citation_samples)) if citation_samples else None
 
     active_workspace_count = 0
     if os.path.isdir(workspace_root):
@@ -197,7 +199,7 @@ def aggregate_replay_metrics(workspace_root: str) -> Dict:
         "avgWallClockMinutes": round(avg_wall, 1),
         "avgToolCalls": round(avg_tools, 1),
         "avgDagHops": round(avg_hops, 1),
-        "avgCitationRate": round(avg_citation),
+        "avgCitationRate": avg_citation,
         "replayCoverage": replay_coverage,
         "totalAgentCalls": total_agent_calls,
         "activeWorkspaceCount": active_workspace_count,
@@ -247,7 +249,12 @@ def build_performance_benchmark(aggregated: Dict) -> Dict:
     cosight_citation = aggregated["avgCitationRate"]
     replay_coverage = aggregated["replayCoverage"]
     efficiency_gain = _calc_improvement_pct(baseline_minutes, cosight_minutes)
-    accuracy_gain = f"+{max(0, cosight_citation - baseline_citation)}%" if cosight_citation >= baseline_citation else f"{cosight_citation - baseline_citation}%"
+    has_citation_sample = isinstance(cosight_citation, (int, float))
+    accuracy_gain = (
+        f"+{max(0, cosight_citation - baseline_citation)}%"
+        if has_citation_sample and cosight_citation >= baseline_citation
+        else f"{cosight_citation - baseline_citation}%" if has_citation_sample else "待采集"
+    )
 
     return {
         "title": "Co-Sight 多智能体 vs 传统人工流程",
@@ -271,7 +278,7 @@ def build_performance_benchmark(aggregated: Dict) -> Dict:
             {
                 "label": "法规引用可追溯率",
                 "traditional": f"约 {baseline_citation}%",
-                "cosight": f"约 {cosight_citation}%",
+                "cosight": f"约 {cosight_citation}%" if has_citation_sample else "未采集（无可追溯检索样本）",
                 "improvement": accuracy_gain,
                 "unit": "准确率",
             },
@@ -293,7 +300,7 @@ def build_performance_benchmark(aggregated: Dict) -> Dict:
             "avgDagHops": aggregated["avgDagHops"],
             "avgWallClockMinutes": cosight_minutes,
         },
-        "note": f"基于 {replay_count} 条 replay.json 真实执行记录聚合（LaborAid 监控思路 + Co-Sight replay 溯源）。",
+        "note": f"基于 {replay_count} 条 replay.json 真实执行记录聚合（LaborAid 监控思路 + Co-Sight replay 溯源）。" + (" 法规引用指标尚无可追溯检索样本。" if not has_citation_sample else ""),
     }
 
 
@@ -314,7 +321,8 @@ def build_analytics_from_replays(aggregated: Dict, replay_stats: Dict) -> Dict:
             {"label": label, "value": max(1, round(aggregated.get("totalAgentCalls", 0) / len(agent_stage_labels)))}
             for label in agent_stage_labels
         ]
-        high_risk_ratio = max(15, min(45, 100 - aggregated.get("avgCitationRate", 70)))
+        citation_rate = aggregated.get("avgCitationRate")
+        high_risk_ratio = max(15, min(45, 100 - citation_rate)) if isinstance(citation_rate, (int, float)) else 0
     else:
         case_stages = [{"label": label, "value": 0} for label in agent_stage_labels]
         agent_calls = [{"label": label, "value": 0} for label in agent_stage_labels]

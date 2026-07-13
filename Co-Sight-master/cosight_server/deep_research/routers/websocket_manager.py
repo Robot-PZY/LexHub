@@ -157,7 +157,10 @@ async def _send_resp(websocket, cookie, topic, message, lang):
             "locale": lang,
             "sessionId": topic,
             "username": message.get("roleInfo").get("name"),
-            "assistantNames": assistants
+            "assistantNames": assistants,
+            # Keep the client-generated plan id stable across the WebSocket
+            # bridge.  It is also the only reliable key for a replay binding.
+            "messageSerialNumber": (message.get("sessionInfo") or {}).get("messageSerialNumber", ""),
         },
         "stream": True,
         "contentProperties": message.get("extra", {}).get("fromBackEnd", {}).get("actualPrompt")
@@ -175,6 +178,10 @@ async def _send_resp(websocket, cookie, topic, message, lang):
         if isinstance(scenario, str) and scenario.strip():
             params["scenario"] = scenario.strip()
             logger.info(f"Found legal scenario in message: {scenario}")
+        for key in ("matterId", "matterTitle"):
+            value = from_back_end.get(key)
+            if isinstance(value, str) and value.strip():
+                params[key] = value.strip()
     except Exception as e:
         logger.warning(f"Error extracting uploaded files from message: {e}")
     # 支持回放控制字段：replay、replayWorkspace、replayPlanId
@@ -304,7 +311,10 @@ async def _stream_handler(params, url, headers, topic, websocket):
                                     progress = init_data.get("progress") or {}
                                     total = int(progress.get("total") or 0)
                                     completed = int(progress.get("completed") or 0)
-                                    if total > 0 and completed >= total:
+                                    blocked = int(progress.get("blocked") or 0)
+                                    terminal = total > 0 and completed + blocked >= total
+                                    has_result = bool(str(init_data.get("result") or "").strip())
+                                    if terminal and has_result:
                                         # 先让出事件循环，确保上面的最终PLAN更新已被前端渲染
                                         import asyncio as _asyncio
                                         await _asyncio.sleep(0)
@@ -313,7 +323,8 @@ async def _stream_handler(params, url, headers, topic, websocket):
                                             "data": {
                                                 "type": "control-status-message",
                                                 "initData": {
-                                                    "status": "finished_successfully"
+                                                    "status": "finished_with_warnings" if blocked else "finished_successfully",
+                                                    "verification": init_data.get("verification_result") or {},
                                                 }
                                             }
                                         }, websocket)

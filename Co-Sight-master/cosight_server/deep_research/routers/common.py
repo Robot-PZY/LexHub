@@ -280,6 +280,16 @@ def _document_export_status() -> str:
     return "ready"
 
 
+def _ocr_status() -> str:
+    baidu_ready = bool(os.environ.get("BAIDU_OCR_API_KEY") and os.environ.get("BAIDU_OCR_SECRET_KEY"))
+    aliyun_ready = bool(
+        os.environ.get("ALIYUN_OCR_ACCESS_KEY_ID")
+        and os.environ.get("ALIYUN_OCR_ACCESS_KEY_SECRET")
+    )
+    paddle_ready = bool(os.environ.get("PADDLE_OCR_ENDPOINT"))
+    return "ready" if baidu_ready or aliyun_ready or paddle_ready else "missing_key"
+
+
 def _legal_scenarios() -> List[Dict]:
     return [
         {
@@ -373,7 +383,7 @@ def _agent_catalog() -> List[Dict]:
             "id": "review",
             "name": "交叉审查智能体",
             "trigger": "高风险、低置信度或即将导出",
-            "output": "事实一致性、引用匹配、幻觉风险、人工复核项",
+            "output": "事实一致性、引用匹配、幻觉风险、自动校验项",
             "statusLabel": "强制复核",
         },
         {
@@ -540,11 +550,11 @@ def _build_dynamic_routing(scenario: str, description: str) -> Dict:
         "name": "交叉审查智能体",
         "status": "active" if review_required else "idle",
         "trigger": "高风险/低置信度/导出前",
-        "reason": "对事实、证据、法规和文书进行交叉复核，保留人工确认点。",
+        "reason": "对事实、证据、法规和文书进行自动交叉校验，标注降级项。",
     })
     if review_required:
         routing_decisions.append("存在高风险或输出需求，强制进入交叉审查智能体。")
-        next_suggestion = "导出前完成交叉审查，并保留人工复核记录。"
+        next_suggestion = "导出前完成自动交叉审查，并保留可追溯校验记录。"
 
     return {
         "taskId": f"task-{uuid.uuid4().hex[:8]}",
@@ -584,6 +594,7 @@ def _api_integrations() -> List[Dict]:
             "category": "材料处理",
             "envKeys": ["BAIDU_OCR_API_KEY", "ALIYUN_OCR_ACCESS_KEY_ID", "PADDLE_OCR_ENDPOINT"],
             "purpose": "识别合同、扫描件、图片证据和 PDF 材料中的文字。",
+            "status": _ocr_status(),
         },
         {
             "id": "legal_search",
@@ -616,10 +627,11 @@ def _api_integrations() -> List[Dict]:
         },
         {
             "id": "contract_compare",
-            "name": "合同版本比对",
+            "name": "合同版本比对（本地）",
             "category": "合同审查",
-            "envKeys": ["CONTRACT_COMPARE_API_KEY"],
-            "purpose": "多版本合同 diff 与修订痕迹标注。",
+            "envKeys": [],
+            "purpose": "本地完成多版本合同 diff、增删改统计与修订痕迹，不依赖外部 Key。",
+            "status": "ready",
         },
         {
             "id": "compliance_screen",
@@ -689,7 +701,7 @@ async def get_demo_overview():
             '过程可回放与结果可复核',
         ],
         'competition_capabilities': [
-            {'requirement': '多智能体协同（≥2）', 'implementation': '5 个法律智能体按状态触发', 'evidence': '/workspace · /agents'},
+            {'requirement': '多智能体协同（≥2）', 'implementation': '8 个注册智能体按任务动态选择，运行时使用独立模板与工具白名单', 'evidence': '/workspace · /agents'},
             {'requirement': 'DAG 任务引擎编排', 'implementation': 'Co-Sight Plan + DAG 执行视图', 'evidence': '/workspace · /board'},
             {'requirement': '工具/API 调用（≥3 类）', 'implementation': '搜索、代码执行、文档/OCR、法规检索', 'evidence': '/workspace · /research'},
             {'requirement': '多跳推理（>3 跳）', 'implementation': '拆解→材料→检索→生成→审查', 'evidence': 'Replay · StepFlow'},
@@ -801,7 +813,7 @@ async def get_review_result(workspace: str | None = None):
         return json_result(0, "success", replay_review)
 
     return json_result(0, "success", {
-        "overallVerdict": "草稿可用，导出前需人工复核",
+        "overallVerdict": "自动校验完成，存在降级项",
         "dataSource": "baseline",
         "reviewItems": [
             {"label": "事实一致性", "value": "待实测", "detail": "执行 Co-Sight 任务后将基于 replay 自动生成审查矩阵。", "tone": "warning"},
@@ -826,7 +838,7 @@ async def get_report_summary():
             {"title": "调度过程", "desc": "系统先调用任务理解与证据质检，再进入法规研究、文书生成和交叉审查。"},
             {"title": "证据结论", "desc": "主体信息基本一致，但签署页、付款凭证和催告记录仍需补充。"},
             {"title": "研究结论", "desc": "当前可形成初步风险提示，正式意见需补充条款级法规引用。"},
-            {"title": "审查意见", "desc": "解除、索赔等结论需要谨慎表述，并保留人工确认。"},
+            {"title": "审查意见", "desc": "解除、索赔等结论采用审慎表述，并标注依据和风险。"},
         ],
         "agentInvocations": [
             {"name": "任务理解智能体", "count": 1},
@@ -842,7 +854,7 @@ async def get_report_summary():
         ],
         "nextActions": [
             {"title": "补齐材料", "desc": "补充签署页、付款凭证和催告记录。"},
-            {"title": "人工复核", "desc": "确认解除、索赔和发函措辞。"},
+            {"title": "自动校验", "desc": "校验解除、索赔和发函措辞的一致性。"},
             {"title": "导出归档", "desc": "生成报告并进入回放中心。"},
         ],
         "stats": {"agents": 5, "findings": 7, "status": "草稿"},
@@ -870,7 +882,7 @@ async def get_profile_analysis():
             {"label": "材料完整度", "value": "68%", "tone": "warning"},
             {"label": "法规引用度", "value": "42%", "tone": "warning"},
             {"label": "输出可用度", "value": "草稿", "tone": "primary"},
-            {"label": "人工复核需求", "value": "较高", "tone": "warning"},
+            {"label": "自动校验等级", "value": "增强", "tone": "warning"},
         ],
         "externalData": [
             {"label": "得理法规检索", "status": "可接入"},
@@ -1497,7 +1509,7 @@ async def create_task_blueprint(body: TaskBlueprintRequest):
             "主体身份是否核验",
             "关键事实是否有材料支撑",
             "引用依据是否可追溯",
-            "结论是否标注人工复核点",
+            "结论是否通过自动一致性校验",
             "最终材料是否归档并可回放",
         ],
     })

@@ -27,6 +27,13 @@ export type ToolCallTrace = {
   argsPreview?: string;
   timestampLabel?: string;
   errorDetail?: string;
+  capabilityId?: string;
+  resultType?: string;
+  resultData?: unknown;
+  sources?: Array<Record<string, unknown>>;
+  artifacts?: Array<Record<string, unknown>>;
+  metrics?: Record<string, unknown>;
+  runtimeAgentId?: string;
 };
 
 export type ResultCredibility = {

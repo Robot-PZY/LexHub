@@ -1,8 +1,8 @@
 :root {
   /* Typography */
-  --font-sans: "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-display: "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", sans-serif;
-  --font-brand: "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-sans: "IBM Plex Sans", "Inter", "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Poppins", "IBM Plex Sans", "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", sans-serif;
+  --font-brand: "IBM Plex Sans", "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-size-xs: 12px;
   --font-size-sm: 13px;
   --font-size-body: 15px;
@@ -29,39 +29,58 @@
   --space-12: 48px;
   --space-16: 64px;
 
-  /* LexHub blue-gold legal brand */
+  /* LexHub Editorial Legal OS */
+  --editorial-bg: #f7f8f8;
+  --editorial-bg-soft: #eef2f5;
+  --editorial-surface: #ffffff;
+  --editorial-surface-ink: #0b1118;
+  --editorial-text: #111827;
+  --editorial-muted: #65717f;
+  --editorial-line: #d7dde3;
+  --editorial-line-strong: #111827;
+  --editorial-navy: #0b1f33;
+  --editorial-ink: #080b10;
+  --editorial-cyan: #1aa6b8;
+  --editorial-cyan-soft: #e8f7f9;
+  --editorial-gold: #b88a2e;
+  --editorial-gold-soft: #f6efe0;
+  --editorial-success: #0f766e;
+  --editorial-warning: #a16207;
+  --editorial-danger: #b42318;
+  --editorial-info: #155e75;
+
   --color-primary: #123e66;
   --color-primary-hover: #0b2d4d;
-  --color-primary-soft: #eaf1f8;
-  --color-primary-muted: rgba(18, 62, 102, 0.16);
-  --color-secondary: #153c4a;
-  --color-accent: #d6a84f;
-  --color-accent-hover: #b98422;
-  --color-accent-soft: #f7ead0;
-  --color-accent-soft-text: #7a520f;
+  --color-primary-soft: #eaf3f8;
+  --color-primary-muted: rgba(18, 62, 102, 0.14);
+  --color-secondary: #1a5967;
+  --color-accent: #c8962c;
+  --color-accent-hover: #a97816;
+  --color-accent-soft: #fff5df;
+  --color-accent-soft-text: #7a5410;
 
   /* Semantic */
-  --color-success: #2f6b57;
-  --color-success-soft: #eaf4ef;
-  --color-warning: #a56a1e;
-  --color-warning-soft: #fbf1e2;
-  --color-danger: #a6473c;
+  --color-success: var(--editorial-success);
+  --color-success-soft: #e8f6f3;
+  --color-warning: var(--editorial-warning);
+  --color-warning-soft: var(--editorial-gold-soft);
+  --color-danger: var(--editorial-danger);
   --color-danger-soft: #f9e9e7;
-  --color-info: #23669c;
-  --color-info-soft: #eaf1f8;
+  --color-info: var(--editorial-info);
+  --color-info-soft: #e8f1f5;
 
-  /* Surfaces — warm paper, not cold gray */
-  --color-bg: #f4f0e7;
-  --color-bg-elevated: #ece5d8;
-  --color-surface: #ffffff;
-  --color-surface-alt: #fbf8f1;
-  --color-surface-muted: #eee8dc;
-  --color-surface-strong: #0b2d4d;
-  --color-text: #263f59;
+  /* Surfaces — monochrome editorial, not generic AI blue */
+  --color-bg: #f8fbfd;
+  --color-bg-elevated: #eef6fa;
+  --color-surface: var(--editorial-surface);
+  --color-surface-alt: #fafafa;
+  --color-surface-muted: #f1f3f5;
+  --color-surface-strong: var(--editorial-surface-ink);
+  --color-text: #26394e;
   --color-text-strong: #0b2d4d;
-  --color-muted: #748395;
-  --color-line: #d9cfbe;
-  --color-line-soft: #e9dfcf;
+  --color-muted: #63758a;
+  --color-line: #d9e5ed;
+  --color-line-soft: #edf3f7;
 
   /* Radius */
   --radius-xs: 4px;
@@ -74,10 +93,10 @@
   --radius-full: 999px;
 
   /* Shadows — restrained, procedural */
-  --shadow-xs: 0 1px 2px rgba(11, 45, 77, 0.05);
-  --shadow-sm: 0 1px 3px rgba(11, 45, 77, 0.07), 0 8px 20px rgba(11, 45, 77, 0.05);
-  --shadow-md: 0 16px 40px rgba(11, 45, 77, 0.1), 0 4px 14px rgba(18, 62, 102, 0.06);
-  --shadow-lg: 0 22px 56px rgba(11, 45, 77, 0.13), 0 8px 22px rgba(18, 62, 102, 0.08);
+  --shadow-xs: 0 1px 2px rgba(8, 11, 16, 0.05);
+  --shadow-sm: 0 1px 3px rgba(8, 11, 16, 0.07), 0 8px 20px rgba(8, 11, 16, 0.05);
+  --shadow-md: 0 16px 40px rgba(8, 11, 16, 0.1), 0 4px 14px rgba(8, 11, 16, 0.06);
+  --shadow-lg: 0 22px 56px rgba(8, 11, 16, 0.13), 0 8px 22px rgba(8, 11, 16, 0.08);
   --shadow-glow: 0 0 0 1px rgba(255, 255, 255, 0.85) inset;
   --shadow-focus: 0 0 0 3px rgba(35, 102, 156, 0.22);
 

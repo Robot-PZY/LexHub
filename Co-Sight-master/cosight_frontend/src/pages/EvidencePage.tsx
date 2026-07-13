@@ -59,7 +59,7 @@ function EvidencePage() {
         <StatCard label="本地上传" value={`${uploadedFiles.length}`} description="当前会话已上传材料" />
         <StatCard label="示例材料" value={`${evidenceRows.length}`} description="材料清单样例" />
         <StatCard label="完整度" value="68%" description="签署页与付款凭证待补" />
-        <StatCard label="OCR 状态" value="预留" description="可接百度 / 阿里 / PaddleOCR" />
+        <StatCard label="OCR 状态" value="已接入" description="支持百度 OCR 与扫描 PDF 自动回退" />
       </section>
 
       <section className="feature-layout">

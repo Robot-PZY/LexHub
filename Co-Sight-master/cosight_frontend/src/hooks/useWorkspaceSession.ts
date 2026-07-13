@@ -1,22 +1,29 @@
 import { useEffect, useMemo, useState } from 'react';
-import { fetchExecutionSnapshot, fetchReplayWorkspaces } from '../lib/api';
+import { fetchExecutionSnapshot } from '../lib/api';
 import {
   deriveResultInsight,
   deriveSteps,
   deriveToolCalls,
 } from '../lib/event-adapter';
 import { buildExecutionSnapshotFromChat } from '../lib/execution-export';
-import { loadWorkspaceSession, saveWorkspaceSession } from '../lib/storage';
+import { getMatter, loadWorkspaceSession } from '../lib/storage';
 import type { ChatMessage, ResultInsight } from '../types/chat';
 import type { ExecutionSnapshot } from '../types/execution';
 
-export function useWorkspaceSession() {
+export function useWorkspaceSession(matterId?: string | null) {
   const [liveSession] = useState(() => loadWorkspaceSession());
+  const [matter] = useState(() => getMatter(matterId));
   const [replaySnapshot, setReplaySnapshot] = useState<ExecutionSnapshot | null>(null);
-  const [workspacePath, setWorkspacePath] = useState<string | null>(liveSession?.workspacePath ?? null);
+  const [workspacePath, setWorkspacePath] = useState<string | null>(
+    matter?.workspacePath ?? (!matterId ? liveSession?.workspacePath ?? null : null),
+  );
   const [loading, setLoading] = useState(true);
 
-  const liveMessages: ChatMessage[] = useMemo(() => liveSession?.messages ?? [], [liveSession]);
+  // A URL-selected matter must never borrow the browser's last live session.
+  // Otherwise a historical matter can render/export another matter's content.
+  const liveSessionMatchesMatter = !matterId || liveSession?.matterId === matterId;
+  const effectiveLiveSession = liveSessionMatchesMatter ? liveSession : null;
+  const liveMessages: ChatMessage[] = useMemo(() => effectiveLiveSession?.messages ?? [], [effectiveLiveSession]);
   const liveSteps = useMemo(() => deriveSteps(liveMessages), [liveMessages]);
   const liveToolCalls = useMemo(() => deriveToolCalls(liveMessages), [liveMessages]);
   const liveInsight: ResultInsight = useMemo(() => deriveResultInsight(liveMessages), [liveMessages]);
@@ -37,29 +44,13 @@ export function useWorkspaceSession() {
 
     async function loadReplay() {
       try {
-        if (liveSession?.workspacePath) {
-          const data = await fetchExecutionSnapshot(liveSession.workspacePath);
+        const explicitWorkspace = matter?.workspacePath ?? effectiveLiveSession?.workspacePath;
+        if (explicitWorkspace) {
+          const data = await fetchExecutionSnapshot(explicitWorkspace);
           if (!cancelled && data) {
             setReplaySnapshot({ ...data, source: 'replay' });
-            setWorkspacePath(liveSession.workspacePath);
+            setWorkspacePath(explicitWorkspace);
           }
-          return;
-        }
-
-        const workspaces = await fetchReplayWorkspaces().catch(() => []);
-        const latest = workspaces[0];
-        if (!latest) return;
-
-        const data = await fetchExecutionSnapshot(latest.workspace_path);
-        if (cancelled) return;
-
-        setWorkspacePath((current) => current ?? latest.workspace_path);
-        if (!liveSnapshot) {
-          setReplaySnapshot(data ? { ...data, source: 'replay' } : null);
-        }
-
-        if (liveSession && !liveSession.workspacePath) {
-          saveWorkspaceSession({ ...liveSession, workspacePath: latest.workspace_path });
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -70,14 +61,14 @@ export function useWorkspaceSession() {
     return () => {
       cancelled = true;
     };
-  }, [liveSession, liveSnapshot]);
+  }, [effectiveLiveSession, matter]);
 
   const snapshot = liveSnapshot ?? replaySnapshot;
   const resultInsight = liveMessages.length > 0 ? liveInsight : deriveResultInsight([]);
   const resultSummary = snapshot?.result || liveInsight.conclusion || replaySnapshot?.result || '';
   const hasResult = Boolean(resultSummary || snapshot || liveMessages.length > 0);
   const isLive = liveMessages.length > 0;
-  const isCompleted = Boolean(liveSession?.completedAt || liveInsight.conclusion.includes('已完成') || snapshot?.result);
+  const isCompleted = Boolean(effectiveLiveSession?.completedAt || liveInsight.conclusion.includes('已完成') || snapshot?.result);
 
   return {
     snapshot,
@@ -91,8 +82,9 @@ export function useWorkspaceSession() {
     hasResult,
     isLive,
     isCompleted,
-    query: liveSession?.query ?? snapshot?.taskQuery ?? '',
-    scenario: liveSession?.scenario,
-    documentIntake: liveSession?.documentIntake,
+    query: matter?.query ?? effectiveLiveSession?.query ?? snapshot?.taskQuery ?? '',
+    scenario: matter?.scenario ?? effectiveLiveSession?.scenario,
+    documentIntake: matter?.documentIntake ?? effectiveLiveSession?.documentIntake,
+    matter,
   };
 }

@@ -1,0 +1,48 @@
+{
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "contract-review",
+      "name": "服务合同审查",
+      "scenario": "contract_review",
+      "prompt": "请审查上传的技术服务合同，识别付款、违约、解除、知识产权与争议解决风险，引用有效法律依据并生成审查报告。",
+      "fixture": "fixtures/contracts/service-contract.txt",
+      "expected": {
+        "requiredAgents": ["planner", "evidence", "issue_spotter", "research", "clause_risk", "drafting", "verification"],
+        "requiredCapabilities": ["document_parse", "legal_search", "contract_compare", "document_export"],
+        "minimumDagDepth": 5,
+        "requiresParallelBranch": true,
+        "finalArtifactType": "final_result"
+      }
+    },
+    {
+      "id": "debt-dispute",
+      "name": "欠款纠纷与利息计算",
+      "scenario": "dispute_resolution",
+      "prompt": "根据借款及还款材料梳理时间线，判断诉讼时效，计算逾期利息，并生成处理建议。",
+      "fixture": "fixtures/disputes/debt-dispute.txt",
+      "expected": {
+        "requiredAgents": ["planner", "evidence", "issue_spotter", "research", "calculation", "drafting", "verification"],
+        "requiredCapabilities": ["document_parse", "legal_search", "execute_code"],
+        "minimumDagDepth": 5,
+        "requiresParallelBranch": true,
+        "finalArtifactType": "final_result"
+      }
+    },
+    {
+      "id": "simple-legal-query",
+      "name": "简单法律咨询",
+      "scenario": "legal_research",
+      "prompt": "公司未与员工签订书面劳动合同可能承担什么责任？请给出简明结论和法律依据。",
+      "fixture": null,
+      "expected": {
+        "requiredAgents": ["planner", "issue_spotter", "research", "verification"],
+        "forbiddenAgents": ["evidence", "clause_risk", "calculation", "drafting"],
+        "requiredCapabilities": ["legal_search"],
+        "minimumDagDepth": 3,
+        "requiresParallelBranch": false,
+        "finalArtifactType": "final_result"
+      }
+    }
+  ]
+}

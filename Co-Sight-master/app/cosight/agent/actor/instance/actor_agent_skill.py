@@ -175,6 +175,32 @@ def legal_search_skill():
     }
 
 
+def contract_compare_skill():
+    return {
+        'skill_name': 'contract_compare',
+        'skill_type': 'function',
+        'display_name_zh': '合同版本比对',
+        'display_name_en': 'Contract Version Comparison',
+        'description_zh': '对比两个合同版本，输出条款新增、删除和修改结果',
+        'description_en': 'Compare two contract versions and return clause changes',
+        'semantic_apis': ['api_contract_compare'],
+        'function': SkillFunction(
+            id='9a44f9ad-be5c-4e6c-a9d8-1426b23828b2',
+            name='cosight_server.deep_research.services.contract_compare.compare_contract_texts',
+            description_en='Compare original and revised contract text locally.',
+            description_zh='本地对比原合同和修订合同文本。',
+            parameters={
+                'type': 'object',
+                'properties': {
+                    'original': {'type': 'string', 'description': 'Original contract text'},
+                    'revised': {'type': 'string', 'description': 'Revised contract text'},
+                },
+                'required': ['original', 'revised'],
+            },
+        ),
+    }
+
+
 def search_wiki_skill():
     return {
         'skill_name': 'search_wiki',
@@ -818,4 +844,3 @@ def fetch_website_images_only_skill():
             }
         )
     }
-

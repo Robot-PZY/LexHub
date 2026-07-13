@@ -72,7 +72,7 @@ function AppShell({ title, subtitle, badge, actions, children, onLogout }: AppSh
             }}
           >
             <Plus size={16} />
-            <span>{role === 'admin' ? '管理控制台' : '发起新事项'}</span>
+              <span>{role === 'admin' ? '管理控制台' : '发起事项'}</span>
           </button>
 
           {navGroups.map((group) => (

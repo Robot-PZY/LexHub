@@ -80,24 +80,32 @@ def set_model(model_config: dict[str, Optional[str | int | float]]):
     return ChatLLM(**chat_llm_kwargs)
 
 
+def _safe_model_config_for_log(model_config: dict[str, Optional[str | int | float]]) -> dict[str, Optional[str | int | float]]:
+    """Prevent credentials from being written to terminal or persistent logs."""
+    return {
+        key: ("***" if value and "key" in key.lower() else value)
+        for key, value in model_config.items()
+    }
+
+
 plan_model_config = get_plan_model_config()
-logger.info(f"plan_model_config:{plan_model_config}\n")
+logger.info("plan_model_config:%s", _safe_model_config_for_log(plan_model_config))
 llm_for_plan = set_model(plan_model_config)
 
 act_model_config = get_act_model_config()
-logger.info(f"act_model_config:{act_model_config}\n")
+logger.info("act_model_config:%s", _safe_model_config_for_log(act_model_config))
 llm_for_act = set_model(act_model_config)
 
 tool_model_config = get_tool_model_config()
-logger.info(f"tool_model_config:{tool_model_config}\n")
+logger.info("tool_model_config:%s", _safe_model_config_for_log(tool_model_config))
 llm_for_tool = set_model(tool_model_config)
 
 vision_model_config = get_vision_model_config()
-logger.info(f"vision_model_config:{vision_model_config}\n")
+logger.info("vision_model_config:%s", _safe_model_config_for_log(vision_model_config))
 llm_for_vision = set_model(vision_model_config)
 
 credibility_model_config = get_credibility_model_config()
-logger.info(f"credibility_model_config:{credibility_model_config}\n")
+logger.info("credibility_model_config:%s", _safe_model_config_for_log(credibility_model_config))
 llm_for_credibility = set_model(credibility_model_config)
 
 

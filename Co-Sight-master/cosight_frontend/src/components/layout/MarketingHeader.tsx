@@ -26,7 +26,7 @@ function MarketingHeader({ active = 'home' }: MarketingHeaderProps) {
         {navAnchors.map((item) => (
           <Link key={item.href} to={item.href}>{item.label}</Link>
         ))}
-        <Link to={replayPath} className={active === 'replay' ? 'active' : ''}>案件归档</Link>
+        <Link to={replayPath} className={active === 'replay' ? 'active' : ''}>历史回放</Link>
         {!authed && <Link to="/login">登录</Link>}
         <Link to={workspacePath} className="marketing-nav-cta">发起事项</Link>
       </nav>

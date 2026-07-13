@@ -55,9 +55,37 @@ def create_plan_skill():
                         'description_zh': '步骤之间的依赖关系，例如 {1: [0]} 表示步骤1依赖于步骤0',
                         'description_en': 'Dependencies between steps, e.g. {1: [0]} means step 1 depends on step 0',
                         'default': None
-                    }
+                    },
+                    'agent_ids': {
+                        'type': 'array', 'items': {'type': 'string'},
+                        'description_zh': '与 steps 等长的专业智能体 ID 列表',
+                        'description_en': 'Specialist agent id for each step'
+                    },
+                    'parallel_groups': {
+                        'type': 'object', 'additionalProperties': {'type': 'string'},
+                        'description_zh': '步骤索引到并行组名称的映射'
+                    },
+                    'conditions': {
+                        'type': 'object', 'additionalProperties': {'type': 'string'},
+                        'description_zh': '步骤索引到执行条件的映射'
+                    },
+                    'expected_artifacts': {
+                        'type': 'array', 'items': {'type': 'string'},
+                        'description_zh': '与 steps 等长的预期阶段产物类型'
+                    },
+                    'selected_agents': {
+                        'type': 'array', 'items': {'type': 'string'},
+                        'description_zh': '本次任务选中的智能体 ID'
+                    },
+                    'skipped_agents': {
+                        'type': 'array', 'items': {'type': 'object'},
+                        'description_zh': '未选智能体及跳过原因'
+                    },
+                    'scenario': {'type': 'string'},
+                    'target_output': {'type': 'string'},
+                    'risk_level': {'type': 'string', 'enum': ['low', 'medium', 'high']}
                 },
-                'required': ['title', 'steps']
+                'required': ['title', 'steps', 'dependencies', 'agent_ids', 'expected_artifacts', 'selected_agents', 'skipped_agents', 'scenario', 'target_output', 'risk_level']
             }
         )
     }
@@ -104,11 +132,18 @@ def update_plan_skill():
                         },
                         'description_zh': '新的步骤依赖关系',
                         'description_en': 'New dependencies between steps'
-                    }
+                    },
+                    'agent_ids': {'type': 'array', 'items': {'type': 'string'}},
+                    'parallel_groups': {'type': 'object', 'additionalProperties': {'type': 'string'}},
+                    'conditions': {'type': 'object', 'additionalProperties': {'type': 'string'}},
+                    'expected_artifacts': {'type': 'array', 'items': {'type': 'string'}},
+                    'selected_agents': {'type': 'array', 'items': {'type': 'string'}},
+                    'skipped_agents': {'type': 'array', 'items': {'type': 'object'}},
+                    'scenario': {'type': 'string'},
+                    'target_output': {'type': 'string'},
+                    'risk_level': {'type': 'string', 'enum': ['low', 'medium', 'high']}
                 },
                 'required': []
             }
         )
     }
-
-

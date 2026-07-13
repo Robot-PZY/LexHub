@@ -1,6 +1,6 @@
 import { Archive, ArrowRight, Briefcase, CheckCircle2, ChevronDown, ClipboardList, FileClock, FileText, FolderOpen, Scale, ShieldCheck } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
 import { Badge } from '../components/ui';
 import EmptyState from '../components/ui/EmptyState';
@@ -12,6 +12,7 @@ import TaskReportPanel from '../components/workspace/TaskReportPanel';
 import ToolTracePanel from '../components/workspace/ToolTracePanel';
 import { useWorkspaceSession } from '../hooks/useWorkspaceSession';
 import { getScenarioOutputProfile } from '../lib/scenarios';
+import { getReviewGate } from '../lib/review-gate';
 import { clearAuthed, getPendingRequestsRaw } from '../lib/storage';
 import type { ResultInsight } from '../types/chat';
 import type { ExecutionSnapshot } from '../types/execution';
@@ -21,11 +22,13 @@ function ResultOverview({
   resultInsight,
   snapshot,
   statusSummary,
+  reviewReady,
 }: {
   primaryLabel: string;
   resultInsight: ResultInsight;
   snapshot: ExecutionSnapshot | null;
   statusSummary: string;
+  reviewReady: boolean;
 }) {
   const completedSteps = snapshot?.stats.completedSteps
     ?? snapshot?.steps.filter((step) => step.status === 'completed').length
@@ -41,7 +44,9 @@ function ResultOverview({
           <h2>结论、依据与交付状态已归集。</h2>
           <span>{statusSummary} · 主交付为「{primaryLabel}」</span>
         </div>
-        <Badge tone="success" pill icon={<CheckCircle2 size={13} />}>可复核</Badge>
+        <Badge tone={reviewReady ? 'success' : 'warning'} pill icon={<CheckCircle2 size={13} />}>
+          {reviewReady ? '自动校验通过' : '自动校验中'}
+        </Badge>
       </div>
 
       <div className="workspace-result-overview-grid">
@@ -76,6 +81,7 @@ function ResultOverview({
 
 function WorkspaceResultPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [appendixOpen, setAppendixOpen] = useState(false);
   const [deliverableExpanded, setDeliverableExpanded] = useState(false);
   const deliverableRef = useRef<HTMLDivElement | null>(null);
@@ -92,10 +98,11 @@ function WorkspaceResultPage() {
     query,
     scenario,
     documentIntake,
-  } = useWorkspaceSession();
+  } = useWorkspaceSession(searchParams.get('matter'));
 
   const outputProfile = useMemo(() => getScenarioOutputProfile(scenario), [scenario]);
   const isDocumentPrimary = outputProfile.primary === 'document';
+  const reviewGate = useMemo(() => getReviewGate(snapshot), [snapshot]);
 
   const statusSummary = useMemo(() => {
     const pending = getPendingRequestsRaw();
@@ -134,23 +141,25 @@ function WorkspaceResultPage() {
         collapsed={outputProfile.deliverableCollapsed && !deliverableExpanded}
         prominent={isDocumentPrimary}
         forceExpanded={deliverableExpanded}
+        reviewReady={reviewGate.ready}
+        reviewMessage={reviewGate.message}
       />
     </div>
   ) : null;
 
   return (
     <AppShell
-      title="审查结论"
-      subtitle="查看法律结论、风险提示、依据来源与文书交付"
+      title="结论与交付"
+      subtitle="查看本次事项的总结报告、风险提示、依据来源与正式交付物"
       actions={(
         <>
           <Link className="lex-button lex-button-secondary lex-button-md" to="/workspace/run">
             <ClipboardList size={16} />
-            查看办理进度
+            返回办理运行
           </Link>
           <Link className="lex-button lex-button-secondary lex-button-md" to="/replay">
             <Archive size={16} />
-            案件归档
+            历史回放
           </Link>
           <Link className="lex-button lex-button-primary lex-button-md" to="/materials">
             <FolderOpen size={16} />
@@ -162,7 +171,7 @@ function WorkspaceResultPage() {
     >
       <PageHeader
         icon={Briefcase}
-        title={query ? `审查结论 · ${query.slice(0, 32)}${query.length > 32 ? '…' : ''}` : '审查结论'}
+        title={query ? `总结报告 · ${query.slice(0, 32)}${query.length > 32 ? '…' : ''}` : '总结报告'}
         subtitle={`${outputProfile.primaryLabel}为主交付 · 报告统一呈现 · 文书按需生成`}
         badge={<Badge tone="primary" pill>{statusSummary}</Badge>}
       />
@@ -205,6 +214,7 @@ function WorkspaceResultPage() {
             resultInsight={resultInsight}
             snapshot={snapshot}
             statusSummary={statusSummary}
+            reviewReady={reviewGate.ready}
           />
 
           {isDocumentPrimary && deliverablePanel}
@@ -252,7 +262,7 @@ function WorkspaceResultPage() {
             </div>
             <div className="workspace-result-link-row">
               <Link className="text-button" to="/workspace/run">返回办理进度</Link>
-              <Link className="text-button" to="/replay">案件归档</Link>
+              <Link className="text-button" to="/replay">历史回放</Link>
               <Link className="text-button" to="/materials">查看材料库</Link>
               {workspacePath ? (
                 <Link className="text-button" to={`/workspace/run?replay=true&workspace=${encodeURIComponent(workspacePath)}`}>

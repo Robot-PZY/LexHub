@@ -47,7 +47,7 @@ export const MEMBERSHIP_PLANS: MembershipPlanDetail[] = [
   },
   {
     ...MEMBERSHIP_TIERS[1],
-    priceLabel: '¥199',
+    priceLabel: '68元',
     priceNote: '按月计费（演示）',
     periodLabel: '/ 月',
     features: ['法律角色协同', '完整办理路径', 'DOCX / PDF 导出', '案件与材料归档', '法规混合检索'],
@@ -55,7 +55,7 @@ export const MEMBERSHIP_PLANS: MembershipPlanDetail[] = [
   },
   {
     ...MEMBERSHIP_TIERS[2],
-    priceLabel: '¥499',
+    priceLabel: '128元',
     priceNote: '按月计费（演示）',
     periodLabel: '/ 月',
     features: ['Pro 全部能力', '更高事项额度', '高级处理能力', '优先办理', '机构协作席位（规划）'],

@@ -21,6 +21,8 @@ type DocumentDeliverablePanelProps = {
   collapsed?: boolean;
   prominent?: boolean;
   forceExpanded?: boolean;
+  reviewReady?: boolean;
+  reviewMessage?: string;
 };
 
 function DocumentDeliverablePanel({
@@ -32,6 +34,8 @@ function DocumentDeliverablePanel({
   collapsed = false,
   prominent = false,
   forceExpanded = false,
+  reviewReady = false,
+  reviewMessage,
 }: DocumentDeliverablePanelProps) {
   const scenario = findScenario(scenarioId ?? '');
   const profile = getScenarioOutputProfile(scenarioId);
@@ -60,18 +64,20 @@ function DocumentDeliverablePanel({
   }, [documentIntake?.templateId]);
 
   const exportPayload = useMemo(() => {
+    if (!reviewReady) return null;
     if (preview) {
       return {
         templateId: activeTemplate,
         format: 'docx' as const,
         title: preview.title,
         sections: preview.sections,
-        generationMode: 'llm' as const,
+        preferExecution: false,
+        generationMode: 'template' as const,
       };
     }
     if (!snapshot) return null;
     return buildExportPayloadFromSnapshot(snapshot, activeTemplate, 'docx', resultInsight, {
-      generationMode: 'llm',
+      generationMode: 'execution',
       extraInstructions: documentIntake?.extraInstructions,
     });
   }, [preview, snapshot, activeTemplate, resultInsight, documentIntake?.extraInstructions]);
@@ -79,7 +85,7 @@ function DocumentDeliverablePanel({
   const primaryTemplate = documentIntake?.templateId ?? deliverables[0]?.id;
 
   const handleGenerate = async (templateId: DocumentTemplateId = activeTemplate) => {
-    if (!snapshot) return;
+    if (!snapshot || !reviewReady) return;
     setGenerating(true);
     setError(null);
     setExpanded(true);
@@ -148,12 +154,12 @@ function DocumentDeliverablePanel({
   };
 
   useEffect(() => {
-    if (!shouldAutoGenerate || !snapshot || autoTriggeredRef.current || !primaryTemplate) return;
+    if (!shouldAutoGenerate || !reviewReady || !snapshot || autoTriggeredRef.current || !primaryTemplate) return;
     const completed = snapshot.stats.completedSteps >= snapshot.stats.stepCount && snapshot.stats.stepCount > 0;
     if (!completed && !snapshot.result) return;
     autoTriggeredRef.current = true;
     void handleGenerate(primaryTemplate);
-  }, [shouldAutoGenerate, snapshot, primaryTemplate, documentIntake]);
+  }, [shouldAutoGenerate, reviewReady, snapshot, primaryTemplate, documentIntake]);
 
   useEffect(() => {
     if (forceExpanded) setExpanded(true);
@@ -181,6 +187,7 @@ function DocumentDeliverablePanel({
                 ? profile.primaryHint
                 : '本场景以报告/审查为主，如需律师函等正式文书可在此按需生成。'}
           </p>
+          {!reviewReady && <p className="admin-save-hint admin-save-hint-error">{reviewMessage ?? '需完成交叉审查后才能生成正式文书。'}</p>}
         </div>
         <div className="document-deliverable-head-actions">
           {collapsed && (
@@ -198,6 +205,7 @@ function DocumentDeliverablePanel({
               type="button"
               variant="primary"
               loading={generating}
+              disabled={!reviewReady}
               leadingIcon={<Sparkles size={16} />}
               onClick={() => void handleGenerate()}
             >
@@ -265,7 +273,7 @@ function DocumentDeliverablePanel({
 
           <div className="document-deliverable-export">
             <span>满意后导出正式文书：</span>
-            <ExecutionExportActions payload={exportPayload} onSuccess={() => undefined} />
+            <ExecutionExportActions payload={exportPayload} hint={reviewMessage} onSuccess={() => undefined} />
           </div>
         </>
       )}

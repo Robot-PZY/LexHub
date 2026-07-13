@@ -50,7 +50,7 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
         title={isAdmin ? '协作角色能力' : '协作角色中心'}
         subtitle={isAdmin
           ? '展示法律事项办理中的多角色协作：涵盖材料识别、依据检索、规则审查与结论生成等能力。'
-          : '系统会根据案件类型、材料状态、风险等级和目标产出自动选择协作角色，并在必要时返工或进入人工复核。'}
+          : '系统会根据案件类型、材料状态、风险等级和目标产出自动选择协作角色，并在必要时返工或进入自动交叉校验。'}
         action={badge ?? <DataSourceBadge source={source} />}
       />
 

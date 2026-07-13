@@ -27,7 +27,11 @@ class PlanToolkit:
     def __init__(self, plan: Optional[Plan] = None):
         self.plan = plan
 
-    def create_plan(self, title: str, steps: List[str], dependencies: Optional[Dict[int, List[int]]] = None) -> str:
+    def create_plan(self, title: str, steps: List[str], dependencies: Optional[Dict[int, List[int]]] = None,
+                    agent_ids: Optional[List[str]] = None, parallel_groups: Optional[Dict[int, str]] = None,
+                    conditions: Optional[Dict[int, str]] = None, expected_artifacts: Optional[List[str]] = None,
+                    selected_agents: Optional[List[str]] = None, skipped_agents: Optional[List[dict]] = None,
+                    scenario: str = "", target_output: str = "", risk_level: str = "medium") -> str:
         r"""Create a new plan with the given title, steps, and dependencies.
 
         Args:
@@ -54,14 +58,24 @@ class PlanToolkit:
         if dependencies is None and len(steps) > 1:
             dependencies = {i: [i - 1] for i in range(1, len(steps))}
 
-        self.plan.update(title, steps, dependencies)
+        self.plan.update(
+            title, steps, dependencies,
+            agent_ids=agent_ids, parallel_groups=parallel_groups, conditions=conditions,
+            expected_artifacts=expected_artifacts, selected_agents=selected_agents,
+            skipped_agents=skipped_agents, scenario=scenario, target_output=target_output,
+            risk_level=risk_level,
+        )
         result = f"Plan created successfully\n\n{self.plan.format()}"
         plan_report_event_manager.publish("plan_created", self.plan)
         logger.info(result)
         return result
 
     def update_plan(self, title: Optional[str] = None, steps: Optional[List[str]] = None,
-                    dependencies: Optional[Dict[int, List[int]]] = None) -> str:
+                    dependencies: Optional[Dict[int, List[int]]] = None,
+                    agent_ids: Optional[List[str]] = None, parallel_groups: Optional[Dict[int, str]] = None,
+                    conditions: Optional[Dict[int, str]] = None, expected_artifacts: Optional[List[str]] = None,
+                    selected_agents: Optional[List[str]] = None, skipped_agents: Optional[List[dict]] = None,
+                    scenario: str = "", target_output: str = "", risk_level: str = "") -> str:
         r"""Update the existing plan with new title, steps, or dependencies while preserving completed steps.
 
         Args:
@@ -86,7 +100,13 @@ class PlanToolkit:
                              exc_info=True)
                 dependencies = None
 
-        self.plan.update(title, steps, dependencies)
+        self.plan.update(
+            title, steps, dependencies,
+            agent_ids=agent_ids, parallel_groups=parallel_groups, conditions=conditions,
+            expected_artifacts=expected_artifacts, selected_agents=selected_agents,
+            skipped_agents=skipped_agents, scenario=scenario or None,
+            target_output=target_output or None, risk_level=risk_level or None,
+        )
         result = f"Plan updated successfully\n\n{self.plan.format()}"
         plan_report_event_manager.publish("plan_updated", self.plan)
         logger.info(f"update result is {result}")

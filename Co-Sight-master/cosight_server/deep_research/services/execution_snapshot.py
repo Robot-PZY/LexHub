@@ -68,6 +68,10 @@ def parse_replay_events(events: List[Dict]) -> Dict:
     step_notes = latest_step_content.get("step_notes") or {}
     step_details = latest_step_content.get("step_details") or {}
     dependencies = latest_step_content.get("dependencies") or {}
+    step_agent_ids = latest_step_content.get("step_agent_ids") or {}
+    step_parallel_groups = latest_step_content.get("step_parallel_groups") or {}
+    step_conditions = latest_step_content.get("step_conditions") or {}
+    step_expected_artifacts = latest_step_content.get("step_expected_artifacts") or {}
     progress = latest_step_content.get("progress") or {}
     result_text = str(latest_step_content.get("result") or "").strip()
     status_text = str(latest_step_content.get("statusText") or "").strip()
@@ -82,25 +86,45 @@ def parse_replay_events(events: List[Dict]) -> Dict:
             "status": status_key,
             "statusLabel": _normalize_status(status_key),
             "note": note,
+            "agentId": str(step_agent_ids.get(str(index), step_agent_ids.get(index, ""))),
+            "parallelGroup": str(step_parallel_groups.get(str(index), step_parallel_groups.get(index, ""))),
+            "condition": str(step_conditions.get(str(index), step_conditions.get(index, ""))),
+            "expectedArtifact": str(step_expected_artifacts.get(str(index), step_expected_artifacts.get(index, ""))),
         })
 
     tools: List[Dict] = []
     tool_names: List[str] = []
     for tool_event in tool_events:
-        if tool_event.get("event_type") != "tool_complete":
-            continue
+        event_type = str(tool_event.get("event_type") or "tool_complete")
+        status = {
+            "tool_start": "running",
+            "tool_complete": "completed",
+            "tool_error": "failed",
+        }.get(event_type, "completed")
         tool_name = str(tool_event.get("tool_name") or tool_event.get("tool_name_zh") or "unknown")
         tool_names.append(tool_name)
         processed = tool_event.get("processed_result") or {}
         summary = ""
         if isinstance(processed, dict):
             summary = str(processed.get("summary") or processed.get("operation") or "")
+        if not summary and status == "failed":
+            summary = str(tool_event.get("error") or "工具调用失败")
+        if not summary and status == "running":
+            summary = "正在执行该处理动作"
         tools.append({
             "toolName": tool_name,
             "stepIndex": tool_event.get("step_index"),
             "summary": summary,
+            "status": status,
             "timestamp": tool_event.get("timestamp"),
             "duration": tool_event.get("duration"),
+            "capabilityId": tool_event.get("capability_id"),
+            "resultType": tool_event.get("result_type"),
+            "runtimeAgentId": tool_event.get("agent_id"),
+            "resultData": tool_event.get("result_data"),
+            "sources": tool_event.get("sources") or [],
+            "artifacts": tool_event.get("artifacts") or [],
+            "metrics": tool_event.get("metrics") or {},
         })
 
     tool_counter = Counter(tool_names)
@@ -111,6 +135,15 @@ def parse_replay_events(events: List[Dict]) -> Dict:
         "taskQuery": human_query,
         "steps": steps,
         "dependencies": dependencies,
+        "stepAgentIds": step_agent_ids,
+        "stepParallelGroups": step_parallel_groups,
+        "stepConditions": step_conditions,
+        "stepExpectedArtifacts": step_expected_artifacts,
+        "selectedAgents": latest_step_content.get("selected_agents") or [],
+        "skippedAgents": latest_step_content.get("skipped_agents") or [],
+        "scenario": latest_step_content.get("scenario") or "",
+        "targetOutput": latest_step_content.get("target_output") or "",
+        "riskLevel": latest_step_content.get("risk_level") or "medium",
         "progress": progress,
         "result": result_text,
         "statusText": status_text,
@@ -218,8 +251,8 @@ def build_export_sections_from_snapshot(
         {"title": "四、工具链调用证据", "body": "\n".join(tool_lines)},
         {"title": "五、阶段结论与输出", "body": result_text},
         {
-            "title": "六、人工复核声明",
-            "body": "本文件基于 Co-Sight 真实执行记录生成，正式使用前须经交叉审查智能体校验并完成人工复核。",
+            "title": "六、自动质量校验",
+            "body": "本文件基于 Co-Sight 真实执行记录生成，并由核验智能体对事实、依据、引用和输出一致性进行自动校验。",
         },
         {"title": "附录 · 执行溯源", "body": "\n".join(provenance_lines)},
     ]

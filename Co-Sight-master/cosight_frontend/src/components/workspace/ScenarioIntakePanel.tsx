@@ -26,8 +26,8 @@ function ScenarioIntakePanel({ scenarioId, intake, onChange }: ScenarioIntakePan
       <div className="workspace-intake-form-head">
         <FileText size={18} />
         <div>
-          <strong>文书信息（提交前填写）</strong>
-          <p>选定文书类型与关键要素，事项完成后将按场景自动匹配并生成文书。</p>
+          <strong>本次交付方式</strong>
+          <p>选择希望生成的交付物；仅需补充与该交付物直接相关的信息。</p>
         </div>
       </div>
 

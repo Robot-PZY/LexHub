@@ -15,7 +15,7 @@ function AgentsPage() {
     <AppShell
       title="协作角色"
       subtitle="按事项状态组织受理、研究、质检、生成与复核。"
-      actions={<button type="button" className="btn btn-secondary" onClick={() => navigate('/review')}>查看审查</button>}
+      actions={<button type="button" className="btn btn-secondary" onClick={() => navigate('/workspace/result')}>查看结论</button>}
       onLogout={handleLogout}
     >
       <AgentsDemoPanel variant="user" />

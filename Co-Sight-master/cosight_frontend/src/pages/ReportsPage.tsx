@@ -126,7 +126,7 @@ function ReportsPage() {
               {data.nextActions.map((action) => (
                 <div key={action.title}>
                   {action.title === '补齐材料' && <FileText size={18} />}
-                  {action.title === '人工复核' && <ShieldCheck size={18} />}
+                  {action.title === '自动校验' && <ShieldCheck size={18} />}
                   {action.title === '导出归档' && <Download size={18} />}
                   <strong>{action.title}</strong>
                   <span>{action.desc}</span>

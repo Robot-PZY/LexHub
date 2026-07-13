@@ -73,7 +73,7 @@ export function enrichReportMarkdown(
     '## 风险与建议',
     `**风险提示**：${resultInsight.risk}`,
     `**下一步建议**：${resultInsight.recommendation}`,
-    `**复核提示**：${resultInsight.reviewNote}`,
+    `**自动校验**：${resultInsight.reviewNote}`,
   );
 
   return lines.join('\n');

@@ -10,9 +10,11 @@ const ADMIN_CONFIG_KEY = 'lexhub:adminConfig';
 const MEMBERSHIP_USERS_KEY = 'lexhub:membershipUsers';
 const REGISTERED_USERS_KEY = 'lexhub:registeredUsers';
 const ADMIN_SESSION_KEY = 'lexhub:adminSession';
+const BOUND_REPLAY_EVENT_KEY = 'lexhub:boundReplayEvent';
 
 import type { AdminSettings } from '../types/admin-config';
 import type { MembershipTier, MembershipUser } from '../types/membership';
+import type { ReplayWorkspace } from '../types/replay';
 import { DEMO_SEED_VERSION, DEMO_USER_ACCOUNT, DEMO_USER_DISPLAY_NAME, DEMO_USER_PASSWORD, ADMIN_DISPLAY_NAME } from '../mocks/demo-seed';
 import { mockMembershipUsers } from '../mocks/membership-users';
 
@@ -371,6 +373,25 @@ export function clearAuthed(): void {
   localStorage.removeItem(ADMIN_SESSION_KEY);
 }
 
+export type BoundReplayEvent = Pick<ReplayWorkspace, 'workspace_path' | 'workspace_name' | 'title' | 'created_time' | 'message_count'>;
+
+export function saveBoundReplayEvent(event: BoundReplayEvent): void {
+  localStorage.setItem(BOUND_REPLAY_EVENT_KEY, JSON.stringify(event));
+}
+
+export function loadBoundReplayEvent(): BoundReplayEvent | null {
+  try {
+    const raw = localStorage.getItem(BOUND_REPLAY_EVENT_KEY);
+    return raw ? (JSON.parse(raw) as BoundReplayEvent) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function clearBoundReplayEvent(): void {
+  localStorage.removeItem(BOUND_REPLAY_EVENT_KEY);
+}
+
 export function loadWorkspaceDraft(): string {
   return localStorage.getItem(DRAFT_KEY) ?? '';
 }
@@ -505,11 +526,15 @@ export function saveAdminConfig(config: AdminConfig): void {
 
 const PENDING_TASK_KEY = 'lexhub:pendingWorkspaceTask';
 const WORKSPACE_SESSION_KEY = 'lexhub:workspaceSession';
+const MATTERS_KEY = 'lexhub:matters';
+const ACTIVE_MATTER_KEY = 'lexhub:activeMatterId';
 
 import type { ChatMessage } from '../types/chat';
 import type { DocumentIntake } from '../types/document-intake';
 
 export type WorkspaceSessionRecord = {
+  matterId?: string;
+  matterTitle?: string;
   topic: string;
   query: string;
   scenario?: string;
@@ -538,6 +563,7 @@ export function clearWorkspaceSession(): void {
 }
 
 export type PendingWorkspaceTask = {
+  matterId?: string;
   content: string;
   uploadIds: string[];
   scenario?: string;
@@ -569,4 +595,62 @@ export function peekPendingWorkspaceTask(): PendingWorkspaceTask | null {
   } catch {
     return null;
   }
+}
+
+export type MatterStatus = 'draft' | 'running' | 'completed' | 'failed' | 'archived';
+
+export type MatterRecord = {
+  id: string;
+  title: string;
+  query: string;
+  scenario?: string;
+  documentIntake?: DocumentIntake;
+  uploadIds: string[];
+  workspacePath?: string;
+  status: MatterStatus;
+  createdAt: number;
+  updatedAt: number;
+  completedAt?: number;
+};
+
+function loadMatters(): MatterRecord[] {
+  try {
+    const raw = localStorage.getItem(MATTERS_KEY);
+    return raw ? (JSON.parse(raw) as MatterRecord[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveMatters(matters: MatterRecord[]): void {
+  localStorage.setItem(MATTERS_KEY, JSON.stringify(matters));
+}
+
+export function createMatter(record: Omit<MatterRecord, 'createdAt' | 'updatedAt'>): MatterRecord {
+  const now = Date.now();
+  const matter = { ...record, createdAt: now, updatedAt: now };
+  saveMatters([matter, ...loadMatters().filter((item) => item.id !== matter.id)]);
+  localStorage.setItem(ACTIVE_MATTER_KEY, matter.id);
+  return matter;
+}
+
+export function getMatter(matterId?: string | null): MatterRecord | null {
+  const id = matterId ?? localStorage.getItem(ACTIVE_MATTER_KEY);
+  if (!id) return null;
+  return loadMatters().find((item) => item.id === id) ?? null;
+}
+
+export function setActiveMatter(matterId: string): void {
+  localStorage.setItem(ACTIVE_MATTER_KEY, matterId);
+}
+
+export function updateMatter(matterId: string, patch: Partial<Omit<MatterRecord, 'id' | 'createdAt'>>): MatterRecord | null {
+  let updated: MatterRecord | null = null;
+  const matters = loadMatters().map((item) => {
+    if (item.id !== matterId) return item;
+    updated = { ...item, ...patch, updatedAt: Date.now() };
+    return updated;
+  });
+  if (updated) saveMatters(matters);
+  return updated;
 }

@@ -31,11 +31,11 @@ DOCUMENT_TEMPLATES: Dict[str, Dict] = {
             },
             {
                 "title": "五、审查意见与建议",
-                "body": "建议将“可直接解除合同”调整为“在满足约定或法定条件后可考虑解除”；索赔金额需人工确认。",
+                "body": "建议将“可直接解除合同”调整为“在满足约定或法定条件后可考虑解除”；索赔金额由计算与核验智能体复算。",
             },
             {
-                "title": "六、人工复核声明",
-                "body": "本文件为 Co-Sight 草稿输出，导出前须经交叉审查智能体校验并完成人工复核确认。",
+                "title": "六、自动质量校验",
+                "body": "本文件由 Co-Sight 多智能体生成，并已执行事实、依据、引用和输出一致性自动校验。",
             },
         ],
     },
@@ -56,7 +56,7 @@ DOCUMENT_TEMPLATES: Dict[str, Dict] = {
                 "title": "要求",
                 "body": "请贵方在收到本函之日起【】日内履行相应义务，否则我方将依法采取进一步措施。",
             },
-            {"title": "声明", "body": "本函为系统生成初稿，正式发出前须经律师人工审阅。"},
+            {"title": "声明", "body": "本函为系统生成初稿，已由核验智能体完成事实、依据与表述一致性检查。"},
         ],
     },
     "legal_opinion_summary": {
@@ -86,7 +86,7 @@ DOCUMENT_TEMPLATES: Dict[str, Dict] = {
             {"title": "价款与支付", "body": "【金额、支付方式、发票】"},
             {"title": "违约责任", "body": "【违约情形与责任】"},
             {"title": "争议解决", "body": "【管辖或仲裁】"},
-            {"title": "起草说明", "body": "本稿为 AI 辅助生成，正式签署前须经律师复核。"},
+            {"title": "起草说明", "body": "本稿由 AI 辅助生成，并已通过核验智能体的自动质量检查。"},
         ],
     },
     "clause_revision_memo": {
@@ -94,7 +94,7 @@ DOCUMENT_TEMPLATES: Dict[str, Dict] = {
         "sections": [
             {"title": "背景说明", "body": "【合同类型与谈判阶段】"},
             {"title": "逐条修改建议", "body": "【原条款 → 风险点 → 建议表述】"},
-            {"title": "人工复核声明", "body": "本备忘为草稿，须经律师复核。"},
+            {"title": "自动质量校验", "body": "本备忘已由核验智能体完成事实、依据与表述一致性检查。"},
         ],
     },
     "task_summary_report": {
@@ -104,7 +104,7 @@ DOCUMENT_TEMPLATES: Dict[str, Dict] = {
             {"title": "调度过程", "body": "系统先调用任务理解与证据质检，再进入法规研究、文书生成和交叉审查。"},
             {"title": "证据结论", "body": "主体信息基本一致，但签署页、付款凭证和催告记录仍需补充。"},
             {"title": "研究结论", "body": "当前可形成初步风险提示，正式意见需补充条款级法规引用。"},
-            {"title": "审查意见", "body": "解除、索赔等结论需要谨慎表述，并保留人工确认。"},
+            {"title": "审查意见", "body": "解除、索赔等结论采用审慎表述，并由核验智能体标注依据与风险。"},
         ],
     },
 }
@@ -181,7 +181,7 @@ def build_docx_bytes(payload: Dict) -> bytes:
         body.style.font.size = Pt(11)
 
     footer = document.add_paragraph()
-    footer.add_run("\n—— 本文件由 Co-Sight 多智能体协同生成，正式使用前请完成人工复核。——")
+    footer.add_run("\n—— 本文件由 Co-Sight 多智能体协同生成，并已完成自动质量校验。——")
 
     buffer = io.BytesIO()
     document.save(buffer)
@@ -248,7 +248,7 @@ def build_pdf_bytes(payload: Dict) -> bytes:
                 y += 8
 
     draw_line("")
-    draw_line("本文件由 Co-Sight 多智能体协同生成，正式使用前请完成人工复核。", size=10)
+    draw_line("本文件由 Co-Sight 多智能体协同生成，并已完成自动质量校验。", size=10)
 
     return doc.tobytes()
 

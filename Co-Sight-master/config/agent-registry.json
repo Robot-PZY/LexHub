@@ -25,6 +25,16 @@
       "triggers": ["材料完整度不足"]
     },
     {
+      "id": "issue_spotter",
+      "name": "法律争点智能体",
+      "role": "worker",
+      "modelEnv": "ACT_MODEL_NAME",
+      "modelLabel": "DeepSeek / Act 模型",
+      "capabilities": ["法律关系识别", "争议焦点", "请求权基础", "检索问题拆解"],
+      "registeredTools": ["file_read", "file_find_in_content"],
+      "triggers": ["任务包含法律判断", "材料事实已就绪"]
+    },
+    {
       "id": "research",
       "name": "法规研究智能体",
       "role": "worker",
@@ -33,6 +43,26 @@
       "capabilities": ["法规检索", "类案研究", "公开资料补充", "引用溯源"],
       "registeredTools": ["legal_rag", "tavily_search", "search_google", "search"],
       "triggers": ["法规引用缺失", "场景=法规研究"]
+    },
+    {
+      "id": "clause_risk",
+      "name": "条款风险智能体",
+      "role": "worker",
+      "modelEnv": "ACT_MODEL_NAME",
+      "modelLabel": "DeepSeek / Act 模型",
+      "capabilities": ["条款分类", "缺失条款", "版本差异", "风险修改建议"],
+      "registeredTools": ["file_read", "contract_compare"],
+      "triggers": ["合同审查", "合同起草", "续签谈判"]
+    },
+    {
+      "id": "calculation",
+      "name": "时效计算智能体",
+      "role": "worker",
+      "modelEnv": "ACT_MODEL_NAME",
+      "modelLabel": "DeepSeek / Act 模型",
+      "capabilities": ["诉讼时效", "期限计算", "利息", "违约金", "时间线"],
+      "registeredTools": ["file_read", "execute_code"],
+      "triggers": ["期限或时效", "利息或赔偿", "金额计算"]
     },
     {
       "id": "drafting",
@@ -45,24 +75,14 @@
       "triggers": ["目标产出明确"]
     },
     {
-      "id": "review",
-      "name": "交叉审查智能体",
+      "id": "verification",
+      "name": "质量校验智能体",
       "role": "reviewer",
       "modelEnv": "REVIEW_MODEL_NAME",
       "modelLabel": "DeepSeek / Review 模型",
-      "capabilities": ["事实一致性", "引用匹配", "幻觉风险标记", "可信分级"],
-      "registeredTools": ["credibility_analysis"],
-      "triggers": ["高风险", "导出前"]
-    },
-    {
-      "id": "compliance",
-      "name": "合规监测智能体",
-      "role": "reviewer",
-      "modelEnv": "COMPLIANCE_MODEL_NAME",
-      "modelLabel": "DeepSeek / Compliance 模型",
-      "capabilities": ["审计链封存", "合规表述提示", "导出门禁"],
-      "registeredTools": ["audit_log", "export"],
-      "triggers": ["导出前", "合规关键词"]
+      "capabilities": ["事实一致性", "引用匹配", "金额日期检查", "可信分级", "自动通过或返工"],
+      "registeredTools": ["file_read", "execute_code", "credibility_analysis", "audit_log"],
+      "triggers": ["最终结果生成", "自动质检"]
     }
   ],
   "toolCatalog": [
@@ -70,8 +90,10 @@
     { "id": "search_google", "label": "Google 搜索", "category": "search", "apiLabel": "Google Custom Search API" },
     { "id": "search", "label": "联网搜索", "category": "search", "apiLabel": "Search API" },
     { "id": "legal_rag", "label": "法规 RAG 检索", "category": "legal", "apiLabel": "本地向量库 / LEGAL_SEARCH_API" },
+    { "id": "contract_compare", "label": "合同版本比对", "category": "legal", "apiLabel": "LexHub 本地 Capability" },
     { "id": "execute_code", "label": "代码执行", "category": "code", "apiLabel": "Co-Sight 内置沙箱" },
     { "id": "file_read", "label": "文档读取", "category": "document", "apiLabel": "工作区文件系统" },
+    { "id": "file_find_in_content", "label": "文档内容定位", "category": "document", "apiLabel": "Co-Sight 文件内容检索" },
     { "id": "file_write", "label": "文档写入", "category": "document", "apiLabel": "工作区文件系统" },
     { "id": "file_upload", "label": "材料上传", "category": "document", "apiLabel": "POST /upload/files" },
     { "id": "parse_document", "label": "文档解析", "category": "document", "apiLabel": "文档/OCR 集成位" },

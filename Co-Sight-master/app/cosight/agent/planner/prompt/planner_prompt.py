@@ -342,10 +342,32 @@ Using the create_plan tool, create a detailed plan of 3-5 steps to accomplish th
 """
 
     if contains_chinese:
+        create_plan_prompt += """
+
+LexHub 动态多智能体规划要求（必须通过 create_plan 参数提交，不要只写在步骤标题里）：
+1. 可选专业智能体仅限：evidence、issue_spotter、research、clause_risk、calculation、drafting、verification。
+2. agent_ids 必须与 steps 等长，每一步绑定一个真实执行智能体。
+3. expected_artifacts 必须与 steps 等长，描述该阶段的结构化产物类型。
+4. selected_agents 列出实际启用的智能体；skipped_agents 列出未启用智能体及具体 reason。
+5. 根据任务动态缩短或扩展路径：简单咨询不得启动全部智能体；有材料才选 evidence；合同场景才选 clause_risk；时效、利息、金额问题才选 calculation；需要正式文书才选 drafting；最终答案必须选 verification。
+6. 能并行的独立步骤使用相同 parallel_groups 名称，并在 dependencies 中体现真实依赖；不得制造环形依赖。
+7. scenario、target_output、risk_level 必须明确填写。
+8. 规划步骤数通常 3-7 步，以解决任务所需为准，不为展示数量强行拆分。
+"""
         output_format_prompt = f"""
 请确保最终答案仅按照以下格式输出：{output_format}
 """
     else:
+        create_plan_prompt += """
+
+LexHub dynamic multi-agent requirements (submit all fields through create_plan):
+1. Allowed workers: evidence, issue_spotter, research, clause_risk, calculation, drafting, verification.
+2. agent_ids and expected_artifacts must align one-to-one with steps.
+3. Provide selected_agents and skipped_agents with reasons.
+4. Select evidence only for materials, clause_risk only for contracts, calculation only for deadlines/amounts, drafting only for formal documents, and verification for every final answer.
+5. Use dependencies and parallel_groups to express the actual DAG; cycles are forbidden.
+6. Always provide scenario, target_output and risk_level.
+"""
         output_format_prompt = f"""
 Ensure your final answer contains only the content in the following format: {output_format}
 """

@@ -28,6 +28,7 @@ from llm import get_llm_bundle_for_task
 from cosight_server.deep_research.services.admin_runtime_config import apply_admin_runtime_config
 from cosight_server.deep_research.services.i18n_service import i18n
 from cosight_server.deep_research.services.credibility_analyzer import credibility_analyzer
+from cosight_server.deep_research.services.replay_catalog import list_replay_workspaces
 from cosight_server.deep_research.routers.common import copy_uploaded_files_to_workspace
 from app.common.logger_util import logger
 
@@ -64,6 +65,30 @@ logger.info(f"Using REPLAY_BASE_PATH: {REPLAY_BASE_PATH}")
 
 # 回放间隔时长配置（秒），可通过环境变量 REPLAY_DELAY 设置，默认 0.3 秒
 REPLAY_DELAY = float(os.environ.get("REPLAY_DELAY", "0.3"))
+
+
+def _legal_workflow_instruction(scenario: str) -> str:
+    """Load the submitted legal DAG as execution guidance, not display-only data."""
+    if not scenario:
+        return ""
+    config_path = Path(__file__).resolve().parents[3] / "config" / "legal-workflow.json"
+    try:
+        workflow = json.loads(config_path.read_text(encoding="utf-8"))
+        nodes = workflow.get("dag", {}).get("nodes", [])
+        labels = [str(node.get("label")) for node in nodes if node.get("label")]
+    except Exception as exc:
+        logger.warning("Unable to load legal workflow guidance: %s", exc)
+        return ""
+
+    if not labels:
+        return ""
+    return (
+        "\n\n【LexHub 法律 DAG 执行约束】\n"
+        f"本次法律事项应以以下可审计节点编排：{' → '.join(labels)}。\n"
+        "材料核验与法规研究在互不依赖时可并行；若交叉审查发现引用不足或事实矛盾，"
+        "必须回退至法规研究或证据质检并在计划中记录返工原因。"
+        "完成交叉审查后才可进入合规监测和审计归档；计划步骤必须保留“交叉审查”节点。"
+    )
 
 
 # 将本地文件路径转换为可被前端访问的URL
@@ -249,6 +274,16 @@ async def append_create_plan(data: Any):
                 "step_tool_calls": data.step_tool_calls if hasattr(data, 'step_tool_calls') else {},
                 "dependencies": {str(k): v for k, v in data.dependencies.items()} if hasattr(data,
                                                                                              'dependencies') else {},
+                "step_agent_ids": {str(k): v for k, v in getattr(data, "step_agent_ids", {}).items()},
+                "step_parallel_groups": {str(k): v for k, v in getattr(data, "step_parallel_groups", {}).items()},
+                "step_conditions": {str(k): v for k, v in getattr(data, "step_conditions", {}).items()},
+                "step_expected_artifacts": {str(k): v for k, v in getattr(data, "step_expected_artifacts", {}).items()},
+                "selected_agents": getattr(data, "selected_agents", []),
+                "skipped_agents": getattr(data, "skipped_agents", []),
+                "scenario": getattr(data, "scenario", ""),
+                "target_output": getattr(data, "target_output", ""),
+                "risk_level": getattr(data, "risk_level", "medium"),
+                "verification_result": getattr(data, "verification_result", {}),
                 "progress": data.get_progress() if hasattr(data, 'get_progress') and callable(
                     data.get_progress) else {},
                 "result": data.get_plan_result() if hasattr(data, 'get_plan_result') and callable(
@@ -425,6 +460,7 @@ async def search(request: Request, params: Any = Body(None)):
         hint = scenario_hints.get(scenario, f"【场景：{scenario}】")
         query_content = f"{hint}\n\n{query_content}"
         logger.info(f"Applied scenario context: {scenario}")
+        query_content += _legal_workflow_instruction(scenario)
 
     # 规划每个 plan 的持久化文件
     plan_log_path = os.path.join(LOGS_PATH, f"{plan_id}.log")
@@ -496,6 +532,16 @@ async def search(request: Request, params: Any = Body(None)):
                         "step_tool_calls": plan_obj.step_tool_calls if hasattr(plan_obj, 'step_tool_calls') else {},
                         "dependencies": {str(k): v for k, v in plan_obj.dependencies.items()} if hasattr(plan_obj,
                                                                                                      'dependencies') else {},
+                        "step_agent_ids": {str(k): v for k, v in getattr(plan_obj, "step_agent_ids", {}).items()},
+                        "step_parallel_groups": {str(k): v for k, v in getattr(plan_obj, "step_parallel_groups", {}).items()},
+                        "step_conditions": {str(k): v for k, v in getattr(plan_obj, "step_conditions", {}).items()},
+                        "step_expected_artifacts": {str(k): v for k, v in getattr(plan_obj, "step_expected_artifacts", {}).items()},
+                        "selected_agents": getattr(plan_obj, "selected_agents", []),
+                        "skipped_agents": getattr(plan_obj, "skipped_agents", []),
+                        "scenario": getattr(plan_obj, "scenario", ""),
+                        "target_output": getattr(plan_obj, "target_output", ""),
+                        "risk_level": getattr(plan_obj, "risk_level", "medium"),
+                        "verification_result": getattr(plan_obj, "verification_result", {}),
                         "progress": plan_obj.get_progress() if hasattr(plan_obj, 'get_progress') and callable(
                             data.get_progress) else {},
                         "result": plan_obj.get_plan_result() if hasattr(plan_obj, 'get_plan_result') and callable(
@@ -634,7 +680,7 @@ async def search(request: Request, params: Any = Body(None)):
                 llm_for_plan, llm_for_act, llm_for_tool, llm_for_vision = get_llm_bundle_for_task()
 
                 # 初始化CoSight并传入plan_id
-                logger.info(f"llm is {llm_for_plan.model}, {llm_for_plan.base_url}, {llm_for_plan.api_key}")
+                logger.info("Starting Co-Sight task with model=%s, base_url=%s", llm_for_plan.model, llm_for_plan.base_url)
                 cosight = CoSight(
                     llm_for_plan,
                     llm_for_act,
@@ -1032,6 +1078,32 @@ async def search(request: Request, params: Any = Body(None)):
                 replay_mode = False
 
         # 记录模式：包裹现有流并写入文件
+        # 先把本次事项与工作区的绑定关系显式下发并写入回放日志。前端据此读取
+        # 精确快照，绝不再以“最新一条历史”猜测归属。
+        if not replay_mode and workspace_path:
+            workspace_ref = f"work_space/{os.path.basename(os.path.normpath(workspace_path))}"
+            binding = {
+                "contentType": "lui-message-workspace-binding",
+                "sessionInfo": params.get("sessionInfo", {}),
+                "code": 0,
+                "message": "workspace bound",
+                "task": "matter_binding",
+                "changeType": "append",
+                "content": {
+                    "workspacePath": workspace_ref,
+                    "matterId": params.get("matterId", ""),
+                    "matterTitle": params.get("matterTitle", ""),
+                },
+            }
+            binding_chunk = json.dumps(binding, ensure_ascii=False).encode('utf-8') + b'\n'
+            try:
+                if replay_file_path:
+                    with open(replay_file_path, 'a', encoding='utf-8') as wf:
+                        wf.write(binding_chunk.decode('utf-8'))
+            except Exception as _e:
+                logger.warning(f"写入事项绑定记录失败: {_e}")
+            yield binding_chunk
+
         async for chunk in generate_stream_response(generator_func, params):
             try:
                 if replay_file_path:
@@ -1232,71 +1304,8 @@ async def show_search_results(request: Request, query: str = "", tool: str = "",
 @searchRouter.get("/replay/workspaces")
 async def get_replay_workspaces():
     """获取所有包含replay.json的工作区列表"""
-    workspaces = []
-    seen: set[str] = set()
-
-    def _collect_from_base(base_dir: str, is_legacy: bool = False) -> None:
-        if not os.path.exists(base_dir):
-            return
-        for folder_name in sorted(os.listdir(base_dir), reverse=True):
-            folder_path = os.path.join(base_dir, folder_name)
-            replay_file_path = os.path.join(folder_path, "replay.json")
-
-            # 如果已经在新的回放目录中收集过该工作区，就不再用旧目录覆盖
-            if folder_name in seen:
-                continue
-
-            if os.path.isdir(folder_path) and os.path.exists(replay_file_path):
-                title = "未命名任务"
-                message_count = 0
-
-                try:
-                    with open(replay_file_path, 'r', encoding='utf-8') as f:
-                        lines = f.readlines()
-                        message_count = len(lines)
-
-                        if lines:
-                            first_line_data = json.loads(lines[0])
-                            content = first_line_data.get('content', {})
-                            if isinstance(content, dict):
-                                title = content.get('title', '未命名任务')
-                            elif isinstance(content, str):
-                                try:
-                                    content_obj = json.loads(content)
-                                    title = content_obj.get('title', '未命名任务')
-                                except Exception:
-                                    pass
-                except Exception as e:
-                    logger.warning(f"读取replay文件失败: {replay_file_path}, 错误: {e}")
-                    continue
-
-                # 获取文件修改时间
-                mtime = os.path.getmtime(replay_file_path)
-
-                # workspace_path 仍然使用旧格式，方便前端直接回放：
-                #   work_space/work_space_YYYYMMDD_HHMMSS_xxx
-                workspaces.append({
-                    "workspace_name": folder_name,
-                    "workspace_path": f"work_space/{folder_name}",
-                    "title": title,
-                    "created_time": datetime.fromtimestamp(mtime).isoformat(),
-                    "message_count": message_count,
-                    # replay_file 字段用于需要直接访问原始日志的场景
-                    "replay_file": (
-                        f"replay_history/{folder_name}/replay.json"
-                        if not is_legacy
-                        else f"work_space/{folder_name}/replay.json"
-                    ),
-                })
-                seen.add(folder_name)
-
-    # 先扫描新的回放目录（replay_history）
-    _collect_from_base(REPLAY_BASE_PATH, is_legacy=False)
-    # 再扫描旧的工作区目录（与任务工作区同级），兼容历史版本
-    _collect_from_base(work_space_path, is_legacy=True)
-
     return {
         "code": 0,
         "message": "success",
-        "data": workspaces,
+        "data": list_replay_workspaces(REPLAY_BASE_PATH, work_space_path),
     }

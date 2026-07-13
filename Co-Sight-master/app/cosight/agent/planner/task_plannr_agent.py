@@ -50,9 +50,11 @@ class TaskPlannerAgent(BaseAgent):
         return result
 
     def finalize_plan(self, question, output_format=""):
-        self.history.append(
-            {"role": "user", "content": planner_finalize_plan_prompt(question, self.plan.format(), output_format)})
-        result = self.llm.chat_to_llm(self.history)
+        from cosight_server.deep_research.services.execution_finalizer import build_final_report
+
+        self.plan.settle_unfinished_steps()
+        result, verification = build_final_report(self.plan, question)
+        self.plan.verification_result = verification
         self.plan.set_plan_result(result)
         plan_report_event_manager.publish("plan_result", self.plan)
         return f"""

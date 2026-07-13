@@ -4,6 +4,14 @@ export type ReplayWorkspace = {
   title: string;
   created_time: string;
   message_count: number;
+  step_count?: number;
+  completed_steps?: number;
+  blocked_steps?: number;
+  tool_count?: number;
+  agent_count?: number;
+  scenario?: string;
+  has_result?: boolean;
+  status?: 'completed' | 'completed_with_warnings' | 'incomplete';
 };
 
 export type ReplayApiResponse = {

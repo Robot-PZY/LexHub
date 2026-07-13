@@ -50,7 +50,7 @@ function CasesPage() {
         snapshot.toolSummary.length
           ? `已记录处理动作：${snapshot.toolSummary.slice(0, 4).map((item) => item.name).join('、')}`
           : '建议复核法规引用与材料缺口后再导出文书。',
-        workspacePath ? `案件工作区：${workspacePath}` : '可在案件归档页查看完整办理记录。',
+        workspacePath ? `案件工作区：${workspacePath}` : '可在历史回放页查看完整办理记录。',
       ];
     }
     return fallbackActions;
@@ -97,7 +97,7 @@ function CasesPage() {
           value={snapshot ? `${snapshot.stats.toolCallCount}` : '—'}
           description={snapshot?.toolSummary[0] ? `主要动作：${snapshot.toolSummary[0].name}` : '等待事项办理'}
         />
-        <StatCard label="复核要求" value="人工确认" description="正式出具前保留人工审核节点" />
+        <StatCard label="质量校验" value="自动完成" description="出具前由核验智能体检查事实与依据一致性" />
       </section>
 
       <section className="feature-layout">
@@ -134,7 +134,7 @@ function CasesPage() {
                 查看审查结论
               </button>
               <button type="button" className="btn btn-ghost" onClick={() => navigate('/replay')}>
-                打开案件归档
+                打开历史回放
               </button>
             </div>
           )}
@@ -192,7 +192,7 @@ function CasesPage() {
         <div className="feature-agent-grid">
           <div><Clock3 size={18} /><strong>事项受理</strong><span>拆解办理阶段与资料清单</span></div>
           <div><FileText size={18} /><strong>证据质检</strong><span>识别缺口、矛盾与可解析材料</span></div>
-          <div><ShieldCheck size={18} /><strong>结论复核</strong><span>标记需要人工确认的结论</span></div>
+          <div><ShieldCheck size={18} /><strong>结论校验</strong><span>自动检查结论、依据与风险是否一致</span></div>
         </div>
       </section>
     </AppShell>

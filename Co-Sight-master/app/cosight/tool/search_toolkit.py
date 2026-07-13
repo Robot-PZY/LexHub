@@ -31,6 +31,7 @@ class SearchToolkit:
     def __init__(self):
         proxy = os.environ.get("PROXY")
         self.proxies = {"http": proxy, "https": proxy} if proxy else None
+        self.request_timeout = float(os.environ.get("SEARCH_REQUEST_TIMEOUT", "15"))
 
     def search_wiki(self, entity: str) -> str:
         r"""Search the entity in WikiPedia and return the summary of the
@@ -444,7 +445,8 @@ class SearchToolkit:
         # Fetch the results given the URL
         try:
             # Make the get
-            result = requests.get(url, proxies=self.proxies)
+            result = requests.get(url, proxies=self.proxies, timeout=self.request_timeout)
+            result.raise_for_status()
             data = result.json()
 
             # Get the result items

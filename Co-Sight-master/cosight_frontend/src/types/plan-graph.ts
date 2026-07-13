@@ -9,6 +9,15 @@ export type PlanSnapshot = {
   stepStatuses: Record<string, PlanStepStatus>;
   stepNotes: Record<string, string>;
   dependencies: Record<string, number[]>;
+  stepAgentIds: Record<string, string>;
+  stepParallelGroups: Record<string, string>;
+  stepConditions: Record<string, string>;
+  stepExpectedArtifacts: Record<string, string>;
+  selectedAgents: string[];
+  skippedAgents: Array<{ agentId: string; reason: string }>;
+  scenario: string;
+  targetOutput: string;
+  riskLevel: string;
   progress: { total: number; completed: number; in_progress?: number; blocked?: number; not_started?: number };
   result: string;
   statusText: string;
@@ -33,6 +42,9 @@ export type DagGraphNode = {
   capabilityId: string;
   capabilityLabel: string;
   modelLabel?: string;
+  parallelGroup?: string;
+  condition?: string;
+  expectedArtifact?: string;
   toolCount: number;
   level: number;
   x: number;
@@ -56,6 +68,9 @@ export type StepToolDetail = {
   capabilityId: string;
   capabilityLabel: string;
   modelLabel?: string;
+  parallelGroup?: string;
+  condition?: string;
+  expectedArtifact?: string;
   note: string;
   status: AgentStepStatus;
   tools: Array<{
@@ -68,5 +83,12 @@ export type StepToolDetail = {
     duration?: number;
     argsPreview?: string;
     timestamp?: string;
+    capabilityId?: string;
+    resultType?: string;
+    resultData?: unknown;
+    sources?: Array<Record<string, unknown>>;
+    artifacts?: Array<Record<string, unknown>>;
+    metrics?: Record<string, unknown>;
+    runtimeAgentId?: string;
   }>;
 };

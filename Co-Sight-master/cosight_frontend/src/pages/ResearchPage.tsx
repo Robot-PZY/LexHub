@@ -157,7 +157,7 @@ function ResearchPage() {
           value={vectorStats?.statutes ? `${vectorStats.statutes}` : '—'}
           description={vectorStats ? `法条 ${vectorStats.statutes} · 模板 ${vectorStats.templates} · 规则 ${vectorStats.knowledge}` : '加载中'}
         />
-        <StatCard label="检索状态" value={searching ? '检索中' : result ? '已返回' : '待检索'} description="正式使用前需人工确认" />
+        <StatCard label="检索状态" value={searching ? '检索中' : result ? '已返回' : '待检索'} description="返回后自动校验来源与材料关联" />
       </section>
 
       <section className="ds-card feature-panel feature-panel-wide research-search-panel">
@@ -203,7 +203,7 @@ function ResearchPage() {
             </div>
             <p>
               {result
-                ? `共命中法规 ${result.laws.length} 条、案例 ${result.cases.length} 条、本地知识 ${result.local.length} 条。来源：${result.sources.map((item) => sourceLabels[item] ?? item).join('、') || '无'}。请结合案件材料人工复核后再用于文书生成。`
+                ? `共命中法规 ${result.laws.length} 条、案例 ${result.cases.length} 条、本地知识 ${result.local.length} 条。来源：${result.sources.map((item) => sourceLabels[item] ?? item).join('、') || '无'}。系统将结合案件材料自动校验后用于文书生成。`
                 : '输入问题并点击「开始检索」，系统会进行得理 / NPC / 本地知识库混合检索并展示可追溯引用。'}
             </p>
           </div>
@@ -238,7 +238,7 @@ function ResearchPage() {
             <div className="feature-mini-list">
               <div><span>事实依据</span><em>{session?.scenario ? '工作台场景' : '材料引用'}</em></div>
               <div><span>法律依据</span><em>{result?.laws.length ? `${result.laws.length} 条` : '法规引用'}</em></div>
-              <div><span>风险等级</span><em>人工复核</em></div>
+              <div><span>质量状态</span><em>自动校验</em></div>
             </div>
           </article>
         </aside>

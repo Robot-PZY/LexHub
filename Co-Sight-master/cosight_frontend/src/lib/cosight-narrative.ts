@@ -30,7 +30,7 @@ export const COMPETITION_CAPABILITY_ROWS = [
   {
     requirement: '多跳推理（>3 跳）',
     implementation: '事项受理 → 材料处理 → 检索研究 → 分析生成 → 结论复核（≥5 跳）',
-    evidence: '办理路径 · 案件归档 · 导出溯源',
+    evidence: '办理路径 · 历史回放 · 导出溯源',
   },
   {
     requirement: '性能对比基准',
@@ -39,7 +39,7 @@ export const COMPETITION_CAPABILITY_ROWS = [
   },
   {
     requirement: '可信与可复核',
-    implementation: '结论复核角色 + 合规监测审计链 + 案件归档 + 办理记录导出溯源',
+    implementation: '结论复核角色 + 合规监测审计链 + 历史回放 + 办理记录导出溯源',
     evidence: '/workspace/result · /replay',
   },
   {
@@ -51,7 +51,7 @@ export const COMPETITION_CAPABILITY_ROWS = [
 
 export const SUBMISSION_READINESS_ROWS = [
   { item: '可运行代码与工作流配置', status: 'ready', path: 'config/legal-workflow.json · start-lexhub.bat' },
-  { item: '真实办理与案件归档', status: 'ready', path: '/workspace · /replay' },
+  { item: '真实办理与历史回放', status: 'ready', path: '/workspace · /replay' },
   { item: '技术方案文档', status: 'ready', path: 'docs/competition/technical-solution.md' },
   { item: '创新总结报告（必交）', status: 'ready', path: 'docs/competition/innovation-summary.md' },
   { item: '3 分钟展示脚本', status: 'ready', path: 'docs/competition/demo-script.md' },

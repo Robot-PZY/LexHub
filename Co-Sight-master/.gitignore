@@ -20,6 +20,7 @@ __pycache__
 **/work_space_*
 work_space/**
 .env
+.lexhub-pids.json
 config/runtime/admin_settings.json
 config/runtime/custom_mcp_tools.json
 config/runtime/_test_baseline_admin_settings.json
@@ -27,3 +28,4 @@ config/runtime/knowledge_crawl_state.json
 .cursorindexingignore
 .specstory
 scripts/*
+!scripts/validate_phase0_contracts.py
