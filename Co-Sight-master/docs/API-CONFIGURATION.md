@@ -38,7 +38,7 @@ BAIDU_DOCUMENT_PARSER_ENABLED=true
 | --- | --- | --- |
 | 得理法律检索 | `DELILEGAL_APPID`、`DELILEGAL_SECRET` | 已接入 |
 | Tavily 联网搜索 | `TAVILY_API_KEY` | 已接入 |
-| Google 搜索 | `GOOGLE_API_KEY`、`SEARCH_ENGINE_ID` | 已接入 |
+| Wikipedia 搜索 | 无需 Key | 已接入，作为百科背景补充 |
 | 百度 TextReview | `BAIDU_TEXTREVIEW_API_KEY`、`BAIDU_TEXTREVIEW_SECRET_KEY` | 可选外部审查 |
 | Langfuse | `LANGFUSE_PUBLIC_KEY`、`LANGFUSE_SECRET_KEY` | 可选可观测性 |
 | PaddleOCR | `PADDLE_OCR_ENDPOINT` | 本地降级方案，待接服务端 |

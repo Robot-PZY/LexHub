@@ -136,7 +136,7 @@ function ResearchPage() {
       title="法规研究"
       subtitle="围绕法律问题检索法规、案例与本地知识库，形成可追溯依据。"
       badge={result ? <DataSourceBadge source="api" /> : <span className="ds-badge ds-badge-primary">多源检索</span>}
-      actions={<button type="button" className="btn btn-secondary" onClick={() => navigate('/workspace')}>生成文书</button>}
+        actions={<button type="button" className="btn btn-secondary" onClick={() => navigate('/workspace/new')}>生成文书</button>}
       onLogout={handleLogout}
     >
       <PageHeader

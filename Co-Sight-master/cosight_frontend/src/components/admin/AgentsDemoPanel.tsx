@@ -7,6 +7,7 @@ import { useDemoResource } from '../../hooks/useDemoResource';
 import { fetchAgentRouting } from '../../lib/api';
 import { mockAgentCatalog, mockAgentRouting } from '../../mocks/routing';
 import { deriveAgentInvocations } from '../../lib/dag-utils';
+import { defaultAgentRegistry } from '../../lib/agent-registry';
 
 const capabilityLayers = [
   { icon: BrainCircuit, title: '专业研判', desc: '事项受理、法规研究、文书生成、结论复核' },
@@ -72,7 +73,11 @@ function AgentsDemoPanel({ variant = 'user', badge }: AgentsDemoPanelProps) {
           </section>
 
           <section className="feature-stat-grid">
-            <StatCard label="协作角色" value="5" description="受理、证据、研究、生成、复核" />
+            <StatCard
+              label="已注册智能体"
+              value={`${defaultAgentRegistry.agents.length}`}
+              description="编排、执行与质量校验"
+            />
             <StatCard label="当前激活" value={`${routing.activeAgents.filter((a) => a.status === 'active').length}`} description="状态驱动，非固定顺序" />
             <StatCard label="复核策略" value={routing.reviewRequired ? '强制审查' : '按需审查'} description="高风险输出进入结论复核" />
             <StatCard label="风险等级" value={routing.metrics.riskLevel === 'high' ? '高' : routing.metrics.riskLevel === 'medium' ? '中' : '低'} description={`材料 ${routing.metrics.materialCompleteness}%`} />

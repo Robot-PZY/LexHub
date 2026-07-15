@@ -11,7 +11,7 @@ function MarketingFooter() {
         <Link to="/#capabilities">核心能力</Link>
         <Link to="/#pricing">定价方案</Link>
         <Link to="/login">登录入口</Link>
-        <Link to="/workspace">事项受理</Link>
+            <Link to="/workspace/new">事项受理</Link>
       </div>
     </footer>
   );

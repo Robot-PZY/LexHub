@@ -16,7 +16,7 @@ export const ATOMIC_CAPABILITIES: AtomicCapability[] = [
   { id: 'fact_extract', label: '事实抽取', agentId: 'evidence', keywords: ['事实', '整理', '梳理', '收集', '归纳'], toolHints: [] },
   { id: 'evidence_match', label: '证据匹配', agentId: 'evidence', keywords: ['证据', '待证', '匹配', '缺口', '清单', '补充'], toolHints: [] },
   { id: 'issue_spotting', label: '法律争点', agentId: 'issue_spotter', keywords: ['争议焦点', '法律关系', '请求权', '争点', '需求分析'], toolHints: [] },
-  { id: 'legal_retrieval', label: '法规检索', agentId: 'research', keywords: ['检索', '法条', '法规', '依据', '案例', '研究'], toolHints: ['legal_search', 'legal_rag', 'tavily', 'google', 'search', 'wiki'] },
+  { id: 'legal_retrieval', label: '法规检索', agentId: 'research', keywords: ['检索', '法条', '法规', '依据', '案例', '研究'], toolHints: ['legal_search', 'legal_rag', 'tavily', 'search', 'wiki'] },
   { id: 'risk_assess', label: '条款风险', agentId: 'clause_risk', keywords: ['风险', '条款', '合同审查', '版本比对'], toolHints: ['contract_compare'] },
   { id: 'legal_calculation', label: '时效与金额计算', agentId: 'calculation', keywords: ['利息', '金额', '时效', '期限', '赔偿', '违约金', '计算'], toolHints: ['execute_code'] },
   { id: 'document_draft', label: '文书起草', agentId: 'drafting', keywords: ['生成', '起草', '报告', '律师函', '文书', '写入', '导出'], toolHints: ['file_write', 'file_saver'] },
@@ -34,7 +34,7 @@ function matchCapabilityByTools(stepTools: ToolCallTrace[]): AtomicCapability | 
     return ATOMIC_CAPABILITIES.find((item) => item.id === 'document_draft') ?? null;
   }
 
-  if (/legal_search|legal_rag|tavily|google|search|wiki/.test(names)) {
+  if (/legal_search|legal_rag|tavily|search|wiki/.test(names)) {
     return ATOMIC_CAPABILITIES.find((item) => item.id === 'legal_retrieval') ?? null;
   }
 

@@ -27,7 +27,7 @@ import {
   type AuthRole,
 } from '../lib/storage';
 
-const trustPoints = ['事项受理', '依据检索', '过程归档', '结论复核'];
+const trustPoints = ['动态 DAG 编排', '工具调用可观察', '结果全程可追溯'];
 
 const roleCards: Array<{
   role: AuthRole;
@@ -38,13 +38,13 @@ const roleCards: Array<{
   {
     role: 'user',
     title: '用户端',
-    desc: '发起法律事项，跟进办理路径、审查结论与文书交付。',
+    desc: '发起与跟进法律事项',
     icon: Workflow,
   },
   {
     role: 'admin',
     title: '管理控制台',
-    desc: '配置知识库、模型服务、处理能力和用户权限。',
+    desc: '管理智能体、模型与 API',
     icon: Settings2,
   },
 ];
@@ -149,7 +149,7 @@ function LoginPage() {
   const isRegister = role === 'user' && mode === 'register';
 
   return (
-    <div className="auth-shell auth-shell-wide">
+    <div className="auth-shell auth-shell-wide lex-auth-v2">
       <section className="auth-panel auth-copy-panel">
         <Link className="auth-back" to="/">
           <ArrowLeft size={16} />
@@ -157,14 +157,14 @@ function LoginPage() {
         </Link>
 
         <div>
-          <BrandLogo subtitle="Legal Matter Workbench" className="auth-brand-react" />
+          <BrandLogo subtitle="Legal Agent OS" className="auth-brand-react" />
           <div style={{ marginTop: 32 }}>
-            <p className="eyebrow">Welcome</p>
+            <p className="eyebrow">MULTI-AGENT LEGAL WORKSPACE</p>
             <h1 style={{ margin: '0 0 12px', fontSize: 36, color: 'var(--color-text-strong)', lineHeight: 1.15 }}>
-              进入律枢，继续办理。
+              让每一步法律办理，都清晰可见。
             </h1>
             <p style={{ margin: 0, color: 'var(--color-muted)', lineHeight: 1.85, maxWidth: '46ch' }}>
-              用户端处理事项受理、材料提交、办理进度与审查结论；管理端维护知识库、模型接入和权限配置。
+              从事项受理、动态规划到工具调用与报告交付，律枢将多智能体协作过程完整呈现在同一工作台。
             </p>
           </div>
         </div>
@@ -175,52 +175,27 @@ function LoginPage() {
           ))}
         </div>
 
-        <div className="auth-flow-steps">
-          <div className="auth-flow-step">
-            <span>1</span>
-            <div>
-              <strong>提交事项</strong>
-              <em>选择场景，补充事实与材料。</em>
-            </div>
-          </div>
-          <div className="auth-flow-step">
-            <span>2</span>
-            <div>
-              <strong>生成路径</strong>
-              <em>系统整理材料、依据、风险与阶段结论。</em>
-            </div>
-          </div>
-          <div className="auth-flow-step">
-            <span>3</span>
-            <div>
-              <strong>交付归档</strong>
-              <em>输出审查结论、文书和可追溯办理记录。</em>
-            </div>
-          </div>
-        </div>
-
-        <div className="auth-brand-preview" aria-hidden="true">
-          <div className="auth-brand-preview-card">
-            <div className="auth-brand-preview-head">
-              <BrandLogo markOnly compact />
-              <span>LexHub Matter Path</span>
-            </div>
+        <div className="auth-agent-demo" aria-label="智能办理路径示意">
+          <div className="auth-agent-demo-head">
+            <span><i /> 演示路径</span>
             <strong>服务合同审查</strong>
-            <div className="auth-brand-preview-grid">
-              <span>证据 82%</span>
-              <span>依据 12</span>
-              <span>风险 3</span>
-            </div>
           </div>
-          <div className="auth-brand-preview-line">
-            <span>受理</span>
-            <span>路径</span>
-            <span>结论</span>
+          <div className="auth-agent-demo-flow">
+            <span className="done"><Workflow size={15} /> 规划</span>
+            <span className="done"><Database size={15} /> 解析</span>
+            <span className="running"><ShieldCheck size={15} /> 审查</span>
+            <span><Settings2 size={15} /> 交付</span>
           </div>
+          <p>正在调用：法规检索 · 已形成 3 条阶段结论</p>
         </div>
       </section>
 
       <section className="auth-panel auth-form-panel">
+        <div className="auth-form-heading">
+          <span>欢迎回来</span>
+          <h2>登录律枢</h2>
+          <p>选择使用入口，继续当前事项或管理系统能力。</p>
+        </div>
         <div className="auth-role-grid">
           {roleCards.map((item) => {
             const Icon = item.icon;
@@ -243,7 +218,7 @@ function LoginPage() {
           })}
         </div>
 
-        <div className="auth-icon">
+        <div className="auth-icon" aria-hidden="true">
           {role === 'admin' ? <Database size={22} /> : <ShieldCheck size={22} />}
         </div>
 
@@ -297,18 +272,24 @@ function LoginPage() {
         )}
 
         <TextField
+          id="lexhub-account"
+          name="account"
           label="账号"
           value={account}
           onChange={(event) => setAccount(event.target.value)}
           placeholder={role === 'admin' ? '管理员账号' : '用户名'}
+          autoComplete="username"
         />
 
         <TextField
+          id="lexhub-password"
+          name="password"
           label="密码"
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           placeholder="请输入密码"
+          autoComplete={isRegister ? 'new-password' : 'current-password'}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               if (isRegister) handleRegister();
@@ -319,18 +300,21 @@ function LoginPage() {
 
         {isRegister && (
           <TextField
+            id="lexhub-confirm-password"
+            name="confirmPassword"
             label="确认密码"
             type="password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
             placeholder="再次输入密码"
+            autoComplete="new-password"
             onKeyDown={(event) => {
               if (event.key === 'Enter') handleRegister();
             }}
           />
         )}
 
-        {error && <div className="auth-form-error">{error}</div>}
+        {error && <div className="auth-form-error" role="alert" aria-live="assertive">{error}</div>}
 
         <Button
           type="button"
@@ -353,6 +337,11 @@ function LoginPage() {
             </button>
           </p>
         )}
+
+        <div className="auth-demo-hint">
+          <ShieldCheck size={14} />
+          <span>演示环境支持用户端完整办理流程与管理端能力配置预览。</span>
+        </div>
       </section>
     </div>
   );

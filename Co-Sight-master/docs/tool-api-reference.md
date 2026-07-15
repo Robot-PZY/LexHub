@@ -6,7 +6,7 @@
 
 | 类别 | 代表工具 | 环境变量 / 端点 | 前端入口 |
 |------|----------|-----------------|----------|
-| 联网搜索 | `tavily_search`, `search_google` | `TAVILY_API_KEY`, `GOOGLE_API_KEY` | `/research` |
+| 联网搜索 | `tavily_search`, `search_wiki` | `TAVILY_API_KEY`；Wikipedia 无需 Key | `/research` |
 | 代码执行 | `execute_code` | 内置 | `/workspace` 工具轨迹 |
 | 文档/OCR | `file_upload`, 文档解析 | `POST /api/.../upload/files` | `/evidence` |
 | 法规检索 | `legal_rag` | `LEGAL_SEARCH_API_KEY`, `VECTOR_DB_URL` | `/research` |

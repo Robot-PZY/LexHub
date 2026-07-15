@@ -14,8 +14,10 @@
 #    under the License.
 
 import os
+import re
 import xml.etree.ElementTree as ET
 from typing import Any, Dict, List, Literal, Optional, TypeAlias, Union
+from urllib.parse import quote
 
 import requests
 
@@ -45,40 +47,44 @@ class SearchToolkit:
             str: The search result. If the page corresponding to the entity
                 exists, return the summary of this entity in a string.
         """
-        import wikipedia
-
-        result: str
-        page_url: str = ""
-
+        entity = str(entity or "").strip()
+        if not entity:
+            return "Wikipedia search skipped: entity is empty."
+        language = "zh" if re.search(r"[\u3400-\u9fff]", entity) else "en"
+        endpoint = f"https://{language}.wikipedia.org/api/rest_v1/page/summary/{quote(entity, safe='')}"
         try:
-            # 获取页面摘要
-            result = wikipedia.summary(entity, sentences=5, auto_suggest=False)
-            # 获取页面URL
-            page = wikipedia.page(entity, auto_suggest=False)
-            page_url = page.url
-        except wikipedia.exceptions.DisambiguationError as e:
-            # 如果有歧义，选择第一个选项
-            result = wikipedia.summary(
-                e.options[0], sentences=5, auto_suggest=False
+            response = requests.get(
+                endpoint,
+                headers={"User-Agent": "LexHub/1.0 (legal-research-assistant)"},
+                proxies=self.proxies,
+                timeout=min(self.request_timeout, 3.0),
             )
-            try:
-                page = wikipedia.page(e.options[0], auto_suggest=False)
-                page_url = page.url
-            except:
-                pass
-        except wikipedia.exceptions.PageError:
-            result = (
-                "There is no page in Wikipedia corresponding to entity "
-                f"{entity}, please specify another word to describe the"
-                " entity to be searched."
-            )
-        except wikipedia.exceptions.WikipediaException as e:
-            result = f"An exception occurred during the search: {e}"
-        
-        # 如果有URL，将URL信息添加到结果中
-        if page_url:
-            result = f"Wikipedia URL: {page_url}\n\nSummary:\n{result}"
-        
+            if response.status_code == 404:
+                return f"Wikipedia has no page for: {entity}"
+            response.raise_for_status()
+            payload = response.json()
+            result = str(payload.get("extract") or payload.get("description") or "No summary available.")
+            page_url = str((((payload.get("content_urls") or {}).get("desktop") or {}).get("page")) or "")
+            if page_url:
+                result = f"Wikipedia URL: {page_url}\n\nSummary:\n{result}"
+        except (requests.RequestException, ValueError) as exc:
+            if os.getenv("TAVILY_API_KEY"):
+                fallback = self.tavily_search(
+                    f"site:{language}.wikipedia.org {entity}",
+                    num_results=3,
+                )
+                valid = [item for item in fallback if isinstance(item, dict) and item.get("url")]
+                if valid:
+                    lines = [
+                        f"- {item.get('title') or entity}: {item.get('url')}\n  {item.get('description', '')}"
+                        for item in valid
+                    ]
+                    result = "Wikipedia direct access unavailable; Tavily Wikipedia fallback:\n" + "\n".join(lines)
+                else:
+                    result = f"Wikipedia search unavailable for {entity}: {exc}"
+            else:
+                result = f"Wikipedia search unavailable for {entity}: {exc}"
+
         logger.info(f'search_wiki result = {result}')
         return result
 
@@ -705,9 +711,22 @@ class SearchToolkit:
         client = TavilyClient(Tavily_API_KEY)
 
         try:
-            results = client.search(query, max_results=num_results, **kwargs)
-            logger.info(f'tavily_search result = {results}')
-            return results
+            response = client.search(query, max_results=num_results, **kwargs)
+            results = response.get("results", []) if isinstance(response, dict) else response
+            normalized = [
+                {
+                    "result_id": index,
+                    "title": item.get("title", ""),
+                    "description": item.get("content", ""),
+                    "url": item.get("url", ""),
+                    "content": item.get("content", ""),
+                    "score": item.get("score"),
+                }
+                for index, item in enumerate(results, start=1)
+                if isinstance(item, dict)
+            ]
+            logger.info('tavily_search returned %s results', len(normalized))
+            return normalized
         except Exception as e:
             logger.error(f'error": f"An unexpected error occurred: {str(e)}', exc_info=True)
             return [{"error": f"An unexpected error occurred: {e!s}"}]

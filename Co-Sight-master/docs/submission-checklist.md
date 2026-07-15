@@ -31,7 +31,7 @@
 | 知识库样例 | ✅ | config/knowledge/legal-knowledge-seed.json |
 | 部署脚本 | ✅ | start-lexhub.bat |
 | 创新总结（必交） | ✅ | innovation-summary.md |
-| 演示视频 | ⏳ | 按 demo-script.md 录制 |
+| 演示视频 | ⏳ | 按最终产品流程录制 |
 
 ## 四、答辩话术（防追问）
 

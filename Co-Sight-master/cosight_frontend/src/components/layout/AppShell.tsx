@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from 'react';
-import { ChevronRight, LogOut, Menu, Plus, X } from 'lucide-react';
+import { ChevronRight, CircleDot, LogOut, Menu, Plus, X } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import BrandLogo from '../app/BrandLogo';
 import MembershipBadge from '../membership/MembershipBadge';
 import SidebarUserPanel from './SidebarUserPanel';
-import { APP_NAV_GROUPS, ROUTE_LABELS } from '../../config/navigation';
+import { APP_NAV_GROUPS, MATTER_STAGE_NAV, ROUTE_LABELS } from '../../config/navigation';
 import { getAuthedRole, getCurrentMembershipTier } from '../../lib/storage';
 
 type AppShellProps = {
@@ -37,9 +37,11 @@ function AppShell({ title, subtitle, badge, actions, children, onLogout }: AppSh
   const membershipTier = role === 'user' ? getCurrentMembershipTier() : null;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navGroups = APP_NAV_GROUPS;
+  const isMatterRoute = location.pathname.startsWith('/workspace/');
 
   return (
-    <div className="app-shell">
+    <div className="app-shell lex-app-shell">
+      <a className="lex-skip-link" href="#main-content">跳到主要内容</a>
       {sidebarOpen && (
         <button
           type="button"
@@ -51,7 +53,7 @@ function AppShell({ title, subtitle, badge, actions, children, onLogout }: AppSh
 
       <aside className={`app-sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="app-sidebar-brand">
-          <BrandLogo subtitle="LexHub Workspace" compact />
+          <BrandLogo subtitle="法律智能工作台" compact />
           <button
             type="button"
             className="app-sidebar-close"
@@ -65,14 +67,14 @@ function AppShell({ title, subtitle, badge, actions, children, onLogout }: AppSh
         <nav className="app-sidebar-nav">
           <button
             type="button"
-            className="app-sidebar-link app-sidebar-link-primary"
+            className="app-sidebar-link app-sidebar-link-primary lex-shell-primary-action"
             onClick={() => {
               setSidebarOpen(false);
-              navigate(role === 'admin' ? '/admin' : '/workspace');
+              navigate(role === 'admin' ? '/admin' : '/workspace/new');
             }}
           >
             <Plus size={16} />
-              <span>{role === 'admin' ? '管理控制台' : '发起事项'}</span>
+              <span>{role === 'admin' ? '管理控制台' : '新建法律事项'}</span>
           </button>
 
           {navGroups.map((group) => (
@@ -95,6 +97,10 @@ function AppShell({ title, subtitle, badge, actions, children, onLogout }: AppSh
         </nav>
 
         <div className="app-sidebar-foot">
+          <div className="lex-shell-runtime-state" role="status">
+            <CircleDot size={15} />
+            <span><strong>智能体服务在线</strong><em>编排与工具链可用</em></span>
+          </div>
           <SidebarUserPanel />
           {onLogout && (
             <button type="button" className="app-sidebar-link" onClick={onLogout}>
@@ -142,7 +148,27 @@ function AppShell({ title, subtitle, badge, actions, children, onLogout }: AppSh
           </div>
         </header>
 
-        <main className="app-content">{children}</main>
+        {isMatterRoute && (
+          <nav className="lex-matter-stage-nav" aria-label="事项办理阶段">
+            <span className="lex-matter-stage-label">当前事项</span>
+            <div className="lex-matter-stage-track">
+              {MATTER_STAGE_NAV.map(({ id, label, to, icon: Icon, end }, index) => (
+                <NavLink
+                  key={id}
+                  to={to}
+                  end={end}
+                  className={({ isActive }) => `lex-matter-stage${isActive ? ' active' : ''}`}
+                >
+                  <span className="lex-matter-stage-index">{index + 1}</span>
+                  <Icon size={15} />
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </div>
+          </nav>
+        )}
+
+        <main id="main-content" className="app-content" tabIndex={-1}>{children}</main>
       </div>
     </div>
   );

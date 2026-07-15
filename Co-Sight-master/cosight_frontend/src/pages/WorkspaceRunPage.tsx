@@ -1,8 +1,11 @@
 import {
+  Activity,
   ArrowLeft,
   ArrowRight,
+  Bot,
   Briefcase,
   CheckCircle2,
+  Database,
   FileSearch,
   FileText,
   Loader2,
@@ -142,12 +145,15 @@ function RunActionFeed({ toolCalls, isCompleted, isReplay }: {
       </div>
 
       {visibleCalls.length > 0 ? (
-        <div className="workspace-run-action-list">
-          {visibleCalls.map((tool) => {
+        <div className="workspace-run-action-list" aria-live="polite">
+          {visibleCalls.map((tool, index) => {
             const isRunning = tool.status === 'running';
             const isFailed = tool.status === 'failed';
             return (
               <article key={tool.id} className={`workspace-run-action-item ${tool.status}`}>
+                <span className="workspace-run-action-sequence" aria-label={`第 ${Math.max(1, toolCalls.length - visibleCalls.length + index + 1)} 次调用`}>
+                  {String(Math.max(1, toolCalls.length - visibleCalls.length + index + 1)).padStart(2, '0')}
+                </span>
                 <span className="workspace-run-action-icon" aria-hidden>
                   {isRunning ? <Loader2 size={16} className="dag-graph-spin" /> : isFailed ? <XCircle size={16} /> : <CheckCircle2 size={16} />}
                 </span>
@@ -165,7 +171,9 @@ function RunActionFeed({ toolCalls, isCompleted, isReplay }: {
                 </div>
                 <span className="workspace-run-action-meta">
                   <Wrench size={13} />
-                  {tool.stepIndex == null ? '全局动作' : `步骤 ${tool.stepIndex + 1}`}
+                  <span>{tool.stepIndex == null ? '全局动作' : `步骤 ${tool.stepIndex + 1}`}</span>
+                  {tool.duration !== undefined ? <em>{tool.duration}s</em> : null}
+                  {tool.timestampLabel ? <time>{tool.timestampLabel}</time> : null}
                 </span>
               </article>
             );
@@ -177,6 +185,47 @@ function RunActionFeed({ toolCalls, isCompleted, isReplay }: {
           <span>{isCompleted ? '本次事项未返回可展示的工具调用记录。' : '路径生成后，系统将在这里持续记录工具调用与阶段动作。'}</span>
         </div>
       )}
+    </section>
+  );
+}
+
+function RunTelemetryStrip({ steps, toolCalls, connectionText }: {
+  steps: AgentStep[];
+  toolCalls: ToolCallTrace[];
+  connectionText: string;
+}) {
+  const runningStep = steps.find((step) => step.status === 'running');
+  const activeTool = [...toolCalls].reverse().find((tool) => tool.status === 'running') ?? toolCalls[toolCalls.length - 1];
+  const completedSteps = steps.filter((step) => step.status === 'completed').length;
+  const sourceCount = toolCalls.reduce((total, tool) => total + (tool.sources?.length ?? 0), 0);
+  const artifactCount = toolCalls.reduce((total, tool) => total + (tool.artifacts?.length ?? 0), 0);
+  const activeAgent = activeTool?.runtimeAgentId
+    ?? (runningStep ? agentLabels[runningStep.agent] : undefined)
+    ?? '编排智能体';
+
+  return (
+    <section className="execution-telemetry" aria-label="实时执行状态" aria-live="polite">
+      <article>
+        <Activity size={16} />
+        <span><em>运行状态</em><strong>{connectionText}</strong></span>
+        <i className="execution-telemetry-live" aria-hidden />
+      </article>
+      <article>
+        <Bot size={16} />
+        <span><em>当前智能体</em><strong>{activeAgent}</strong></span>
+      </article>
+      <article>
+        <Wrench size={16} />
+        <span><em>当前工具</em><strong>{activeTool?.toolLabel ?? activeTool?.toolName ?? '等待路径生成'}</strong></span>
+      </article>
+      <article>
+        <CheckCircle2 size={16} />
+        <span><em>阶段进度</em><strong>{completedSteps} / {steps.length || '—'} 已完成</strong></span>
+      </article>
+      <article>
+        <Database size={16} />
+        <span><em>执行产出</em><strong>{sourceCount} 依据 · {artifactCount} 产物</strong></span>
+      </article>
     </section>
   );
 }
@@ -314,7 +363,7 @@ function WorkspaceRunPage() {
       )}
       actions={(
         <>
-          <Link className="lex-button lex-button-secondary lex-button-md" to="/workspace">
+          <Link className="lex-button lex-button-secondary lex-button-md" to="/workspace/new">
             <ArrowLeft size={16} />
             <span>发起事项</span>
           </Link>
@@ -336,12 +385,7 @@ function WorkspaceRunPage() {
           badge={<Badge tone="primary">{connectionText}</Badge>}
         />
 
-        <RunPathOverview
-          steps={steps}
-          toolCalls={toolCalls}
-          isCompleted={isCompleted}
-          statusSummary={statusSummary}
-        />
+        <RunTelemetryStrip steps={steps} toolCalls={toolCalls} connectionText={connectionText} />
 
         {isCompleted && (
           <div className="workspace-success-banner workspace-run-complete-banner">
@@ -351,23 +395,38 @@ function WorkspaceRunPage() {
           </div>
         )}
 
-        <DagGraphPanel
-          graph={planGraph}
-          toolCalls={toolCalls}
-          registry={agentRegistry}
-          processing={!isCompleted}
-          readOnly={isReplay}
-        />
-
-        <RunActionFeed toolCalls={toolCalls} isCompleted={isCompleted} isReplay={isReplay} />
-
-        <ToolCallToast toolCalls={toolCalls} processing={!isCompleted} />
-
         {isReplay && (
           <div className="replay-mode-banner">
             归档模式 · 正在载入案件工作区 {replayWorkspace ?? '本地缓存'} 的办理记录
           </div>
         )}
+
+        <div className="execution-workbench-v2">
+          <aside className="execution-workbench-column execution-workbench-path">
+            <RunPathOverview
+              steps={steps}
+              toolCalls={toolCalls}
+              isCompleted={isCompleted}
+              statusSummary={statusSummary}
+            />
+          </aside>
+
+          <section className="execution-workbench-column execution-workbench-main" aria-label="智能体编排画布与阶段结果">
+            <DagGraphPanel
+              graph={planGraph}
+              toolCalls={toolCalls}
+              registry={agentRegistry}
+              processing={!isCompleted}
+              readOnly={isReplay}
+            />
+          </section>
+
+          <aside className="execution-workbench-column execution-workbench-trace">
+            <RunActionFeed toolCalls={toolCalls} isCompleted={isCompleted} isReplay={isReplay} />
+          </aside>
+        </div>
+
+        <ToolCallToast toolCalls={toolCalls} processing={!isCompleted} />
       </div>
     </AppShell>
   );

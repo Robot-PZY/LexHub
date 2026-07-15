@@ -46,6 +46,24 @@ function AdminPoliciesPage() {
 
       {savedHint && <div className="admin-save-hint">{savedHint}</div>}
 
+      <section className="admin-policy-summary" aria-label="规则体系概览">
+        <article>
+          <span className="admin-policy-summary-icon"><GitBranch size={17} /></span>
+          <div><strong>{routingDraft.length}</strong><span>办理策略</span></div>
+          <em>决定协作角色何时介入</em>
+        </article>
+        <article>
+          <span className="admin-policy-summary-icon review"><ShieldCheck size={17} /></span>
+          <div><strong>{reviewDraft.length}</strong><span>审查规则</span></div>
+          <em>约束结论可信度与引用完整性</em>
+        </article>
+        <article className="admin-policy-summary-state">
+          <span>策略状态</span>
+          <strong>运行中</strong>
+          <em>保存后同步至本地办理配置</em>
+        </article>
+      </section>
+
       <div className="admin-tab-bar">
         <button
           type="button"

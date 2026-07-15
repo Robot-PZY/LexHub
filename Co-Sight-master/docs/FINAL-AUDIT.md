@@ -24,8 +24,8 @@
 
 ## 启动方式
 
-- 启动：双击 `start-cosight.bat`
-- 停止：双击 `stop-cosight.bat`
+- 启动：双击仓库最外层的 `start-lexhub.bat`
+- 停止：双击仓库最外层的 `stop-lexhub.bat`
 - 仅检查环境：`python start_lexhub.py --check`
 - 完整审计：`python scripts/full_chain_audit.py --timeout 180`
 

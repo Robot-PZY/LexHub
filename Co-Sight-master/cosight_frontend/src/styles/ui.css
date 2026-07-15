@@ -6,20 +6,22 @@
 }
 
 .page-transition-stage {
-  min-height: 100vh;
-  animation: page-fade-up 220ms ease-out;
-  will-change: opacity, transform;
+  min-height: 100dvh;
+  animation: page-fade-in 160ms var(--ease-out);
 }
 
-@keyframes page-fade-up {
+/*
+ * Do not animate transform on the route root. A transformed ancestor becomes
+ * the containing block for position: fixed descendants, which makes the
+ * persistent user/admin sidebars scroll away with long pages.
+ */
+@keyframes page-fade-in {
   0% {
     opacity: 0;
-    transform: translate3d(0, 8px, 0);
   }
 
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -34,10 +36,10 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 38px;
+  min-height: 42px;
   padding: 0 var(--space-4);
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   line-height: 1;
@@ -52,6 +54,10 @@
 
 .lex-button:hover:not(:disabled) {
   transform: translateY(-1px);
+}
+
+.lex-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .lex-button:focus-visible,
@@ -72,19 +78,22 @@
 
 .lex-button-primary {
   color: #fff;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, #1b4564, var(--color-primary));
   border-color: var(--color-primary);
+  box-shadow: 0 8px 18px rgba(23, 59, 87, 0.18);
 }
 
 .lex-button-primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
+  box-shadow: 0 11px 24px rgba(23, 59, 87, 0.23);
 }
 
 .lex-button-secondary {
   color: var(--color-text-strong);
   background: var(--color-surface);
   border-color: var(--color-line);
+  box-shadow: var(--shadow-xs);
 }
 
 .lex-button-secondary:hover:not(:disabled) {
@@ -116,13 +125,13 @@
 }
 
 .lex-button-sm {
-  min-height: 32px;
+  min-height: 36px;
   padding: 0 var(--space-3);
   font-size: var(--font-size-xs);
 }
 
 .lex-button-lg {
-  min-height: 44px;
+  min-height: 48px;
   padding: 0 var(--space-5);
   font-size: var(--font-size-body);
 }
@@ -139,10 +148,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   color: var(--color-text);
   background: transparent;
   cursor: pointer;
@@ -158,8 +167,8 @@
 }
 
 .lex-icon-button-lg {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
 }
 
 .lex-icon-button-soft {
@@ -206,7 +215,7 @@
 }
 
 .lex-field-control {
-  min-height: 38px;
+  min-height: 42px;
   padding: 0 var(--space-3);
 }
 

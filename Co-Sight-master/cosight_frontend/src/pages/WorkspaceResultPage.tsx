@@ -1,4 +1,4 @@
-import { Archive, ArrowRight, Briefcase, CheckCircle2, ChevronDown, ClipboardList, FileClock, FileText, FolderOpen, Scale, ShieldCheck } from 'lucide-react';
+import { Archive, ArrowRight, BookOpenCheck, Briefcase, CheckCircle2, ChevronDown, ClipboardList, FileClock, FileText, FolderOpen, ListChecks, Scale, ShieldCheck, Wrench } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
@@ -79,6 +79,61 @@ function ResultOverview({
   );
 }
 
+function ResultDeliveryRail({
+  primaryLabel,
+  reviewReady,
+  isCompleted,
+  showScenarioOutput,
+  showDeliverable,
+  toolCount,
+}: {
+  primaryLabel: string;
+  reviewReady: boolean;
+  isCompleted: boolean;
+  showScenarioOutput: boolean;
+  showDeliverable: boolean;
+  toolCount: number;
+}) {
+  return (
+    <aside className="result-delivery-rail">
+      <nav className="result-delivery-nav" aria-label="交付内容目录">
+        <p className="eyebrow">DELIVERY INDEX</p>
+        <strong>本次交付内容</strong>
+        <a href="#result-overview"><span>01</span>交付总览</a>
+        <a href="#result-report"><span>02</span>总结报告</a>
+        {showScenarioOutput ? <a href="#result-primary-output"><span>03</span>{primaryLabel}</a> : null}
+        {showDeliverable ? <a href="#result-deliverable"><span>{showScenarioOutput ? '04' : '03'}</span>正式文书</a> : null}
+        {toolCount > 0 ? <a href="#result-appendix"><span>附</span>办理附录</a> : null}
+      </nav>
+
+      <section className="result-delivery-checklist" aria-label="交付状态">
+        <div className="result-delivery-checklist-head">
+          <ListChecks size={16} />
+          <strong>交付状态</strong>
+        </div>
+        <p className={isCompleted ? 'completed' : 'pending'}>
+          <CheckCircle2 size={14} />
+          <span><strong>智能体办理</strong><em>{isCompleted ? '全部阶段已完成' : '仍在办理中'}</em></span>
+        </p>
+        <p className={reviewReady ? 'completed' : 'pending'}>
+          <ShieldCheck size={14} />
+          <span><strong>自动校验</strong><em>{reviewReady ? '结论已通过校验' : '正在校验结论'}</em></span>
+        </p>
+        <p className="completed">
+          <BookOpenCheck size={14} />
+          <span><strong>总结报告</strong><em>可查看并导出</em></span>
+        </p>
+        {showDeliverable ? (
+          <p className={reviewReady ? 'completed' : 'pending'}>
+            <FileText size={14} />
+            <span><strong>正式文书</strong><em>{reviewReady ? '可生成与下载' : '校验后可生成'}</em></span>
+          </p>
+        ) : null}
+      </section>
+    </aside>
+  );
+}
+
 function WorkspaceResultPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -102,7 +157,10 @@ function WorkspaceResultPage() {
 
   const outputProfile = useMemo(() => getScenarioOutputProfile(scenario), [scenario]);
   const isDocumentPrimary = outputProfile.primary === 'document';
+  const showScenarioOutput = outputProfile.primary !== 'report' && outputProfile.primary !== 'document';
   const reviewGate = useMemo(() => getReviewGate(snapshot), [snapshot]);
+  const matterId = searchParams.get('matter');
+  const runPath = matterId ? `/workspace/run?matter=${encodeURIComponent(matterId)}` : '/workspace/run';
 
   const statusSummary = useMemo(() => {
     const pending = getPendingRequestsRaw();
@@ -122,7 +180,8 @@ function WorkspaceResultPage() {
 
   const handleOpenDeliverable = () => {
     setDeliverableExpanded(true);
-    deliverableRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    deliverableRef.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   };
 
   const handleLogout = () => {
@@ -153,13 +212,13 @@ function WorkspaceResultPage() {
       subtitle="查看本次事项的总结报告、风险提示、依据来源与正式交付物"
       actions={(
         <>
-          <Link className="lex-button lex-button-secondary lex-button-md" to="/workspace/run">
+          <Link className="lex-button lex-button-secondary lex-button-md" to={runPath}>
             <ClipboardList size={16} />
             返回办理运行
           </Link>
           <Link className="lex-button lex-button-secondary lex-button-md" to="/replay">
             <Archive size={16} />
-            历史回放
+            历史归档
           </Link>
           <Link className="lex-button lex-button-primary lex-button-md" to="/materials">
             <FolderOpen size={16} />
@@ -184,7 +243,7 @@ function WorkspaceResultPage() {
           title="暂无审查结论"
           description="请先在事项受理页提交材料与诉求，办理完成后结论会自动出现在这里。"
           action={(
-            <Link className="lex-button lex-button-primary lex-button-md" to="/workspace" style={{ marginTop: 8 }}>
+            <Link className="lex-button lex-button-primary lex-button-md" to="/workspace/new" style={{ marginTop: 8 }}>
               发起事项
               <ArrowRight size={16} />
             </Link>
@@ -193,67 +252,95 @@ function WorkspaceResultPage() {
       )}
 
       {!loading && hasResult && (
-        <div className="workspace-result-layout workspace-result-layout-wide">
+        <div className="workspace-result-layout workspace-result-layout-wide workspace-result-v2">
           {isCompleted && (
-            <div className="workspace-success-banner workspace-result-complete-banner">
+            <div className="workspace-success-banner workspace-result-complete-banner workspace-result-complete-v2">
               <div className="workspace-result-complete-icon">
-                <Briefcase size={18} />
+                <CheckCircle2 size={22} />
               </div>
               <div>
-                <strong>事项办理完成</strong>
+                <p className="eyebrow">DELIVERY READY</p>
+                <strong>事项办理完成，交付成果已就绪</strong>
                 <span>
                   本场景主交付为「{outputProfile.primaryLabel}」
                   {outputProfile.showDeliverable ? '；正式文书可按需展开生成' : '；详见下方审查报告'}。
                 </span>
               </div>
+              <div className="workspace-result-complete-meta">
+                <Badge tone="success" pill>报告已归集</Badge>
+                <Badge tone={reviewGate.ready ? 'success' : 'warning'} pill>{reviewGate.ready ? '自动校验通过' : '自动校验中'}</Badge>
+              </div>
             </div>
           )}
 
-          <ResultOverview
-            primaryLabel={outputProfile.primaryLabel}
-            resultInsight={resultInsight}
-            snapshot={snapshot}
-            statusSummary={statusSummary}
-            reviewReady={reviewGate.ready}
-          />
+          <div id="result-overview">
+            <ResultOverview
+              primaryLabel={outputProfile.primaryLabel}
+              resultInsight={resultInsight}
+              snapshot={snapshot}
+              statusSummary={statusSummary}
+              reviewReady={reviewGate.ready}
+            />
+          </div>
 
-          {isDocumentPrimary && deliverablePanel}
+          <div className="result-delivery-layout-v2">
+            <ResultDeliveryRail
+              primaryLabel={outputProfile.primaryLabel}
+              reviewReady={reviewGate.ready}
+              isCompleted={isCompleted}
+              showScenarioOutput={showScenarioOutput}
+              showDeliverable={outputProfile.showDeliverable && Boolean(snapshot)}
+              toolCount={liveToolCalls.length}
+            />
 
-          <TaskReportPanel
-            title={query || '审查结论报告'}
-            scenarioId={scenario}
-            resultSummary={resultSummary || '事项仍在办理中，请稍后再查看完整结论。'}
-            resultInsight={resultInsight}
-            snapshot={snapshot}
-            statusSummary={statusSummary}
-          />
+            <div className="result-delivery-content-v2">
+              {isDocumentPrimary && snapshot && deliverablePanel ? <section id="result-deliverable">{deliverablePanel}</section> : null}
 
-          <ScenarioPrimaryOutput
-            scenarioId={scenario}
-            resultSummary={resultSummary}
-            resultInsight={resultInsight}
-            snapshot={snapshot}
-            onOpenDeliverable={handleOpenDeliverable}
-          />
+              <section id="result-report">
+                <TaskReportPanel
+                  title={query || '审查结论报告'}
+                  scenarioId={scenario}
+                  resultSummary={resultSummary || '事项仍在办理中，请稍后再查看完整结论。'}
+                  resultInsight={resultInsight}
+                  snapshot={snapshot}
+                  statusSummary={statusSummary}
+                />
+              </section>
 
-          {!isDocumentPrimary && deliverablePanel}
+              {showScenarioOutput ? (
+                <section id="result-primary-output">
+                  <ScenarioPrimaryOutput
+                    scenarioId={scenario}
+                    resultSummary={resultSummary}
+                    resultInsight={resultInsight}
+                    snapshot={snapshot}
+                    onOpenDeliverable={handleOpenDeliverable}
+                  />
+                </section>
+              ) : null}
 
-          {liveToolCalls.length > 0 && (
-            <section className="ds-card workspace-appendix-card">
-              <button
-                type="button"
-                className="workspace-appendix-toggle"
-                onClick={() => setAppendixOpen((open) => !open)}
-              >
-                <div>
-                  <strong>办理附录</strong>
-                  <span>处理动作记录 · 最近 {liveToolCalls.length} 条</span>
-                </div>
-                <ChevronDown size={18} className={appendixOpen ? 'open' : ''} />
-              </button>
-              {appendixOpen && <ToolTracePanel toolCalls={liveToolCalls} />}
-            </section>
-          )}
+              {!isDocumentPrimary && snapshot && deliverablePanel ? <section id="result-deliverable">{deliverablePanel}</section> : null}
+
+              {liveToolCalls.length > 0 && (
+                <section id="result-appendix" className="ds-card workspace-appendix-card">
+                  <button
+                    type="button"
+                    className="workspace-appendix-toggle"
+                    onClick={() => setAppendixOpen((open) => !open)}
+                    aria-expanded={appendixOpen}
+                    aria-controls="result-tool-trace"
+                  >
+                    <div>
+                      <strong><Wrench size={15} />办理附录</strong>
+                      <span>处理动作记录 · 最近 {liveToolCalls.length} 条</span>
+                    </div>
+                    <ChevronDown size={18} className={appendixOpen ? 'open' : ''} />
+                  </button>
+                  {appendixOpen && <div id="result-tool-trace"><ToolTracePanel toolCalls={liveToolCalls} /></div>}
+                </section>
+              )}
+            </div>
+          </div>
 
           <section className="ds-card workspace-result-links">
             <div>
@@ -261,8 +348,8 @@ function WorkspaceResultPage() {
               <p>继续追踪办理过程、归档记录或补充材料。</p>
             </div>
             <div className="workspace-result-link-row">
-              <Link className="text-button" to="/workspace/run">返回办理进度</Link>
-              <Link className="text-button" to="/replay">历史回放</Link>
+              <Link className="text-button" to={runPath}>返回办理进度</Link>
+              <Link className="text-button" to="/replay">历史归档</Link>
               <Link className="text-button" to="/materials">查看材料库</Link>
               {workspacePath ? (
                 <Link className="text-button" to={`/workspace/run?replay=true&workspace=${encodeURIComponent(workspacePath)}`}>

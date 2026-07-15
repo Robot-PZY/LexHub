@@ -71,7 +71,7 @@ function CasesPage() {
       subtitle="围绕阶段、材料和下一步动作推进法律事项。"
       badge={badge}
       actions={(
-        <button type="button" className="btn btn-secondary" onClick={() => navigate('/workspace')}>
+          <button type="button" className="btn btn-secondary" onClick={() => navigate('/workspace/new')}>
           发起事项
         </button>
       )}

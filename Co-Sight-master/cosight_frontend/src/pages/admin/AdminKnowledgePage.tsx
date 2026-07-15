@@ -448,7 +448,7 @@ function AdminKnowledgePage() {
             <Settings2 size={18} />
             <div>
               <strong>知识库配置与就绪检查</strong>
-              <p>本地知识库三集合，与能力总览中的本地知识库及合同文书引擎联动。</p>
+              <p>本地知识库三集合，可与外部服务及合同文书引擎联动。</p>
             </div>
           </div>
 

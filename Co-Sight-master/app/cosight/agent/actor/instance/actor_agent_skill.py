@@ -89,8 +89,8 @@ def tavily_search_skill():
         'semantic_apis': ["api_search"],
         'function': SkillFunction(
             id='3c44f9ad-be5c-4e6c-a9d8-1426b23828a0',
-            name='app.cosight.search_toolkit.search_google',
-            description_zh='通过谷歌搜索引擎获取查询结果',
+            name='app.cosight.tool.search_toolkit.tavily_search',
+            description_zh='通过 Tavily 搜索引擎获取公开网页结果',
             description_en='Get search results using Tavily search engine',
             parameters={
                 "type": "object",
@@ -206,13 +206,13 @@ def search_wiki_skill():
         'skill_name': 'search_wiki',
         'skill_type': "function",
         'display_name_zh': '维基百科搜索',
-        'display_name_en': 'Google Search',
+        'display_name_en': 'Wikipedia Search',
         'description_zh': '使用维基百科搜索工具搜索给定查询的信息',
         'description_en': 'Use wiki search engine to search information for the given query',
         'semantic_apis': ["api_search"],
         'function': SkillFunction(
             id='3c44f9ad-be5c-4e6c-a9d8-1426b23828a0',
-            name='app.cosight.search_toolkit.search_google',
+            name='app.cosight.tool.search_toolkit.search_wiki',
             description_zh='使用维基百科搜索工具搜索给定查询的信息',
             description_en='Get search results using wiki search engine',
             parameters={

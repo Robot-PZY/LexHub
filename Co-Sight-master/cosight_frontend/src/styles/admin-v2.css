@@ -1,0 +1,863 @@
+/* LexHub admin console — presentation-focused visual layer */
+.lex-admin-shell {
+  --admin-navy: #0d2232;
+  --admin-navy-soft: #153448;
+  --admin-teal: #188477;
+  --admin-gold: #c99a48;
+  --admin-canvas: #f3f6f7;
+  --admin-line: #dce5e8;
+  background: var(--admin-canvas);
+}
+
+.lex-admin-shell.admin-shell {
+  display: block;
+}
+
+.lex-admin-shell .admin-sidebar {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(52, 148, 137, 0.18), transparent 28%),
+    linear-gradient(180deg, #102b3c 0%, #0a1f2e 100%);
+  border-right: 0;
+  box-shadow: 12px 0 34px rgba(10, 31, 46, 0.08);
+}
+
+.lex-admin-shell .admin-sidebar-brand {
+  min-height: 92px;
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.lex-admin-shell .admin-sidebar-brand,
+.lex-admin-shell .admin-sidebar-brand * {
+  color: #f5fbfb;
+}
+
+.lex-admin-shell .lex-shell-product-label {
+  color: rgba(221, 239, 239, 0.62);
+  letter-spacing: 0.08em;
+}
+
+.lex-admin-shell .admin-sidebar-tag {
+  width: calc(100% - 32px);
+  margin: 14px 16px 6px;
+  padding: 8px 10px;
+  color: #9ce2d7;
+  background: rgba(38, 151, 136, 0.12);
+  border: 1px solid rgba(112, 207, 193, 0.17);
+  border-radius: 9px;
+}
+
+.lex-admin-shell .admin-sidebar-tag svg {
+  filter: drop-shadow(0 0 5px rgba(75, 210, 189, 0.58));
+}
+
+.lex-admin-shell .admin-sidebar-group-label {
+  color: rgba(214, 229, 234, 0.48);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.lex-admin-shell .admin-sidebar-link {
+  position: relative;
+  min-height: 42px;
+  color: rgba(229, 240, 243, 0.72);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.lex-admin-shell .admin-sidebar-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.lex-admin-shell .admin-sidebar-link.active {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(37, 147, 132, 0.28), rgba(37, 147, 132, 0.1));
+  border-color: rgba(114, 214, 199, 0.16);
+}
+
+.lex-admin-shell .admin-sidebar-link.active::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 9px;
+  bottom: 9px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #62caba;
+  box-shadow: 0 0 12px rgba(98, 202, 186, 0.45);
+}
+
+.lex-admin-shell .admin-sidebar-foot {
+  border-top-color: rgba(255, 255, 255, 0.09);
+}
+
+.lex-admin-shell .admin-topbar {
+  min-height: 66px;
+  background: rgba(250, 252, 252, 0.92);
+  border-bottom: 1px solid var(--admin-line);
+  box-shadow: 0 5px 22px rgba(15, 38, 53, 0.035);
+  backdrop-filter: blur(14px);
+}
+
+.lex-admin-shell .admin-content {
+  width: min(1480px, 100%);
+  padding: 26px clamp(22px, 3vw, 42px) 64px;
+}
+
+.lex-admin-shell :where(.admin-table-wrap, .admin-table-card, .admin-list-panel) {
+  overflow: hidden;
+  border: 1px solid var(--admin-line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(24, 52, 66, 0.045);
+}
+
+.lex-admin-shell :where(table) {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.lex-admin-shell :where(th) {
+  color: #5e7080;
+  background: #f6f8f8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lex-admin-shell :where(th, td) {
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--admin-line);
+  text-align: left;
+}
+
+.lex-admin-shell :where(tbody tr:last-child td) {
+  border-bottom: 0;
+}
+
+.lex-admin-shell :where(tbody tr) {
+  transition: background var(--duration-fast);
+}
+
+.lex-admin-shell :where(tbody tr:hover) {
+  background: rgba(24, 132, 119, 0.035);
+}
+
+.lex-admin-shell .page-header {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.lex-admin-shell .page-header h1,
+.lex-admin-shell .page-header h2 {
+  letter-spacing: -0.025em;
+}
+
+.lex-admin-shell .ds-card,
+.lex-admin-shell .feature-panel,
+.lex-admin-shell .stat-card {
+  border-color: var(--admin-line);
+  box-shadow: 0 10px 28px rgba(24, 52, 66, 0.055);
+}
+
+.lex-admin-shell .ds-card:hover,
+.lex-admin-shell .admin-capability-banner-card:hover,
+.lex-admin-shell .admin-quick-nav-item:hover {
+  border-color: rgba(24, 132, 119, 0.32);
+  box-shadow: 0 14px 32px rgba(24, 52, 66, 0.085);
+}
+
+/* Overview */
+.lex-admin-shell .admin-dashboard-hero,
+.lex-admin-shell .admin-connections-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(117, 194, 185, 0.2);
+  background:
+    radial-gradient(circle at 91% 12%, rgba(87, 192, 176, 0.22), transparent 24%),
+    linear-gradient(128deg, #102d3e 0%, #153c4d 56%, #115a5a 100%);
+  box-shadow: 0 18px 44px rgba(10, 38, 52, 0.16);
+}
+
+.lex-admin-shell .admin-dashboard-hero::after,
+.lex-admin-shell .admin-connections-hero::after {
+  content: '';
+  position: absolute;
+  right: -48px;
+  bottom: -90px;
+  width: 290px;
+  height: 290px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  box-shadow: 0 0 0 42px rgba(255, 255, 255, 0.025), 0 0 0 84px rgba(255, 255, 255, 0.018);
+  pointer-events: none;
+}
+
+.lex-admin-shell .admin-dashboard-hero-main,
+.lex-admin-shell .admin-connections-hero-copy,
+.lex-admin-shell .admin-connections-matrix,
+.lex-admin-shell .admin-dashboard-readiness {
+  position: relative;
+  z-index: 1;
+}
+
+.lex-admin-shell .admin-dashboard-hero h2,
+.lex-admin-shell .admin-connections-hero h2 {
+  color: #fff;
+  max-width: 720px;
+  font-size: clamp(24px, 2.2vw, 36px);
+  line-height: 1.22;
+}
+
+.lex-admin-shell .admin-dashboard-hero-main > p:not(.eyebrow),
+.lex-admin-shell .admin-connections-hero-copy > p:not(.eyebrow),
+.lex-admin-shell .admin-dashboard-status-row > span {
+  color: rgba(229, 241, 242, 0.76);
+}
+
+.lex-admin-shell .admin-dashboard-hero .eyebrow,
+.lex-admin-shell .admin-connections-hero .eyebrow {
+  color: #83d9cc;
+}
+
+.lex-admin-shell .admin-dashboard-readiness article,
+.lex-admin-shell .admin-connections-matrix article {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.075);
+  backdrop-filter: blur(8px);
+}
+
+.lex-admin-shell .admin-dashboard-readiness span,
+.lex-admin-shell .admin-dashboard-readiness em,
+.lex-admin-shell .admin-connections-matrix span,
+.lex-admin-shell .admin-connections-matrix em {
+  color: rgba(226, 240, 241, 0.66);
+}
+
+.lex-admin-shell .admin-dashboard-readiness strong,
+.lex-admin-shell .admin-connections-matrix strong {
+  color: #fff;
+}
+
+.lex-admin-shell .admin-overview-stats .stat-card {
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+}
+
+.lex-admin-shell .admin-overview-stats .stat-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(#188477, #59b9ab);
+}
+
+.lex-admin-shell .admin-quick-nav {
+  padding: 6px;
+  border: 1px solid var(--admin-line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.lex-admin-shell .admin-quick-nav-item {
+  min-height: 46px;
+  border-radius: 10px;
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.lex-admin-shell .admin-quick-nav-item svg {
+  color: var(--admin-teal);
+}
+
+/* Agent showcase */
+.admin-agents-v2 .admin-capability-banner {
+  gap: 14px;
+}
+
+.admin-agents-v2 .admin-capability-banner-card {
+  position: relative;
+  min-height: 102px;
+  padding: 18px;
+  align-items: flex-start;
+  border: 1px solid var(--admin-line);
+  background: linear-gradient(145deg, #fff, #f8fbfb);
+  box-shadow: 0 9px 24px rgba(24, 52, 66, 0.05);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.admin-agents-v2 .admin-capability-banner-card > svg {
+  color: var(--admin-teal);
+  background: #e9f5f3;
+}
+
+.admin-agents-v2 .feature-stat-grid {
+  margin-block: 18px 24px;
+}
+
+.admin-agents-v2 .feature-panel {
+  overflow: hidden;
+  background: #fff;
+}
+
+.admin-agents-v2 .feature-panel-large {
+  background:
+    linear-gradient(180deg, rgba(235, 247, 245, 0.66), transparent 140px),
+    #fff;
+}
+
+.admin-agents-v2 .agent-routing-map {
+  position: relative;
+  padding-left: 8px;
+}
+
+.admin-agents-v2 .agent-routing-map::before {
+  content: '';
+  position: absolute;
+  left: 25px;
+  top: 25px;
+  bottom: 25px;
+  width: 1px;
+  background: linear-gradient(#54b9aa, #d2e2e4);
+}
+
+.admin-agents-v2 .agent-routing-node {
+  position: relative;
+  border-color: var(--admin-line);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.admin-agents-v2 .agent-routing-node > span {
+  z-index: 1;
+  background: #eff8f6;
+  border-color: #9ed2cb;
+  color: #176d63;
+}
+
+.admin-agents-v2 .agent-routing-node.active {
+  border-color: rgba(24, 132, 119, 0.42);
+  box-shadow: 0 8px 22px rgba(24, 132, 119, 0.09);
+}
+
+.admin-agents-v2 .agent-evidence-card,
+.admin-agents-v2 .feature-agent-grid > div {
+  border-color: var(--admin-line);
+  background: #f8fbfb;
+}
+
+.admin-agents-v2 .agent-evidence-card strong,
+.admin-agents-v2 .feature-agent-grid strong {
+  color: #123548;
+}
+
+/* Capability matrix */
+.lex-admin-shell .admin-tab-bar {
+  position: sticky;
+  top: 66px;
+  z-index: 4;
+  padding: 6px;
+  border: 1px solid var(--admin-line);
+  border-radius: 13px;
+  background: rgba(249, 251, 251, 0.92);
+  box-shadow: 0 8px 20px rgba(18, 48, 63, 0.045);
+  backdrop-filter: blur(12px);
+}
+
+.lex-admin-shell .admin-tab-btn {
+  min-height: 40px;
+  border-radius: 9px;
+}
+
+.lex-admin-shell .admin-tab-btn.active {
+  color: #fff;
+  background: var(--admin-navy-soft);
+  box-shadow: 0 6px 14px rgba(13, 34, 50, 0.16);
+}
+
+.lex-admin-shell .admin-stack-panel {
+  gap: 22px;
+}
+
+.lex-admin-shell .admin-stack-banner,
+.lex-admin-shell .admin-stack-info-strip {
+  border: 1px solid #d4e3e3;
+  background: linear-gradient(90deg, #edf7f5, #f8fbfb);
+}
+
+.lex-admin-shell .admin-stack-stat {
+  min-height: 84px;
+  background: #fff;
+}
+
+.lex-admin-shell .admin-stack-stat-icon {
+  color: #fff;
+  background: linear-gradient(145deg, #153f50, #188477);
+  box-shadow: 0 7px 16px rgba(24, 132, 119, 0.18);
+}
+
+.lex-admin-shell .admin-stack-flow-card {
+  background:
+    linear-gradient(180deg, rgba(234, 246, 244, 0.6), transparent 180px),
+    #fff;
+}
+
+.lex-admin-shell .admin-stack-flow-layer-accent {
+  color: #fff;
+  background: linear-gradient(115deg, #153448, #156d69);
+  border-color: transparent;
+}
+
+.lex-admin-shell .admin-stack-flow-layer-accent em,
+.lex-admin-shell .admin-stack-flow-layer-accent p {
+  color: rgba(230, 242, 243, 0.7);
+}
+
+.lex-admin-shell .admin-stack-flow-agent {
+  min-height: 72px;
+  box-shadow: 0 5px 14px rgba(18, 48, 63, 0.04);
+}
+
+.lex-admin-shell .admin-stack-model-card,
+.lex-admin-shell .admin-stack-api-card,
+.lex-admin-shell .admin-stack-agent-card {
+  background: #fff;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.lex-admin-shell .admin-stack-model-card:hover,
+.lex-admin-shell .admin-stack-api-card:hover,
+.lex-admin-shell .admin-stack-agent-card:hover {
+  box-shadow: 0 13px 30px rgba(24, 52, 66, 0.09);
+}
+
+.lex-admin-shell .admin-stack-api-card-head,
+.lex-admin-shell .admin-stack-model-card-head {
+  background: linear-gradient(180deg, #fbfdfd, #fff);
+}
+
+.lex-admin-shell .admin-stack-spec-item {
+  border-top-color: #e7edef;
+}
+
+.lex-admin-shell .admin-stack-env-keys code,
+.lex-admin-shell .admin-stack-catalog-table code {
+  color: #315567;
+  background: #eef3f5;
+}
+
+.lex-admin-shell .admin-stack-catalog-card {
+  border-radius: 14px;
+}
+
+.lex-admin-shell .admin-stack-catalog-table thead {
+  background: #eef3f4;
+}
+
+.lex-admin-shell .admin-stack-catalog-table tbody tr:hover {
+  background: #f1f8f7;
+}
+
+@media (max-width: 1080px) {
+  .lex-admin-shell .admin-content {
+    padding-inline: 20px;
+  }
+
+  .lex-admin-shell .admin-tab-bar {
+    top: 62px;
+  }
+}
+
+@media (max-width: 760px) {
+  .lex-admin-shell .admin-content {
+    padding: 18px 14px 48px;
+  }
+
+  .lex-admin-shell .admin-dashboard-hero,
+  .lex-admin-shell .admin-connections-hero {
+    border-radius: 16px;
+  }
+
+  .lex-admin-shell .admin-dashboard-hero h2,
+  .lex-admin-shell .admin-connections-hero h2 {
+    font-size: 24px;
+  }
+
+  .lex-admin-shell .admin-tab-bar {
+    position: static;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .lex-admin-shell .admin-tab-btn {
+    flex: 0 0 auto;
+  }
+
+  .admin-agents-v2 .admin-capability-banner {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lex-admin-shell *,
+  .admin-agents-v2 * {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Knowledge assets */
+.lex-admin-shell .kb-config-strip {
+  border-color: #d6e4e6;
+  background: linear-gradient(100deg, #f5f9fa, #edf6f4);
+  box-shadow: 0 8px 22px rgba(24, 52, 66, 0.04);
+}
+
+.lex-admin-shell .kb-config-strip.ready {
+  border-color: rgba(24, 132, 119, 0.3);
+  background: linear-gradient(100deg, #eff8f6, #f8fbfb);
+}
+
+.lex-admin-shell .kb-summary-grid {
+  gap: 14px;
+}
+
+.lex-admin-shell .kb-summary-card {
+  position: relative;
+  min-height: 104px;
+  padding: 18px;
+  border-color: var(--admin-line);
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(24, 52, 66, 0.045);
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.lex-admin-shell .kb-summary-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 18px;
+  bottom: 18px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: #cbd8dc;
+}
+
+.lex-admin-shell .kb-summary-card:hover,
+.lex-admin-shell .kb-summary-card.active {
+  border-color: rgba(24, 132, 119, 0.35);
+  background: linear-gradient(145deg, #fff, #f1f8f7);
+  box-shadow: 0 13px 30px rgba(24, 52, 66, 0.075);
+}
+
+.lex-admin-shell .kb-summary-card.active::after {
+  background: var(--admin-teal);
+}
+
+.lex-admin-shell .kb-summary-card > svg {
+  color: #176d63;
+  background: #e8f4f2;
+}
+
+.lex-admin-shell .kb-summary-card em {
+  color: #123548;
+  font-variant-numeric: tabular-nums;
+}
+
+.lex-admin-shell .kb-page-tabs {
+  position: sticky;
+  top: 66px;
+  z-index: 4;
+  padding: 6px;
+  border: 1px solid var(--admin-line);
+  border-radius: 13px;
+  background: rgba(249, 251, 251, 0.94);
+  box-shadow: 0 8px 20px rgba(18, 48, 63, 0.045);
+  backdrop-filter: blur(12px);
+}
+
+.lex-admin-shell .kb-page-tabs button {
+  min-height: 40px;
+  border-radius: 9px;
+}
+
+.lex-admin-shell .kb-page-tabs button.active {
+  color: #fff;
+  background: var(--admin-navy-soft);
+  box-shadow: 0 6px 14px rgba(13, 34, 50, 0.15);
+}
+
+.lex-admin-shell .kb-main-card,
+.lex-admin-shell .kb-import-card,
+.lex-admin-shell .kb-config-card {
+  border-color: var(--admin-line);
+  background: #fff;
+}
+
+.lex-admin-shell .kb-main-card-head,
+.lex-admin-shell .kb-config-card-head {
+  background: linear-gradient(180deg, #f8fbfb, #fff);
+  border-bottom-color: var(--admin-line);
+}
+
+.lex-admin-shell .kb-document-card,
+.lex-admin-shell .kb-item-row,
+.lex-admin-shell .admin-kb-seed-card {
+  border-color: var(--admin-line);
+  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.lex-admin-shell .kb-document-card:hover,
+.lex-admin-shell .kb-item-row:hover,
+.lex-admin-shell .kb-item-row.active,
+.lex-admin-shell .admin-kb-seed-card:hover {
+  border-color: rgba(24, 132, 119, 0.3);
+  background: #f2f8f7;
+  box-shadow: 0 7px 18px rgba(24, 52, 66, 0.05);
+}
+
+.lex-admin-shell .kb-empty-banner {
+  border-color: rgba(201, 154, 72, 0.32);
+  background: linear-gradient(100deg, rgba(251, 247, 236, 0.96), #fff);
+}
+
+/* Policy editor */
+.admin-policy-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.admin-policy-summary article {
+  min-height: 92px;
+  padding: 16px 18px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 12px;
+  border: 1px solid var(--admin-line);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(24, 52, 66, 0.045);
+}
+
+.admin-policy-summary-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  color: #176d63;
+  border-radius: 10px;
+  background: #e8f4f2;
+}
+
+.admin-policy-summary-icon.review {
+  color: #9a6b1a;
+  background: #fbf3df;
+}
+
+.admin-policy-summary article div strong {
+  display: block;
+  color: #102f41;
+  font-size: 22px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-policy-summary article div span,
+.admin-policy-summary-state > span {
+  display: block;
+  margin-top: 5px;
+  color: #536b78;
+  font-size: 12px;
+}
+
+.admin-policy-summary article > em {
+  grid-column: 1 / -1;
+  margin-top: 9px;
+  color: #6a7e87;
+  font-size: 11px;
+  font-style: normal;
+}
+
+.admin-policy-summary-state {
+  color: #fff;
+  background: linear-gradient(120deg, #143548, #176b68) !important;
+  border-color: transparent !important;
+}
+
+.admin-policy-summary-state > span,
+.admin-policy-summary-state > em {
+  color: rgba(230, 242, 243, 0.68) !important;
+}
+
+.admin-policy-summary-state > strong {
+  align-self: end;
+  color: #fff;
+  font-size: 20px;
+}
+
+.lex-admin-shell .admin-rules-compact {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.lex-admin-shell .admin-rules-compact .admin-panel-desc {
+  margin: 0;
+  padding: 16px 20px;
+  color: #536b78;
+  background: #f5f8f9;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.lex-admin-shell .admin-rule-editor-compact {
+  padding: 18px 20px 8px;
+}
+
+.lex-admin-shell .admin-rule-row-edit {
+  min-height: 54px;
+  border-color: var(--admin-line);
+  background: #fff;
+}
+
+.lex-admin-shell .admin-rule-row-edit:focus-within {
+  border-color: rgba(24, 132, 119, 0.52);
+  box-shadow: 0 0 0 3px rgba(24, 132, 119, 0.1);
+}
+
+.lex-admin-shell .admin-rule-row-edit > span {
+  color: #176d63;
+  background: #e9f4f2;
+}
+
+.lex-admin-shell .admin-rules-compact .admin-inline-btn {
+  margin: 8px 20px 20px;
+}
+
+/* User registry */
+.lex-admin-shell .membership-tier-legend {
+  padding: 14px 18px;
+  border: 1px solid var(--admin-line);
+  border-radius: 12px;
+  background: #f7fafb;
+}
+
+.lex-admin-shell .admin-users-table {
+  overflow: hidden;
+  border: 1px solid var(--admin-line);
+  border-radius: 13px;
+  background: #fff;
+}
+
+.lex-admin-shell .admin-users-table-head {
+  min-height: 44px;
+  color: #566e7a;
+  background: #eef3f4;
+  border-bottom: 1px solid #d7e1e4;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.lex-admin-shell .admin-users-table-row {
+  min-height: 68px;
+  border-bottom-color: #e6edef;
+  transition: background 160ms ease;
+}
+
+.lex-admin-shell .admin-users-table-row:hover {
+  background: #f2f8f7;
+}
+
+.lex-admin-shell .admin-users-table-row select {
+  min-height: 38px;
+  border-color: #cedbdf;
+  border-radius: 9px;
+  background: #fff;
+}
+
+.lex-admin-shell .admin-users-table-row select:focus {
+  border-color: var(--admin-teal);
+  box-shadow: 0 0 0 3px rgba(24, 132, 119, 0.1);
+  outline: none;
+}
+
+/* Analytics */
+.admin-analytics-v2 .feature-stat-grid {
+  margin-bottom: 22px;
+}
+
+.admin-analytics-v2 .analytics-grid {
+  gap: 16px;
+}
+
+.admin-analytics-v2 .analytics-panel {
+  min-height: 260px;
+  background:
+    linear-gradient(180deg, rgba(241, 248, 247, 0.68), transparent 100px),
+    #fff;
+}
+
+.admin-analytics-v2 .analytics-panel-head {
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e4ebed;
+}
+
+.admin-analytics-v2 .analytics-panel-head svg {
+  color: var(--admin-teal);
+}
+
+.admin-analytics-v2 .analytics-bar-track {
+  background: #e8eef0;
+}
+
+.admin-analytics-v2 .analytics-bar-track i,
+.admin-analytics-v2 .analytics-trend-col i {
+  background: linear-gradient(90deg, #176678, #39a394);
+}
+
+.admin-analytics-v2 .analytics-api-card {
+  border-color: var(--admin-line);
+  background: #f8fbfb;
+}
+
+.admin-analytics-v2 .landing-section {
+  padding: 0;
+}
+
+@media (max-width: 960px) {
+  .admin-policy-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .lex-admin-shell .kb-page-tabs {
+    top: 62px;
+  }
+}
+
+@media (max-width: 760px) {
+  .lex-admin-shell .kb-page-tabs {
+    position: static;
+    overflow-x: auto;
+  }
+
+  .lex-admin-shell .kb-page-tabs button {
+    flex: 0 0 auto;
+  }
+
+  .lex-admin-shell .admin-users-table {
+    overflow-x: auto;
+  }
+
+  .lex-admin-shell .admin-users-table-head,
+  .lex-admin-shell .admin-users-table-row {
+    min-width: 760px;
+  }
+}

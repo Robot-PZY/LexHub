@@ -19,7 +19,10 @@ import webbrowser
 ROOT = Path(__file__).resolve().parent
 FRONTEND = ROOT / "cosight_frontend"
 PID_FILE = ROOT / ".lexhub-pids.json"
-BACKEND_URL = "http://127.0.0.1:7788/api/nae-deep-research/v1/replay/workspaces"
+LOG_DIR = ROOT / "logs"
+BACKEND_LOG = LOG_DIR / "launcher-backend.log"
+FRONTEND_LOG = LOG_DIR / "launcher-frontend.log"
+BACKEND_URL = "http://127.0.0.1:7788/api/nae-deep-research/v1/deep-research/server-timestamp"
 FRONTEND_URL = "http://127.0.0.1:5174"
 
 
@@ -46,7 +49,7 @@ def _python_executable() -> str:
         if not candidate.is_file():
             continue
         probe = subprocess.run(
-            [str(candidate), "-c", "import fastapi, uvicorn, dotenv"],
+            [str(candidate), "-c", "import fastapi, uvicorn, dotenv, aiohttp, chromadb, openai"],
             cwd=ROOT,
             capture_output=True,
         )
@@ -76,18 +79,47 @@ def _preflight() -> tuple[str, str]:
     return _python_executable(), _npm_executable()
 
 
-def _spawn(command: list[str], cwd: Path, title: str) -> subprocess.Popen:
+def _spawn(command: list[str], cwd: Path, log_path: Path) -> subprocess.Popen:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    log_handle = log_path.open("w", encoding="utf-8")
     if os.name == "nt":
-        quoted = subprocess.list2cmdline(command)
         return subprocess.Popen(
-            ["cmd.exe", "/k", f"title {title} && {quoted}"],
+            command,
             cwd=cwd,
-            creationflags=subprocess.CREATE_NEW_CONSOLE,
+            stdin=subprocess.DEVNULL,
+            stdout=log_handle,
+            stderr=subprocess.STDOUT,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW,
         )
-    return subprocess.Popen(command, cwd=cwd, start_new_session=True)
+    return subprocess.Popen(
+        command,
+        cwd=cwd,
+        stdin=subprocess.DEVNULL,
+        stdout=log_handle,
+        stderr=subprocess.STDOUT,
+        start_new_session=True,
+    )
 
 
-def _wait_for_service(name: str, url: str, process: subprocess.Popen | None, timeout: int) -> bool:
+def _tail_log(path: Path, line_count: int = 24) -> None:
+    if not path.is_file():
+        return
+    try:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return
+    if lines:
+        print(f"\n--- {path.name} 最近日志 ---")
+        print("\n".join(lines[-line_count:]))
+
+
+def _wait_for_service(
+    name: str,
+    url: str,
+    process: subprocess.Popen | None,
+    timeout: int,
+    log_path: Path,
+) -> bool:
     started = time.monotonic()
     next_report = 0
     while time.monotonic() - started < timeout:
@@ -97,6 +129,7 @@ def _wait_for_service(name: str, url: str, process: subprocess.Popen | None, tim
             return True
         if process is not None and process.poll() is not None:
             print(f"[失败] {name}进程已退出，退出码 {process.returncode}")
+            _tail_log(log_path)
             return False
         elapsed = int(time.monotonic() - started)
         if elapsed >= next_report:
@@ -104,6 +137,7 @@ def _wait_for_service(name: str, url: str, process: subprocess.Popen | None, tim
             next_report += 10
         time.sleep(1)
     print(f"[超时] {name}未在 {timeout} 秒内就绪，请查看对应日志窗口")
+    _tail_log(log_path)
     return False
 
 
@@ -114,24 +148,58 @@ def _save_pids(processes: dict[str, subprocess.Popen]) -> None:
     )
 
 
-def stop_services() -> int:
-    if not PID_FILE.is_file():
-        print("[提示] 没有一键启动器记录的运行进程。")
-        return 0
-    try:
-        pids = json.loads(PID_FILE.read_text(encoding="utf-8"))
-    except Exception:
-        pids = {}
-    for name, pid in pids.items():
-        if not isinstance(pid, int):
+def _windows_listener_pids(ports: set[int]) -> set[int]:
+    if os.name != "nt":
+        return set()
+    result = subprocess.run(
+        ["netstat", "-ano", "-p", "tcp"],
+        capture_output=True,
+        text=True,
+        errors="replace",
+    )
+    listener_pids: set[int] = set()
+    for line in result.stdout.splitlines():
+        columns = line.split()
+        if len(columns) < 5 or columns[0].upper() != "TCP" or columns[3].upper() != "LISTENING":
             continue
+        try:
+            port = int(columns[1].rsplit(":", 1)[-1])
+            pid = int(columns[-1])
+        except ValueError:
+            continue
+        if port in ports and pid > 0:
+            listener_pids.add(pid)
+    return listener_pids
+
+
+def stop_services() -> int:
+    recorded: dict[str, int] = {}
+    if PID_FILE.is_file():
+        try:
+            recorded = json.loads(PID_FILE.read_text(encoding="utf-8"))
+        except Exception:
+            recorded = {}
+
+    targets = {pid for pid in recorded.values() if isinstance(pid, int)}
+    targets.update(_windows_listener_pids({7788, 5174}))
+    if not targets:
+        print("[提示] 未发现由一键启动器创建的服务。")
+        PID_FILE.unlink(missing_ok=True)
+        return 0
+
+    stopped = 0
+    for pid in sorted(targets):
         if os.name == "nt":
             result = subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], capture_output=True)
         else:
             result = subprocess.run(["kill", str(pid)], capture_output=True)
         state = "已停止" if result.returncode == 0 else "未运行或已退出"
-        print(f"[{state}] {name} (PID {pid})")
+        if result.returncode == 0:
+            stopped += 1
+        print(f"[{state}] 服务进程 (PID {pid})")
     PID_FILE.unlink(missing_ok=True)
+    if stopped:
+        print(f"[完成] 已停止 {stopped} 个服务进程。")
     return 0
 
 
@@ -149,19 +217,25 @@ def start_services(check_only: bool = False, no_browser: bool = False) -> int:
     frontend_process = None
 
     if _port_open(7788):
-        print("[复用] 后端端口 7788 已有服务监听。")
+        if not _http_ready(BACKEND_URL):
+            raise RuntimeError("端口 7788 已被其他程序占用；请先关闭该程序后重试")
+        print("[复用] 后端服务已运行。")
     else:
         backend_process = _spawn(
-            [python, str(ROOT / "cosight_server/deep_research/main.py")], ROOT, "律枢 LexHub 后端"
+            [python, "-u", str(ROOT / "cosight_server/deep_research/main.py")], ROOT, BACKEND_LOG
         )
         processes["backend"] = backend_process
-        print(f"[启动] 后端 PID {backend_process.pid}")
+        print(f"[启动] 后端 PID {backend_process.pid}（首次加载可能需要 1–3 分钟）")
 
     if _port_open(5174):
-        print("[复用] 前端端口 5174 已有服务监听。")
+        if not _http_ready(FRONTEND_URL):
+            raise RuntimeError("端口 5174 已被其他程序占用；请先关闭该程序后重试")
+        print("[复用] 前端服务已运行。")
     else:
         frontend_process = _spawn(
-            [npm, "run", "dev", "--", "--host", "127.0.0.1"], FRONTEND, "律枢 LexHub 前端"
+            [npm, "run", "dev", "--", "--host", "127.0.0.1", "--port", "5174", "--strictPort"],
+            FRONTEND,
+            FRONTEND_LOG,
         )
         processes["frontend"] = frontend_process
         print(f"[启动] 前端 PID {frontend_process.pid}")
@@ -169,16 +243,16 @@ def start_services(check_only: bool = False, no_browser: bool = False) -> int:
     if processes:
         _save_pids(processes)
 
-    frontend_ready = _wait_for_service("前端", FRONTEND_URL, frontend_process, 60)
-    backend_ready = _wait_for_service("后端", BACKEND_URL, backend_process, 180)
+    backend_ready = _wait_for_service("后端", BACKEND_URL, backend_process, 240, BACKEND_LOG)
+    frontend_ready = _wait_for_service("前端", FRONTEND_URL, frontend_process, 60, FRONTEND_LOG)
     if not (frontend_ready and backend_ready):
-        print("[未完成] 服务未全部就绪，可运行 stop-cosight.bat 清理本次启动进程。")
+        print("[未完成] 服务未全部就绪，可双击项目外层 stop-lexhub.bat 清理本次启动进程。")
         return 1
 
     print("\n========================================")
     print("律枢 LexHub 已启动")
     print(f"访问地址：{FRONTEND_URL}")
-    print("停止服务：双击 stop-cosight.bat")
+    print("停止服务：双击项目外层 stop-lexhub.bat")
     print("========================================")
     if not no_browser:
         webbrowser.open(FRONTEND_URL)

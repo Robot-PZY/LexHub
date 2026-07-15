@@ -1,6 +1,6 @@
 import { Sparkles, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import AppShell from '../components/layout/AppShell';
 import { Badge, Button, Panel } from '../components/ui';
 import ComposerPanel from '../components/workspace/ComposerPanel';
@@ -50,10 +50,15 @@ function createIntakeForScenario(scenarioId: string): DocumentIntake {
 
 function WorkspacePage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const requestedScenario = searchParams.get('scenario');
+  const initialScenario = requestedScenario && findScenario(requestedScenario) ? requestedScenario : null;
   const [draft, setDraft] = useState(() => loadWorkspaceDraft());
   const [toolkit, setToolkit] = useState<LegalToolkitProfile | null>(null);
-  const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
-  const [documentIntake, setDocumentIntake] = useState<DocumentIntake>({ ...EMPTY_DOCUMENT_INTAKE });
+  const [selectedScenario, setSelectedScenario] = useState<string | null>(initialScenario);
+  const [documentIntake, setDocumentIntake] = useState<DocumentIntake>(() => (
+    initialScenario ? createIntakeForScenario(initialScenario) : { ...EMPTY_DOCUMENT_INTAKE }
+  ));
   const [taskTitle, setTaskTitle] = useState('');
   const [intakeError, setIntakeError] = useState<string | null>(null);
   const taskIdRef = useRef(crypto.randomUUID());
@@ -188,10 +193,10 @@ function WorkspacePage() {
       actions={<Link className="lex-button lex-button-secondary lex-button-md" to="/materials">查看材料库</Link>}
       onLogout={handleLogout}
     >
-      <div className="workspace-intake-shell">
+      <div className="workspace-intake-shell lex-intake-v2">
         <Panel as="section" className="workspace-command-card workspace-intake-card">
           <div className="workspace-intake-layout">
-            <aside className="workspace-intake-rail" aria-label="事项受理步骤">
+            <nav className="workspace-intake-progress" aria-label="事项受理步骤">
               <p className="workspace-intake-rail-label">INTAKE</p>
               {intakeSteps
                 .filter((step) => step.id !== 'intake' || needsIntake)
@@ -204,7 +209,7 @@ function WorkspacePage() {
                     <span>{step.desc}</span>
                   </div>
                 ))}
-            </aside>
+            </nav>
 
             <div className="workspace-intake-main">
               <div className="workspace-intake-hero">

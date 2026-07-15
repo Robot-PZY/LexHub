@@ -18,7 +18,6 @@ from app.cosight.agent.actor.instance.actor_agent_skill import (
     file_str_replace_skill,
     legal_search_skill,
     mark_step_skill,
-    search_google_skill,
     search_wiki_skill,
     tavily_search_skill,
 )
@@ -44,7 +43,7 @@ SPECIALIST_DEFINITIONS = {
         "name_en": "Legal Research Agent",
         "description": "负责法规、司法解释、案例和知识库检索。",
         "prompt": "你是法规研究智能体。围绕明确争点检索有效法律依据，区分法规、案例和普通网页，保留标题、来源与可核验引用；达到证据覆盖后立即结束。",
-        "skills": lambda workspace: [mark_step_skill(), legal_search_skill(), search_google_skill(), tavily_search_skill(), search_wiki_skill(), fetch_website_content_skill(), file_read_skill(), file_saver_skill()],
+        "skills": lambda workspace: [mark_step_skill(), legal_search_skill(), tavily_search_skill(), search_wiki_skill(), fetch_website_content_skill(), file_read_skill(), file_saver_skill()],
     },
     "clause_risk": {
         "name_zh": "条款风险智能体",

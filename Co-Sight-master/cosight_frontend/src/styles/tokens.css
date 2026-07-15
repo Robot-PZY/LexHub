@@ -1,8 +1,8 @@
 :root {
   /* Typography */
-  --font-sans: "IBM Plex Sans", "Inter", "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
-  --font-display: "Poppins", "IBM Plex Sans", "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", sans-serif;
-  --font-brand: "IBM Plex Sans", "Plus Jakarta Sans", "HarmonyOS Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-sans: "Inter", "Noto Sans SC", "HarmonyOS Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-display: "Inter", "Noto Sans SC", "HarmonyOS Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-brand: "Noto Sans SC", "HarmonyOS Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-size-xs: 12px;
   --font-size-sm: 13px;
   --font-size-body: 15px;
@@ -49,15 +49,17 @@
   --editorial-danger: #b42318;
   --editorial-info: #155e75;
 
-  --color-primary: #123e66;
-  --color-primary-hover: #0b2d4d;
-  --color-primary-soft: #eaf3f8;
-  --color-primary-muted: rgba(18, 62, 102, 0.14);
-  --color-secondary: #1a5967;
-  --color-accent: #c8962c;
-  --color-accent-hover: #a97816;
-  --color-accent-soft: #fff5df;
-  --color-accent-soft-text: #7a5410;
+  --color-primary: #173b57;
+  --color-primary-hover: #102c43;
+  --color-primary-soft: #eaf1f5;
+  --color-primary-muted: rgba(23, 59, 87, 0.14);
+  --color-secondary: #167d74;
+  --color-secondary-hover: #10655e;
+  --color-secondary-soft: #e7f4f1;
+  --color-accent: #c49745;
+  --color-accent-hover: #a77b2f;
+  --color-accent-soft: #fbf3e4;
+  --color-accent-soft-text: #76551d;
 
   /* Semantic */
   --color-success: var(--editorial-success);
@@ -70,17 +72,17 @@
   --color-info-soft: #e8f1f5;
 
   /* Surfaces — monochrome editorial, not generic AI blue */
-  --color-bg: #f8fbfd;
-  --color-bg-elevated: #eef6fa;
+  --color-bg: #f7f6f2;
+  --color-bg-elevated: #efeee9;
   --color-surface: var(--editorial-surface);
   --color-surface-alt: #fafafa;
   --color-surface-muted: #f1f3f5;
   --color-surface-strong: var(--editorial-surface-ink);
-  --color-text: #26394e;
-  --color-text-strong: #0b2d4d;
-  --color-muted: #63758a;
-  --color-line: #d9e5ed;
-  --color-line-soft: #edf3f7;
+  --color-text: #263746;
+  --color-text-strong: #111c27;
+  --color-muted: #667585;
+  --color-line: #d9ddd9;
+  --color-line-soft: #ebece8;
 
   /* Radius */
   --radius-xs: 4px;
@@ -107,11 +109,18 @@
   --duration-slow: 320ms;
 
   /* Layout */
-  --sidebar-width: 248px;
-  --topbar-height: 64px;
-  --content-max: 1240px;
-  --app-content-max: 1180px;
+  --sidebar-width: 272px;
+  --topbar-height: 68px;
+  --content-max: 1440px;
+  --app-content-max: 1360px;
   --section-gap: 56px;
+
+  /* Layering */
+  --z-base: 0;
+  --z-sticky: 20;
+  --z-sidebar: 40;
+  --z-overlay: 30;
+  --z-toast: 80;
 
   /* Legacy aliases */
   --bg: var(--color-bg);

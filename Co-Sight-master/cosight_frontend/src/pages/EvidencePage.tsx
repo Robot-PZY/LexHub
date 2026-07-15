@@ -46,7 +46,7 @@ function EvidencePage() {
       title="证据质检"
       subtitle="核验合同、票据、截图与沟通记录，识别证据缺口和材料风险。"
       badge={<span className="ds-badge ds-badge-success">{uploadedFiles.length > 0 ? `已上传 ${uploadedFiles.length} 份` : '支持本地上传'}</span>}
-      actions={<button type="button" className="btn btn-primary" onClick={() => navigate('/workspace')}>带入事项受理</button>}
+        actions={<button type="button" className="btn btn-primary" onClick={() => navigate('/workspace/new')}>带入事项受理</button>}
       onLogout={handleLogout}
     >
       <PageHeader

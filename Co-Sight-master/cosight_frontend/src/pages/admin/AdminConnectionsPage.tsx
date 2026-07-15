@@ -1,89 +1,76 @@
 import { useSearchParams } from 'react-router-dom';
-import { Bot, CheckCircle2, KeyRound, Layers3, RefreshCw, ServerCog, SlidersHorizontal } from 'lucide-react';
-import AdminStackOverview, { type StackTab } from '../../components/admin/AdminStackOverview';
+import { Bot, KeyRound, RefreshCw, SlidersHorizontal } from 'lucide-react';
+import AdminModelCenter from '../../components/admin/AdminModelCenter';
+import AdminIntegrationCenter from '../../components/admin/AdminIntegrationCenter';
 import { AdminShell } from '../../components/layout/AdminShell';
-import PageHeader from '../../components/ui/PageHeader';
-import { Badge } from '../../components/ui';
 import { useAdminSettings } from '../../hooks/useAdminSettings';
 
-const TABS: Array<{ id: StackTab; label: string; icon: typeof SlidersHorizontal }> = [
-  { id: 'overview', label: '总览', icon: Layers3 },
+type ConnectionsTab = 'models' | 'apis' | 'tools';
+
+const TABS: Array<{ id: ConnectionsTab; label: string; icon: typeof SlidersHorizontal }> = [
   { id: 'models', label: '模型', icon: SlidersHorizontal },
   { id: 'apis', label: '外部服务', icon: KeyRound },
-  { id: 'tools', label: '处理能力', icon: Bot },
+  { id: 'tools', label: '工具与授权', icon: Bot },
 ];
 
 function AdminConnectionsPage() {
-  const { settings, readyModelCount, readyApiCount, syncState, runtimeInfo } = useAdminSettings();
+  const {
+    settings,
+    readyModelCount,
+    readyApiCount,
+    enabledModelCount,
+    enabledApiCount,
+    savedHint,
+    syncState,
+    lastSyncedAt,
+    reloadSettings,
+    saveSettings,
+  } = useAdminSettings();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabParam = searchParams.get('tab');
-  const tab: StackTab = TABS.some((item) => item.id === tabParam) ? (tabParam as StackTab) : 'overview';
+  const tab: ConnectionsTab = TABS.some((item) => item.id === tabParam) ? (tabParam as ConnectionsTab) : 'models';
 
-  const refresh = () => {
-    window.location.reload();
-  };
+  const isSyncing = syncState === 'loading' || syncState === 'saving';
+  const statusLabel = syncState === 'synced'
+    ? `已同步${lastSyncedAt ? ` · ${lastSyncedAt.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}` : ''}`
+    : syncState === 'local'
+      ? '仅本地缓存'
+      : syncState === 'saving'
+        ? '正在保存'
+        : '正在同步';
 
   return (
     <AdminShell
-      title="能力总览"
-      subtitle="只读展示 LexHub 办理能力与模型、外部服务、处理能力配置状态。"
+      title={tab === 'models' ? '模型配置' : tab === 'apis' ? '外部服务' : '工具与授权'}
+      subtitle={tab === 'models'
+        ? '统一维护系统模型与供应商连接。'
+        : tab === 'apis'
+          ? '配置任务办理需要的外部服务。'
+          : '注册扩展工具并维护智能体调用权限。'}
       badge={(
         <span className="ds-badge ds-badge-primary">
-          模型 {readyModelCount}/{settings.models.length} · 服务 {readyApiCount}/{settings.apis.length}
+          {tab === 'models'
+            ? `模型 ${readyModelCount}/${enabledModelCount} 可用`
+            : tab === 'apis'
+              ? `服务 ${readyApiCount}/${enabledApiCount} 可用`
+              : `工具 ${(settings.mcpTools ?? []).filter((item) => item.enabled !== false).length} 个已启用`}
         </span>
       )}
       actions={(
-        <button type="button" className="btn btn-ghost" onClick={refresh}>
-          <RefreshCw size={16} />
-          刷新状态
+        <button
+          type="button"
+          className="btn btn-ghost"
+          aria-label="重新同步管理端配置"
+          title="重新从后端读取配置"
+          disabled={isSyncing}
+          onClick={() => void reloadSettings()}
+        >
+          <RefreshCw size={16} className={isSyncing ? 'spin' : ''} />
+          {statusLabel}
         </button>
       )}
     >
-      <PageHeader
-        icon={Layers3}
-        title="系统能力栈"
-        subtitle="整合模型能力、外部服务与本地处理能力；本页用于总览，密钥与运行配置请在对应管理页维护。"
-      />
-
-      <section className="admin-connections-hero" aria-label="系统能力矩阵">
-        <div className="admin-connections-hero-copy">
-          <p className="eyebrow">SYSTEM CAPABILITY MATRIX</p>
-          <h2>法律 AI 办理能力集中编排。</h2>
-          <p>
-            能力总览用于检查模型、外部服务、处理工具和运行状态是否形成闭环；正式配置仍在模型配置、服务管理和知识库页面维护。
-          </p>
-          <div className="admin-connections-hero-badges">
-            <Badge tone="primary" icon={<ServerCog size={13} />}>LexHub Runtime</Badge>
-            <Badge tone={syncState === 'synced' ? 'success' : 'neutral'} icon={<CheckCircle2 size={13} />}>
-              {syncState === 'synced' ? '配置已同步' : '本地配置'}
-            </Badge>
-          </div>
-        </div>
-        <div className="admin-connections-matrix">
-          <article>
-            <span>模型能力</span>
-            <strong>{readyModelCount}/{settings.models.length}</strong>
-            <em>Plan · Vision · Review</em>
-          </article>
-          <article>
-            <span>外部服务</span>
-            <strong>{readyApiCount}/{settings.apis.length}</strong>
-            <em>OCR · 检索 · 导出</em>
-          </article>
-          <article>
-            <span>处理能力</span>
-            <strong>{settings.mcpTools?.length ?? 0}</strong>
-            <em>扩展工具位</em>
-          </article>
-          <article>
-            <span>运行状态</span>
-            <strong>{syncState === 'synced' ? 'Ready' : 'Local'}</strong>
-            <em>{runtimeInfo ?? '等待运行信息'}</em>
-          </article>
-        </div>
-      </section>
-
-      <div className="admin-tab-bar">
+      <div className="admin-tab-bar admin-connections-tabs">
         {TABS.map((item) => {
           const Icon = item.icon;
           return (
@@ -91,6 +78,7 @@ function AdminConnectionsPage() {
               key={item.id}
               type="button"
               className={`admin-tab-btn${tab === item.id ? ' active' : ''}`}
+              aria-pressed={tab === item.id}
               onClick={() => setSearchParams({ tab: item.id })}
             >
               <Icon size={14} />
@@ -100,14 +88,22 @@ function AdminConnectionsPage() {
         })}
       </div>
 
-      <AdminStackOverview
-        tab={tab}
-        models={settings.models}
-        apis={settings.apis}
-        mcpTools={settings.mcpTools ?? []}
-        syncState={syncState}
-        runtimeInfo={runtimeInfo}
-      />
+      {tab === 'models' ? (
+        <AdminModelCenter
+          providers={settings.modelProviders}
+          slots={settings.modelSlots}
+          savedHint={savedHint}
+          onSave={saveSettings}
+        />
+      ) : (
+        <AdminIntegrationCenter
+          mode={tab}
+          apis={settings.apis}
+          mcpTools={settings.mcpTools ?? []}
+          savedHint={savedHint}
+          onSave={saveSettings}
+        />
+      )}
     </AdminShell>
   );
 }

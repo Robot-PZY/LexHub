@@ -62,14 +62,14 @@ export const SUBMISSION_READINESS_ROWS = [
 
 export const JUDGE_DEMO_STEPS = [
   { step: '01', title: '产品介绍', route: '/', duration: '30s', desc: '核心能力、定价方案、赛题映射与性能对比' },
-  { step: '02', title: '发起事项', route: '/workspace', duration: '60s', desc: '上传材料、办理路径、多角色证据、能力覆盖' },
+  { step: '02', title: '发起事项', route: '/workspace/new', duration: '60s', desc: '上传材料、办理路径、多角色证据、能力覆盖' },
   { step: '03', title: '路径与能力', route: '/agents', duration: '30s', desc: '状态驱动办理网络，非固定流水线' },
   { step: '04', title: '归档与导出', route: '/replay', duration: '40s', desc: '真实办理记录、DOCX/PDF 溯源导出' },
   { step: '05', title: '管理与商业', route: '/admin', duration: '20s', desc: '模型与服务配置、用户会员标注、商业化规划' },
 ] as const;
 
 export const TOOLCHAIN_CATEGORIES = [
-  { id: 'search', label: '联网搜索', examples: ['tavily_search', 'google_search', 'search'], color: 'primary' },
+  { id: 'search', label: '联网搜索', examples: ['tavily_search', 'search_wiki', 'search'], color: 'primary' },
   { id: 'code', label: '数据处理', examples: ['execute_code', 'code'], color: 'warning' },
   { id: 'document', label: '文档/OCR', examples: ['file', 'upload', 'ocr', 'parse'], color: 'success' },
   { id: 'legal', label: '法规检索', examples: ['legal', 'law', 'case', 'rag'], color: 'primary' },

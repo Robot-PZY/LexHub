@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ChevronRight, LogOut, Menu, X } from 'lucide-react';
+import { ChevronRight, CircleDot, LogOut, Menu, X } from 'lucide-react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import BrandLogo from '../app/BrandLogo';
 import SidebarUserPanel from './SidebarUserPanel';
@@ -46,20 +46,21 @@ export function AdminShell({ title, subtitle, badge, actions, children }: AdminS
   };
 
   return (
-    <div className="admin-shell">
+    <div className="admin-shell lex-admin-shell">
+      <a className="lex-skip-link" href="#admin-main-content">跳到主要内容</a>
       {sidebarOpen && (
         <button type="button" className="app-sidebar-overlay" onClick={() => setSidebarOpen(false)} aria-label="关闭菜单" />
       )}
 
       <aside className={`admin-sidebar${sidebarOpen ? ' open' : ''}`}>
         <div className="admin-sidebar-brand">
-          <BrandLogo subtitle="Admin Console" compact />
+          <BrandLogo subtitle="管理控制台" compact />
           <button type="button" className="app-sidebar-close" onClick={() => setSidebarOpen(false)} aria-label="关闭侧边栏">
             <X size={18} />
           </button>
         </div>
 
-        <div className="admin-sidebar-tag">LexHub Admin</div>
+        <div className="admin-sidebar-tag"><CircleDot size={13} /> 管理端 · 系统在线</div>
 
         <nav className="admin-sidebar-nav">
           {ADMIN_NAV_GROUPS.map((group) => (
@@ -121,7 +122,7 @@ export function AdminShell({ title, subtitle, badge, actions, children }: AdminS
           </div>
         </header>
 
-        <main className="admin-content">{children}</main>
+        <main id="admin-main-content" className="admin-content" tabIndex={-1}>{children}</main>
       </div>
     </div>
   );

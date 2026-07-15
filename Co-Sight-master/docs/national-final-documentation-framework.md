@@ -36,7 +36,7 @@
 | 创新总结报告 | `innovation-summary.md` 或正式排版 DOCX/PDF | 必交文档，提炼创新点、难点、前景、团队协作 | 已有草稿，建议补真实数据与团队分工 |
 | 对比改进说明 | `lexhub-vs-cosight-comparison.md` | 说明二开贡献，避免被认为只是套壳 | 本次新增 |
 | 提交检查清单 | `submission-checklist.md` | 对照赛题逐项自查 | 已有草稿，建议答辩前更新状态 |
-| 演示视频脚本 | `demo-script.md` | 3 分钟视频/现场演示路线 | 已有草稿，建议按最终 UI 更新 |
+| 演示视频 | 最终产品流程 | 3 分钟视频/现场演示路线 | 按最终 UI 录制 |
 | 工具/API 说明 | `tool-api-reference.md` | 可选加分材料，说明工具封装接口 | 已有草稿，建议补真实 endpoint 与示例 |
 
 如果时间允许，正式提交时可将 `technical-solution.md` 和 `innovation-summary.md` 转成 PDF，其他文档作为附录或仓库文档保留。

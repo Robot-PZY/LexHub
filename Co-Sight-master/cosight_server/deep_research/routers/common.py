@@ -244,7 +244,7 @@ def _get_runtime_status() -> Dict:
     }
     optional_tools = {
         "tavily_search": bool(os.environ.get("TAVILY_API_KEY")),
-        "google_search": bool(os.environ.get("GOOGLE_API_KEY") and os.environ.get("SEARCH_ENGINE_ID")),
+        "wikipedia_search": True,
     }
     server_uptime_seconds = max(0, int(datetime.now().timestamp()) - int(server_start_timestamp / 1000))
     base_chatbot_api_url = custom_config_data.get("base_chatbot_api_url", "/api/openans-support-chatbot/v1")
@@ -619,13 +619,6 @@ def _api_integrations() -> List[Dict]:
             "purpose": "百度 TextReview 等外部 SaaS；需公网文件 URL，演示环境可不配置。",
         },
         {
-            "id": "clause_library",
-            "name": "标准条款库",
-            "category": "合同审查",
-            "envKeys": ["CLAUSE_LIBRARY_API_KEY"],
-            "purpose": "对照标准条款模板检查偏离度与建议改写。",
-        },
-        {
             "id": "contract_compare",
             "name": "合同版本比对（本地）",
             "category": "合同审查",
@@ -634,17 +627,10 @@ def _api_integrations() -> List[Dict]:
             "status": "ready",
         },
         {
-            "id": "compliance_screen",
-            "name": "合规红线筛查",
-            "category": "合同审查",
-            "envKeys": ["COMPLIANCE_SCREEN_API_KEY"],
-            "purpose": "反贿赂、数据出境、劳动用工等合规风险扫描。",
-        },
-        {
             "id": "web_search",
             "name": "联网搜索",
             "category": "公开资料",
-            "envKeys": ["TAVILY_API_KEY", "GOOGLE_API_KEY", "SERPAPI_API_KEY"],
+            "envKeys": ["TAVILY_API_KEY"],
             "purpose": "补充公开资料、行业背景、新闻公告与网页来源。",
         },
         {
@@ -971,11 +957,11 @@ def _load_agent_registry() -> Dict:
     )
     try:
         with open(config_path, "r", encoding="utf-8") as handle:
-            return json.load(handle)
+            registry = json.load(handle)
     except Exception:
         workflow = _load_workflow_config()
         agents = workflow.get("agents", _agent_catalog())
-        return {
+        registry = {
             "name": "lexhub-agent-registry",
             "version": "1.0.0",
             "framework": "Co-Sight",
@@ -992,6 +978,43 @@ def _load_agent_registry() -> Dict:
             ],
             "toolCatalog": [],
         }
+
+    try:
+        from cosight_server.deep_research.services.admin_runtime_config import load_admin_settings
+
+        custom_tools = [
+            item for item in (load_admin_settings().get("mcpTools") or [])
+            if item.get("enabled", True)
+        ]
+        catalog = registry.setdefault("toolCatalog", [])
+        catalog_ids = {str(item.get("id") or "") for item in catalog}
+        agents_by_id = {
+            str(item.get("id") or ""): item
+            for item in registry.setdefault("agents", [])
+        }
+        for tool in custom_tools:
+            tool_id = str(tool.get("skill_name") or "").strip()
+            if not tool_id:
+                continue
+            if tool_id not in catalog_ids:
+                command = str((tool.get("mcp_server_config") or {}).get("command") or "MCP")
+                catalog.append({
+                    "id": tool_id,
+                    "label": str(tool.get("display_name_zh") or tool_id),
+                    "category": "custom",
+                    "apiLabel": f"MCP · {command}",
+                })
+                catalog_ids.add(tool_id)
+            for agent_id in tool.get("authorizedAgents") or []:
+                agent = agents_by_id.get(str(agent_id))
+                if not agent:
+                    continue
+                registered = agent.setdefault("registeredTools", [])
+                if tool_id not in registered:
+                    registered.append(tool_id)
+    except Exception as exc:
+        logger.warning("merge custom tools into agent registry failed: %s", exc)
+    return registry
 
 
 @commonRouter.get("/demo/agent-registry")
@@ -1550,7 +1573,11 @@ async def test_admin_runtime_settings(body: Dict = Body(default={})):
 
     try:
         payload = body if isinstance(body, dict) else {}
-        incoming = {k: v for k, v in payload.items() if k in ("models", "apis", "mcpTools")}
+        incoming = {
+            k: v
+            for k, v in payload.items()
+            if k in ("modelProviders", "modelSlots", "models", "apis", "mcpTools")
+        }
         result = test_admin_runtime_config(incoming or None)
         return json_result(0, "success", result)
     except Exception as exc:

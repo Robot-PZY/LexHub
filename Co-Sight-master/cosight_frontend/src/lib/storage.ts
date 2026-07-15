@@ -626,6 +626,10 @@ function saveMatters(matters: MatterRecord[]): void {
   localStorage.setItem(MATTERS_KEY, JSON.stringify(matters));
 }
 
+export function listMatters(): MatterRecord[] {
+  return [...loadMatters()].sort((left, right) => right.updatedAt - left.updatedAt);
+}
+
 export function createMatter(record: Omit<MatterRecord, 'createdAt' | 'updatedAt'>): MatterRecord {
   const now = Date.now();
   const matter = { ...record, createdAt: now, updatedAt: now };

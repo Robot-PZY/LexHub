@@ -342,7 +342,7 @@ export const CURATED_ANALYTICS_OVERVIEW: AnalyticsOverview = {
     { id: 'legal_search', name: '得理法律检索', category: '法律研究', status: 'ready', envKeys: ['DELI_API_KEY'], purpose: '法规案例检索' },
     { id: 'ocr', name: 'OCR / 文档解析', category: '材料处理', status: 'ready', envKeys: ['OCR_API_KEY'], purpose: '扫描件识别' },
     { id: 'vector_rag', name: '本地知识库', category: '知识增强', status: 'ready', envKeys: ['CHROMA_PATH'], purpose: 'RAG 检索' },
-    { id: 'web_search', name: '联网搜索', category: '公开资料', status: 'missing_key', envKeys: ['SEARCH_API_KEY'], purpose: '补充公开资料' },
+    { id: 'web_search', name: '联网搜索', category: '公开资料', status: 'ready', envKeys: ['TAVILY_API_KEY'], purpose: '补充公开资料' },
     { id: 'export', name: '文书导出', category: '结果交付', status: 'planned', envKeys: [], purpose: 'PDF/DOCX 导出' },
   ],
   performanceBenchmark: mockPerformanceBenchmark,

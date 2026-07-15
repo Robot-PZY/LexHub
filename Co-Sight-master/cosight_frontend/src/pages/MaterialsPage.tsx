@@ -163,7 +163,7 @@ function MaterialsPage() {
       actions={(
         <>
           <button type="button" className="btn btn-ghost" onClick={() => void handleReset()}>清空材料库</button>
-          <Link className="btn btn-primary" to="/workspace">发起事项</Link>
+          <Link className="btn btn-primary" to="/workspace/new">发起事项</Link>
         </>
       )}
       onLogout={handleLogout}
@@ -207,7 +207,7 @@ function MaterialsPage() {
             icon={<FolderOpen size={22} />}
             title="暂无材料"
             description="完成一次事项后，上传文件与正式交付物会按事项归档显示在这里。"
-            action={<Link className="btn btn-primary" to="/workspace" style={{ marginTop: 8 }}>去发起事项</Link>}
+          action={<Link className="btn btn-primary" to="/workspace/new" style={{ marginTop: 8 }}>去发起事项</Link>}
           />
         )}
 

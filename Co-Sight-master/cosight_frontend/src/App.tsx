@@ -6,6 +6,7 @@ const AdminLayout = lazy(() => import('./components/layout/AdminShell'));
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const BoardPage = lazy(() => import('./pages/BoardPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+const WorkspaceHomePage = lazy(() => import('./pages/WorkspaceHomePage'));
 const WorkspacePage = lazy(() => import('./pages/WorkspacePage'));
 const WorkspaceRunPage = lazy(() => import('./pages/WorkspaceRunPage'));
 const WorkspaceResultPage = lazy(() => import('./pages/WorkspaceResultPage'));
@@ -25,6 +26,7 @@ const AdminConnectionsPage = lazy(() => import('./pages/admin/AdminConnectionsPa
 const AdminKnowledgePage = lazy(() => import('./pages/admin/AdminKnowledgePage'));
 const AdminPoliciesPage = lazy(() => import('./pages/admin/AdminPoliciesPage'));
 const AdminUsersPage = lazy(() => import('./pages/admin/AdminUsersPage'));
+const AdminAnalyticsPage = lazy(() => import('./pages/admin/AdminAnalyticsPage'));
 
 function App() {
   const location = useLocation();
@@ -38,6 +40,14 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route
         path="/workspace"
+        element={(
+          <ProtectedRoute role="user">
+            <WorkspaceHomePage />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path="/workspace/new"
         element={(
           <ProtectedRoute role="user">
             <WorkspacePage />
@@ -169,12 +179,12 @@ function App() {
         <Route path="knowledge" element={<AdminKnowledgePage />} />
         <Route path="policies" element={<AdminPoliciesPage />} />
         <Route path="users" element={<AdminUsersPage />} />
+        <Route path="agents" element={<Navigate to="/admin/connections?tab=tools" replace />} />
+        <Route path="analytics" element={<AdminAnalyticsPage />} />
         <Route path="models" element={<Navigate to="/admin/connections?tab=models" replace />} />
         <Route path="apis" element={<Navigate to="/admin/connections?tab=apis" replace />} />
         <Route path="routing" element={<Navigate to="/admin/policies?tab=routing" replace />} />
         <Route path="review-rules" element={<Navigate to="/admin/policies?tab=review" replace />} />
-        <Route path="analytics" element={<Navigate to="/admin" replace />} />
-        <Route path="agents" element={<Navigate to="/admin" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

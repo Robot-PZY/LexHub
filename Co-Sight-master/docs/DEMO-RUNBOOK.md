@@ -18,7 +18,7 @@ npm.cmd run build
 
 ## 启动
 
-Windows 推荐直接双击仓库最外层的 `start-lexhub.bat`。启动器会检查 `.env`、Python 和前端依赖，避免重复占用端口；它会分别打开前后端日志窗口，等待健康检查通过后自动打开浏览器。双击最外层的 `stop-lexhub.bat` 可停止由启动器创建的进程。项目内的 `start-cosight.bat` 仅保留兼容。
+Windows 推荐直接双击仓库最外层的 `start-lexhub.bat`。启动器会检查 `.env`、Python 和前端依赖，避免重复占用端口；等待前后端健康检查通过后自动打开浏览器。启动日志位于 `Co-Sight-master/logs/launcher-*.log`，双击最外层的 `stop-lexhub.bat` 可停止服务。
 
 命令行等价方式：
 

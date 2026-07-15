@@ -1,0 +1,325 @@
+/* Replay archive v2: searchable history, local fallback and replay/report handoff */
+
+.replay-archive-v2 {
+  display: grid;
+  gap: 16px;
+}
+
+.replay-archive-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.replay-archive-stats article {
+  display: grid;
+  min-height: 72px;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  color: var(--color-secondary);
+  background: #fff;
+  box-shadow: var(--shadow-xs);
+}
+
+.replay-archive-stats span {
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.replay-archive-stats strong {
+  color: var(--color-text-strong);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-fallback-notice {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border: 1px solid rgba(183, 121, 31, 0.28);
+  border-radius: 10px;
+  color: var(--color-warning);
+  background: var(--color-warning-soft);
+  font-size: 12px;
+}
+
+.replay-fallback-notice button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  padding: 6px 10px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.replay-archive-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.65fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.replay-archive-list-panel,
+.replay-archive-detail {
+  border-color: var(--color-line);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--shadow-xs);
+}
+
+.replay-archive-list-panel {
+  padding: 20px;
+}
+
+.replay-archive-search {
+  display: flex;
+  min-width: 220px;
+  min-height: 42px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  color: var(--color-muted);
+  background: var(--color-surface-alt);
+}
+
+.replay-archive-search:focus-within {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(22, 125, 116, 0.1);
+}
+
+.replay-archive-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  color: var(--color-text);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+}
+
+.replay-archive-list-panel .replay-event-list {
+  gap: 7px;
+}
+
+.replay-archive-list-panel .replay-event-card {
+  min-height: 94px;
+  border-color: transparent;
+  border-radius: 11px;
+  background: var(--color-surface-alt);
+  box-shadow: none;
+}
+
+.replay-archive-list-panel .replay-event-card.selected {
+  border-color: rgba(22, 125, 116, 0.24);
+  background: var(--color-secondary-soft);
+  box-shadow: inset 3px 0 0 var(--color-secondary);
+}
+
+.replay-search-empty {
+  display: flex;
+  min-height: 160px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.replay-archive-detail {
+  position: sticky;
+  top: calc(var(--topbar-height) + 82px);
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+}
+
+.replay-archive-detail-head {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: start;
+  gap: 11px;
+}
+
+.replay-archive-detail-head > span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--color-secondary);
+  background: var(--color-secondary-soft);
+}
+
+.replay-archive-detail-head h2 {
+  margin: 3px 0 4px;
+  color: var(--color-text-strong);
+  font-size: 19px;
+  line-height: 1.3;
+}
+
+.replay-archive-detail-head em {
+  color: var(--color-muted);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.replay-archive-detail-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 9px;
+  color: var(--color-success);
+  background: var(--color-success-soft);
+  font-size: 11px;
+}
+
+.replay-archive-detail-status span {
+  color: var(--color-muted);
+}
+
+.replay-archive-progress {
+  display: grid;
+  gap: 8px;
+}
+
+.replay-archive-progress > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-muted);
+  font-size: 11px;
+}
+
+.replay-archive-progress > div strong {
+  color: var(--color-secondary);
+  font-size: 16px;
+}
+
+.replay-archive-progress > i {
+  overflow: hidden;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--color-line-soft);
+}
+
+.replay-archive-progress > i span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-secondary);
+}
+
+.replay-archive-progress p,
+.replay-archive-detail-note {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.replay-archive-detail-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.replay-archive-detail-metrics article {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 12px 6px;
+  border: 1px solid var(--color-line-soft);
+  border-radius: 9px;
+  color: var(--color-secondary);
+  text-align: center;
+}
+
+.replay-archive-detail-metrics span {
+  color: var(--color-muted);
+  font-size: 9px;
+}
+
+.replay-archive-detail-metrics strong {
+  color: var(--color-text-strong);
+  font-size: 11px;
+}
+
+.replay-archive-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.replay-archive-actions .lex-button {
+  width: 100%;
+  justify-content: center;
+}
+
+@media (max-width: 1100px) {
+  .replay-archive-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .replay-archive-detail {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .replay-archive-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .replay-section-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .replay-archive-search {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .replay-archive-search input {
+    font-size: 16px;
+  }
+
+  .replay-archive-list-panel .replay-event-card {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .replay-archive-list-panel .replay-event-time {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 440px) {
+  .replay-archive-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .replay-archive-detail-metrics {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .replay-archive-progress > i span,
+  .replay-archive-list-panel .replay-event-card {
+    transition: none;
+  }
+}
